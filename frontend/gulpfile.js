@@ -1,0 +1,132 @@
+
+const autoprefixer = require('autoprefixer');
+const browserSync = require('browser-sync').create();
+const cleanCSS = require('gulp-clean-css');
+const gulp = require('gulp');
+const historyFallback = require('connect-history-api-fallback');
+const JavaScriptObfuscator = require('webpack-obfuscator');
+const postcss = require('gulp-postcss');
+const sass = require('gulp-sass');
+const webpack = require('webpack-stream');
+
+const dist = '../backend/app/static';
+const prod = './build/';
+
+gulp.task('copy-html', () => {
+  return gulp.src('./app/src/index.html')
+    .pipe(gulp.dest(dist))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('build-js', () => {
+  return gulp.src('./app/src/main.js')
+    .pipe(webpack({
+      mode: 'development',
+      output: {
+        filename: 'script.js'
+      },
+      watch: false,
+      devtool: 'source-map',
+      module: {
+        rules: [
+          {
+            test: /\.m?js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: [['@babel/preset-env', {
+                  debug: true,
+                  corejs: 3,
+                  useBuiltIns: 'usage'
+                }],
+                  '@babel/react']
+              }
+            }
+          }
+        ]
+      }
+    }))
+    .pipe(gulp.dest(dist))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('build-sass', () => {
+  return gulp.src('./app/scss/style.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest(dist))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('copy-assets', () => {
+  return gulp.src('./app/assets/**/*.*')
+    .pipe(gulp.dest(dist + '/assets'))
+    .pipe(browserSync.stream());
+});
+
+
+gulp.task('watch', () => {
+  browserSync.init({
+    server: {
+      baseDir: dist,
+      middleware: [
+        historyFallback()
+      ]
+    }
+  });
+
+  gulp.watch('./app/src/index.html', gulp.parallel('copy-html')).on('change', browserSync.reload);
+  gulp.watch('./app/assets/**/*.*', gulp.parallel('copy-assets')).on('change', browserSync.reload);
+  gulp.watch('./app/scss/**/*.scss', gulp.parallel('build-sass')).on('change', browserSync.reload);
+  gulp.watch('./app/src/**/*.js', gulp.parallel('build-js')).on('change', browserSync.reload);
+});
+
+gulp.task('build', gulp.parallel('copy-html', 'copy-assets', 'build-sass', 'build-js'));
+
+gulp.task('prod', () => {
+  gulp.src('./app/src/index.html')
+    .pipe(gulp.dest(prod));
+  gulp.src('./app/assets/**/*.*')
+    .pipe(gulp.dest(prod + '/assets'));
+
+  gulp.src('./app/src/main.js')
+    .pipe(webpack({
+      mode: 'production',
+      output: {
+        filename: 'script.js'
+      },
+      module: {
+        rules: [
+          {
+            test: /\.m?js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: [['@babel/preset-env', {
+                  debug: false,
+                  corejs: 3,
+                  useBuiltIns: 'usage'
+                }],
+                  '@babel/react']
+              }
+            }
+          }
+        ]
+      },
+      plugins: [
+        new JavaScriptObfuscator({
+          rotateUnicodeArray: true
+        }, ['excluded_bundle_name.js']),
+      ],
+    }))
+    .pipe(gulp.dest(prod));
+
+  return gulp.src('./app/scss/style.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(postcss([autoprefixer()]))
+    .pipe(cleanCSS())
+    .pipe(gulp.dest(prod));
+});
+
+gulp.task('default', gulp.parallel('watch', 'build'));

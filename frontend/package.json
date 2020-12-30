@@ -1,0 +1,60 @@
+{
+  "name": "study-bot-frontend",
+  "version": "1.0.0",
+  "description": "study bot frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netBriler/telegram-study-bot.git"
+  },
+  "keywords": [
+    "React",
+    "study-bot-frontend"
+  ],
+  "author": "Briler Studio",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/netBriler/telegram-study-bot/issues"
+  },
+  "homepage": "https://github.com/netBriler/telegram-study-bot#readme",
+  "browserslist": [
+    "last 2 chrome versions",
+    "last 2 firefox versions",
+    "last 2 ios versions"
+  ],
+  "dependencies": {
+    "axios": "^0.19.0",
+    "chart.js": "^2.9.4",
+    "connect-history-api-fallback": "^1.6.0",
+    "core-js": "^3.3.6",
+    "html-react-parser": "^0.14.1",
+    "ionicons": "^2.0.1",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "uikit": "^3.5.8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.0",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "autoprefixer": "^9.7.1",
+    "babel-loader": "^8.0.6",
+    "browser-sync": "^2.26.13",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-router-dom": "^5.0.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-obfuscator": "^0.28.0",
+    "webpack-stream": "^5.2.1"
+  }
+}
