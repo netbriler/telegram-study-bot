@@ -1,5 +1,9 @@
 from flask import abort, Blueprint, json, jsonify
 
+from flask_login import current_user
+
+from app.models import User
+
 api = Blueprint('api', __name__)
 
 
@@ -29,4 +33,11 @@ def after_request(response):
     return response
 
 
+@api.before_request
+def before_request():
+    if not current_user.is_authenticated or not current_user.is_admin():
+        abort(401)
+
+
 from . import subjects
+from . import users

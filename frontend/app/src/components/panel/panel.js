@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
 
-const Panel = () => {
+const Panel = ({user}) => {
     return (
         <>
             <div uk-sticky="true" className="uk-navbar-container tm-navbar-container uk-sticky uk-sticky-fixed" style={{ position: 'fixed', top: '0px', width: '100%' }}>
@@ -16,14 +17,13 @@ const Panel = () => {
                         <div className="uk-navbar-right uk-light">
                             <ul className="uk-navbar-nav">
                                 <li className="uk-active">
-                                    <a href="#" aria-expanded="false">Briler &nbsp;<span className="ion-ios-arrow-down" /></a>
+                                    <a href="#" aria-expanded="false">{user.name} &nbsp;<span className="ion-ios-arrow-down" /></a>
                                     <div uk-dropdown="pos: bottom-right; mode: click; offset: -17;" className="uk-dropdown">
                                         <ul className="uk-nav uk-navbar-dropdown-nav">
                                             <li className="uk-nav-header">Настройки</li>
                                             <li><a href="#">Edit Profile</a></li>
                                             <li className="uk-nav-header">Actions</li>
-                                            <li><a href="#">Lock</a></li>
-                                            <li><a href="#">Logout</a></li>
+                                            <li><a href="/logout">Logout</a></li>
                                         </ul>
                                     </div>
                                 </li>
@@ -35,11 +35,11 @@ const Panel = () => {
             <div id="sidebar" className="tm-sidebar-left uk-background-default">
                 <center>
                     <div className="user">
-                        <img id="avatar" width={100} className="uk-border-circle" src="https://avatars3.githubusercontent.com/u/44978350?s=460&u=93bc67a53a2046f63c927523772c59979d3bb3c9&v=4" />
+                        <img id="avatar" width={100} className="uk-border-circle" src={'/static/pictures/' + (user.photo_id ? user.photo_id+'.jpg' : 'default-avatar.png')} />
                         <div className="uk-margin-top" />
-                        <div id="name" className="uk-text-truncate">Briler Studio</div>
-                        <div id="email" className="uk-text-truncate">@briler</div>
-                        <span id="status" data-enabled="true" data-online-text="Online" data-away-text="Away" data-interval={10000} className="uk-margin-top uk-label uk-label-danger">Super Admin</span>
+                        <div id="name" className="uk-text-truncate">{user.name}</div>
+                        <div id="email" className="uk-text-truncate">{user.username ? <a href={'https://t.me/' + user.username}>@{user.username}</a> : <span className='uk-text-meta'>Не указан</span>}</div>
+                        <span id="status" data-enabled="true" data-online-text="Online" data-away-text="Away" data-interval={10000} className="uk-margin-top uk-label uk-label-danger">{user.status}</span>
                     </div>
                     <br />
                 </center>
@@ -63,4 +63,11 @@ const Panel = () => {
     )
 };
 
-export default Panel;
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps)(Panel);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
     Switch,
     Route,
@@ -7,11 +8,32 @@ import {
 import Panel from '../panel'
 import { DashboardPage, LogPage, SubjectsPage, UsersPage } from '../pages'
 import UIkit from 'uikit'
+import { isLoaded, isLoading, setCurrentUser } from '../../actions';
+import WithAdminService from '../hoc';
 
 class App extends Component {
 
     constructor(props) {
         super(props);
+
+        this.AdminService = props.AdminService;
+        this.isLoading = props.isLoading;
+        this.isLoaded = props.isLoaded;
+        this.setCurrentUser = props.setCurrentUser;
+
+    }
+
+    componentDidMount() {
+        this.isLoading();
+        this.init(this.isLoaded);
+    }
+
+    init(callback) {
+        this.AdminService.getCurrentUser()
+            .then(user => {
+                this.setCurrentUser(user)
+            })
+            .then(callback);
     }
 
     render() {
@@ -31,4 +53,17 @@ class App extends Component {
     }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        loading: state.loading
+    }
+}
+
+
+const mapDispatchToProps = {
+    isLoaded,
+    isLoading,
+    setCurrentUser
+}
+
+export default WithAdminService()(connect(mapStateToProps, mapDispatchToProps)(App));

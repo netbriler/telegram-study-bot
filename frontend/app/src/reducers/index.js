@@ -1,5 +1,6 @@
 const initialState = {
-    loading: true
+    loading: true,
+    user: []
 }
 
 
@@ -15,6 +16,12 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 loading: false
             };
+        case 'SET_CURRENT_USER':
+            const user = action.payload;
+            return {
+                ...state,
+                user
+            }
         default:
             return state;
     }
