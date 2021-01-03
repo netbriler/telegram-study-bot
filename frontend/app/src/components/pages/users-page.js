@@ -69,7 +69,7 @@ class UsersPage extends Component {
 
                             <ul className="uk-breadcrumb">
                                 <li><a href="#">Главная</a></li>
-                                <li><span href="#">Пользователи</span></li>
+                                <li><span>Пользователи</span></li>
                             </ul>
                         </div>
                     </div>

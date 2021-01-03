@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {
     Switch,
     Route,
     Redirect,
 } from "react-router-dom";
 import Panel from '../panel'
-import { DashboardPage, LogPage, SubjectsPage, UsersPage } from '../pages'
+import {DashboardPage, LogPage, SubjectsPage, UsersPage} from '../pages'
 import UIkit from 'uikit'
-import { isLoaded, isLoading, setCurrentUser } from '../../actions';
+import {isLoaded, isLoading, setCurrentUser} from '../../actions';
 import WithAdminService from '../hoc';
 
 class App extends Component {
@@ -31,7 +31,11 @@ class App extends Component {
     init(callback) {
         this.AdminService.getCurrentUser()
             .then(user => {
-                this.setCurrentUser(user)
+                if (user) {
+                    this.setCurrentUser(user)
+                } else {
+                    throw new Error('Не плучилось загрузить пользователя')
+                }
             })
             .then(callback);
     }
@@ -40,7 +44,7 @@ class App extends Component {
 
         return (
             <>
-                <Panel />
+                <Panel/>
                 <Switch>
                     <Route path="/dashboard" component={DashboardPage}></Route>
                     <Route path="/subjects" component={SubjectsPage}></Route>
