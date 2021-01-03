@@ -24,7 +24,6 @@ def handle_exception(e: Exception):
 
 @api.after_request
 def after_request(response: Response):
-    print(type(response))
     response_data = json.loads(response.get_data())
 
     if 'ok' not in response_data or response_data['ok']:
@@ -42,4 +41,5 @@ def before_request():
 
 
 from . import subjects
+from . import tasks
 from . import users

@@ -11,7 +11,7 @@ from app import db
 def get_users():
     try:
         users = User.query.all()
-        return jsonify(list(map(lambda s: s.to_dict(), users)))
+        return jsonify(list(map(lambda s: s.to_json(), users)))
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')
@@ -24,7 +24,7 @@ def get_user(id: int):
         if not user:
             raise ValueError
 
-        return jsonify(user.to_dict())
+        return jsonify(user.to_json())
     except ValueError:
         abort(400, description='Bad Request: id not found')
     except Exception as e:
@@ -35,7 +35,7 @@ def get_user(id: int):
 @api.route('/users/current', methods=['GET'])
 def get_current_user():
     try:
-        return jsonify(current_user.to_dict())
+        return jsonify(current_user.to_json())
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')

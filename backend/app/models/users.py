@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     def __repr__(self) -> str:
         return f'<User {self.username}>'
 
-    def to_dict(self) -> dict:
+    def to_json(self) -> dict:
         json_story = {
             'id': self.id,
             'username': self.username,

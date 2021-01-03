@@ -32,7 +32,7 @@ class Subject(db.Model):
     def __repr__(self) -> str:
         return f'<Subject {self.name}>'
 
-    def to_dict(self) -> dict:
+    def to_json(self) -> dict:
         json_story = {
             'codename': self.codename,
             'name': self.name,
