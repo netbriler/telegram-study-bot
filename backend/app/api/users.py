@@ -18,7 +18,7 @@ def get_users():
 
 
 @api.route('/users/<int:id>', methods=['GET'])
-def get_user(id):
+def get_user(id: int):
     try:
         user = User.query.filter_by(id=id).first()
         if not user:

@@ -16,7 +16,7 @@ def get_subjects():
 
 
 @api.route('/subjects/<string:codename>', methods=['GET'])
-def get_subject(codename):
+def get_subject(codename: str):
     try:
         subject = Subject.query.filter_by(codename=codename).first()
         if not subject:

@@ -197,7 +197,11 @@ class App extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   init(callback) {
     this.AdminService.getCurrentUser().then(user => {
-      this.setCurrentUser(user);
+      if (user) {
+        this.setCurrentUser(user);
+      } else {
+        throw new Error('Не плучилось загрузить пользователя');
+      }
     }).then(callback);
   }
 
@@ -953,9 +957,7 @@ class UsersPage extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       className: "uk-breadcrumb"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       href: "#"
-    }, "\u0413\u043B\u0430\u0432\u043D\u0430\u044F")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      href: "#"
-    }, "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    }, "\u0413\u043B\u0430\u0432\u043D\u0430\u044F")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0438"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "uk-section-small"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "uk-container uk-container-large uk-section-default"

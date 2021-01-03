@@ -26,6 +26,7 @@ class LocalConfig:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
+    TELEGRAM_USE_POTTING = True
 
     @classmethod
     def init_app(cls, app):
@@ -52,6 +53,7 @@ class Develop:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
+    TELEGRAM_USE_POTTING = True
 
     @staticmethod
     def init_app(app):

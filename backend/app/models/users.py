@@ -14,13 +14,13 @@ class User(UserMixin, db.Model):
     photo_id = db.Column(db.String(225))
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.status in ['admin', 'super_admin']
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<User {self.username}>'
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         json_story = {
             'id': self.id,
             'username': self.username,

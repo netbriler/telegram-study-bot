@@ -2,7 +2,7 @@ import hmac
 import hashlib
 
 
-def verify_authorization(data, api_token):
+def verify_authorization(data: dict, api_token: str) -> bool:
     sorted_data = dict(sorted(data.items(), key=lambda x: x[0].lower()))
     del sorted_data['hash']
 

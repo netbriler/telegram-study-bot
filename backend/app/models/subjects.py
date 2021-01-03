@@ -18,7 +18,7 @@ class Subject(db.Model):
     tasks = db.relationship('Task', backref='subject', lazy='dynamic')
 
     @hybrid_property
-    def aliases(self):
+    def aliases(self) -> list:
         aliases = self._aliases.split(',')
         aliases = list(filter(None, map(str.strip, aliases)))
         aliases.append(self.codename)
@@ -26,13 +26,13 @@ class Subject(db.Model):
         return aliases
 
     @aliases.setter
-    def aliases(self, aliases):
+    def aliases(self, aliases: list):
         self._aliases = aliases
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<Subject {self.name}>'
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         json_story = {
             'codename': self.codename,
             'name': self.name,

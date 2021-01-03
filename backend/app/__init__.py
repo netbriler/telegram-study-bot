@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask import Flask
+from flask import Flask, url_for
 
 # Importing configs
 from config import config_dict
@@ -25,7 +25,7 @@ migrate = Migrate()
 bootstrap = Bootstrap()
 
 
-def create_app(config_key='local'):
+def create_app(config_key: str = 'local') -> Flask:
     app = Flask(__name__, static_url_path='/static')
     app.app_context().push()
     # Enabling config initiation

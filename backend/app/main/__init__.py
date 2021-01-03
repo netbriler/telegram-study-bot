@@ -2,4 +2,7 @@ from flask import Blueprint
 
 main = Blueprint('main', __name__)
 
-from app.main import views
+from . import auth
+from . import bot
+from . import frontend
+
