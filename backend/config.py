@@ -1,7 +1,3 @@
-"""This is where we defined the Config files, which are used for initiating the
-application with specific settings such as logger configurations or different
-database setups."""
-
 from app.utils.logging import file_logger, client_logger
 from decouple import config as env_conf
 import logging
@@ -11,6 +7,8 @@ DIR = pathlib.Path().absolute()
 
 
 class LocalConfig:
+    LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
+
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
     DB_PASSWORD = env_conf('DATABASE_PASS', default='', cast=str)
     DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)
@@ -36,8 +34,8 @@ class LocalConfig:
 
 
 class Develop:
-    """Development config geared towards docker."""
-    # Database configurations
+    LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
+
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
     DB_PASSWORD = env_conf('DATABASE_PASS', default='', cast=str)
     DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)

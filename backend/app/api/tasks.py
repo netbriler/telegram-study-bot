@@ -1,12 +1,11 @@
-from flask import jsonify, request, current_app, abort
+from flask import jsonify, current_app, abort
 
 from app.models import Task
 from app.api import api
-from app import db
 
 
 @api.route('/tasks', methods=['GET'])
-def get_tasks():
+def _get_tasks():
     try:
         tasks = Task.query.all()
         return jsonify(list(map(lambda s: s.to_json(), tasks)))
@@ -16,7 +15,7 @@ def get_tasks():
 
 
 @api.route('/tasks/<int:id>', methods=['GET'])
-def get_task(id: int):
+def _get_task(id: int):
     try:
         task = Task.query.filter_by(id=id).first()
         if not task:

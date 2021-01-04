@@ -1,14 +1,13 @@
-from flask import jsonify, request, current_app, abort
+from flask import jsonify, current_app, abort
 
 from flask_login import current_user
 
 from app.models import User
 from app.api import api
-from app import db
 
 
 @api.route('/users', methods=['GET'])
-def get_users():
+def _get_users():
     try:
         users = User.query.all()
         return jsonify(list(map(lambda s: s.to_json(), users)))
@@ -18,7 +17,7 @@ def get_users():
 
 
 @api.route('/users/<int:id>', methods=['GET'])
-def get_user(id: int):
+def _get_user(id: int):
     try:
         user = User.query.filter_by(id=id).first()
         if not user:
@@ -33,7 +32,7 @@ def get_user(id: int):
 
 
 @api.route('/users/current', methods=['GET'])
-def get_current_user():
+def _get_current_user():
     try:
         return jsonify(current_user.to_json())
     except Exception as e:

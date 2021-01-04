@@ -1,5 +1,5 @@
 from app.main import main
-from flask import redirect, abort, request, current_app, jsonify, url_for
+from flask import abort, current_app, url_for
 from flask_login import login_required
 
 import telebot

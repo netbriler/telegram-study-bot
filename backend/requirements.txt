@@ -2,3 +2,5 @@ flask
 Flask-Migrate
 Flask-SQLAlchemy
 flask_login
+
+fuzzywuzzy

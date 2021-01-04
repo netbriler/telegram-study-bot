@@ -27,7 +27,7 @@ class Subject(db.Model):
 
     @aliases.setter
     def aliases(self, aliases: list):
-        self._aliases = aliases
+        self._aliases = ','.join(aliases)
 
     def __repr__(self) -> str:
         return f'<Subject {self.name}>'

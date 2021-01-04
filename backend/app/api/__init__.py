@@ -41,5 +41,6 @@ def before_request():
 
 
 from . import subjects
+from . import timetable
 from . import tasks
 from . import users

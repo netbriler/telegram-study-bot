@@ -1,5 +1,5 @@
 from app.main import main
-from flask import redirect, abort, request, current_app, jsonify
+from flask import current_app
 from flask_login import login_required
 
 
