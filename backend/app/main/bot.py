@@ -15,5 +15,8 @@ def set_webhook():
 
 @main.route('/' + current_app.config['TELEGRAM_BOT_TOKEN'], methods=['POST'])
 def webhook():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode('utf-8'))])
+    try:
+        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode('utf-8'))])
+    except:
+        pass
     return 'ok', 200

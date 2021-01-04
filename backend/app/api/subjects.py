@@ -1,6 +1,5 @@
 from flask import jsonify, current_app, abort
 
-from app.models import Subject
 from app.api import api
 
 from app.services.subjects import get_subject, get_all_subjects

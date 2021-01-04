@@ -37,7 +37,6 @@ def create_app(config_key: str = 'local') -> Flask:
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-
     from app.main import main as main_blueprint
     from app.api import api as api_blueprint
 

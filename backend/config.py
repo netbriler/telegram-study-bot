@@ -24,7 +24,6 @@ class LocalConfig:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
-    TELEGRAM_USE_POTTING = True
 
     @classmethod
     def init_app(cls, app):
@@ -51,7 +50,6 @@ class Develop:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
-    TELEGRAM_USE_POTTING = True
 
     @staticmethod
     def init_app(app):
@@ -60,9 +58,31 @@ class Develop:
         app.logger.addHandler(file_logger)
 
 
+class Testing:
+    LOCATE = 'uk_UA'
+
+    DB_HOST = 'testing.sqlite3'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_RECORD_QUERIES = True
+
+    DEBUG = True
+
+    SECRET_KEY = 'sdfniwuihuwefhuwipfihjwfijsdhjfip12903234'
+
+    TELEGRAM_BOT_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+
+    @staticmethod
+    def init_app(app):
+        app.logger.setLevel(logging.DEBUG)
+        app.logger.addHandler(client_logger)
+
+
 # Create a config dictionary which is used while initiating the application.
 # Config that is going to be used will be specified in the .env file
 config_dict = {
     'local': LocalConfig,
     'develop': Develop,
+    'testing': Testing
 }
