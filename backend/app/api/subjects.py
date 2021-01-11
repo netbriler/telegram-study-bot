@@ -1,5 +1,7 @@
 from flask import jsonify, current_app, abort
 
+from app.exceptions import BadRequest
+
 from app.api import api
 
 from app.services.subjects import get_subject, get_all_subjects
@@ -20,11 +22,11 @@ def _get_subject(codename: str):
     try:
         subject = get_subject(codename)
         if not subject:
-            raise ValueError
+            raise BadRequest('subject not found')
 
         return jsonify(subject.to_json())
-    except ValueError:
-        abort(400, description='Bad Request: subject not found')
+    except BadRequest as e:
+        abort(400, description=str(e))
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')
@@ -35,11 +37,11 @@ def _get_subject_tasks(codename: str):
     try:
         subject = get_subject(codename)
         if not subject:
-            raise ValueError
+            raise BadRequest('subject not found')
 
         return jsonify(list(map(lambda s: s.to_json(), subject.tasks)))
-    except ValueError:
-        abort(400, description='Bad Request: subject not found')
+    except BadRequest as e:
+        abort(400, description=str(e))
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')

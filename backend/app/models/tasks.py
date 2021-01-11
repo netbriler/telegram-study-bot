@@ -8,7 +8,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     subject_codename = db.Column(db.String(64), db.ForeignKey('subjects.codename'))
     date = db.Column(db.Date)
-    task = db.Column(db.Text)
+    text = db.Column(db.Text)
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def __repr__(self) -> str:
@@ -19,7 +19,7 @@ class Task(db.Model):
             'id': self.id,
             'subject_codename': self.subject_codename,
             'date': str(self.date),
-            'task': self.task,
+            'text': self.text,
             'created_at': str(self.created_at),
         }
         return json_story

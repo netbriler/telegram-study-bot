@@ -25,7 +25,7 @@ class FlaskTestCase(BaseTestCase):
 
     def test_get_undefined_user(self):
         response = self.client.get('/api/v1/users/2234234234', content_type='html/text')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
         data = response.json
 

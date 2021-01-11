@@ -1,5 +1,4 @@
 import datetime
-import calendar
 from datetime import datetime, timedelta, date
 
 from .subjects import get_none_subject, get_subject
@@ -12,11 +11,11 @@ def get_subjects_by_date(current_date: date) -> list[Subject] or None:
     return _get_subjects(day)
 
 
-def get_subjects_by_week(week, year: int = datetime.now().year):
+def get_subjects_by_week(week: int, year: int = datetime.now().year) -> list[list[Subject]]:
     subjects_list = []
     for i in range(5):
         subjects_date = datetime.combine(date.fromisocalendar(year, week, i + 1), datetime.min.time()).date()
-        subjects_list.append({'name': calendar.day_name[i], 'subjects': get_subjects_by_date(current_date=subjects_date)})
+        subjects_list.append(get_subjects_by_date(current_date=subjects_date))
 
     return subjects_list
 
@@ -37,11 +36,11 @@ def _get_day_number_by_date(current_date: date) -> int:
     return int(day)
 
 
-def _get_subjects(day: int) -> list[Subject] or None:
+def _get_subjects(day: int) -> list[Subject]:
     timetable = Timetable.query.filter_by(id=day).first()
 
-    if not timetable.is_work_day:
-        return None
+    if not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
+        return []
 
     subjects_list = list()
     subjects = timetable.subjects.split(',')
@@ -52,3 +51,24 @@ def _get_subjects(day: int) -> list[Subject] or None:
         else:
             subjects_list.append(get_subject(subject))
     return subjects_list
+
+
+def get_subject_timetable(subject_codename: str) -> list[dict]:
+    """Returns an array with days in the timetable in which the given subject is present"""
+    timetable = Timetable.query.filter(Timetable.subjects.like(f'%{subject_codename}%')).all()
+    date_now = datetime.now().date()
+    current_day = _get_day_number_by_date(date_now)
+    days_list = []
+    for _day in timetable:
+        day = dict()
+        day['id'] = int(_day.id)
+
+        if day['id'] > current_day:
+            day['days_to'] = day['id'] - current_day
+        else:
+            day['days_to'] = 14 - current_day + day["id"]
+
+        day['date'] = (date_now + timedelta(days=day['days_to']))
+        day['date_string'] = day['date'].strftime('%Y-%m-%d')
+        days_list.append(day)
+    return sorted(days_list, key=lambda k: k['days_to'])

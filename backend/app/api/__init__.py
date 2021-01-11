@@ -19,7 +19,7 @@ def handle_exception(e: Exception):
         'ok': False,
         'code': e.code,
         'description': e.description
-    })
+    }), e.code
 
 
 @api.after_request

@@ -4,7 +4,7 @@ from unittest import TestCase
 from datetime import date
 
 from app import create_app, db
-from app.models import Subject, User, Task
+from app.models import Subject, User, Task, Timetable
 
 from app.services.telegram_auth import _generate_hash
 
@@ -37,7 +37,10 @@ class BaseTestCase(TestCase):
         db.session.add(Subject(codename='math', name='Математика', _aliases='матеша,матан,алгебра'))
         db.session.add(Subject(codename='history', name='История', _aliases='истор'))
 
-        db.session.add(Task(subject_codename='math', date=date(2020, 3, 4), task='тестовое задание с математики'))
+        db.session.add(Task(subject_codename='math', date=date(2020, 3, 4), text='тестовое задание с математики'))
+
+        for i in range(14):
+            db.session.add(Timetable(subjects='math', is_work_day=True))
 
         db.session.add(User(id=45345234, username='admin', name='Админ', status='super_admin'))
         db.session.add(User(id=64564562, username='user', name='Человек', status='user'))
