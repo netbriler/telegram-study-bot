@@ -3,10 +3,11 @@ from decouple import config as env_conf
 import logging
 import pathlib
 
-DIR = pathlib.Path().absolute()
-
+DIR = str(pathlib.Path(__file__).parent.absolute())
 
 class LocalConfig:
+    CONFIG_KEY = 'local'
+    APP_DIR = DIR + '/app'
     LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
@@ -24,7 +25,6 @@ class LocalConfig:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
-
     @classmethod
     def init_app(cls, app):
         app.logger.setLevel(logging.DEBUG)
@@ -33,6 +33,8 @@ class LocalConfig:
 
 
 class Develop:
+    CONFIG_KEY = 'develop'
+    APP_DIR = DIR + '/app'
     LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
@@ -59,6 +61,8 @@ class Develop:
 
 
 class Testing:
+    CONFIG_KEY = 'testing'
+    APP_DIR = DIR + '/app'
     LOCATE = 'uk_UA'
 
     DB_HOST = 'testing.sqlite3'

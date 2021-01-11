@@ -4,14 +4,14 @@ from flask_login import current_user
 
 from app.exceptions import BadRequest
 
-from app.models import User
+from app.services.users import get_user, get_users
 from app.api import api
 
 
 @api.route('/users', methods=['GET'])
 def _get_users():
     try:
-        users = User.query.all()
+        users = get_users()
         return jsonify(list(map(lambda s: s.to_json(), users)))
     except Exception as e:
         current_app.logger.error(e)
@@ -21,7 +21,7 @@ def _get_users():
 @api.route('/users/<int:id>', methods=['GET'])
 def _get_user(id: int):
     try:
-        user = User.query.filter_by(id=id).first()
+        user = get_user(id)
         if not user:
             raise BadRequest('user not found')
 
