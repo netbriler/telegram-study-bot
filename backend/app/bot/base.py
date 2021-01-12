@@ -3,21 +3,27 @@ import requests
 from app.bot.loader import app, bot
 from app.services.users import get_user, create_user, edit_user
 
+from .keyboards.default import get_remove_keyboard_markup
+from .utils import send_message_private
+
 
 def base(is_admin=False):
 
     def error_boundary(func):
 
-        def wrapper(message):
+        def wrapper(message, *args, **kwargs):
             try:
                 bot.send_chat_action(message.chat.id, 'typing')
+
+                if message.text == '❌Отменить❌':
+                    return send_message_private(message, 'Ок 👍', reply_markup=get_remove_keyboard_markup())
 
                 with app.app_context():
                     current_user = _get_or_create_user(message.from_user)
                     if is_admin and not current_user.is_admin():
                         return bot.reply_to(message, 'У вас нет прав')
 
-                    return func(message, current_user)
+                    return func(message, current_user, *args, **kwargs)
 
             except Exception as e:
                 app.logger.error(e)

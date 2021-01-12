@@ -1,22 +1,22 @@
 import calendar
+from html import escape
 from datetime import datetime, timedelta
 
 from telebot.types import Message, CallbackQuery
-from app.bot.loader import bot
 
-from app.bot.base import base, callback_query_base
+from ...loader import bot
+from ...base import base, callback_query_base
+from ...keyboards.inline import get_week_inline_markup
 
 from app.models import User
 
 from app.services.tasks import get_tasks_by_week
 
-from app.bot.keyboards.inline import get_week_inline_markup
-
 
 @bot.message_handler(regexp='^📝ДЗ📝$')
 @bot.message_handler(commands=['homework'])
 @base()
-def send_homework(message: Message, current_user: User):
+def homework_handler(message: Message, current_user: User):
     # set next week markup
     next = False
 
@@ -30,12 +30,12 @@ def send_homework(message: Message, current_user: User):
     text = _get_text(timetable)
 
     markup = get_week_inline_markup('homework', next)
-    bot.send_message(message.chat.id, text, reply_markup=markup)
+    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('homework'))
 @callback_query_base()
-def inline_send_homework(call: CallbackQuery, current_user: User):
+def inline_homework_handler(call: CallbackQuery, current_user: User):
     query, option = call.data.split('_')
     if option == 'this':
         date = datetime.today()
@@ -53,8 +53,10 @@ def inline_send_homework(call: CallbackQuery, current_user: User):
     message_id = call.message.message_id
 
     text = _get_text(timetable)
-    bot.edit_message_text(text, chat_id, message_id, parse_mode='HTML', reply_markup=markup,
-                          disable_web_page_preview=True)
+    if call.message.chat.id != 'private':
+        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+
+    bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
 
 
 def _get_text(timetable):
@@ -65,7 +67,7 @@ def _get_text(timetable):
 
         j = 1
         for task in tasks:
-            text += f'{j}) {task.subject.name} - {task.text}\n'
+            text += f'{j}) {task.subject.name} - {escape(task.text)}\n'
             j += 1
 
         text += '\n'

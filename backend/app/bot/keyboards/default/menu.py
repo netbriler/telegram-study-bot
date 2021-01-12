@@ -16,7 +16,3 @@ def get_menu_keyboard_markup(is_admin=False):
     markup.row(helpme)
     markup.row(info)
     return markup
-
-
-def get_remove_keyboard_markup():
-    return types.ReplyKeyboardRemove(selective=True)

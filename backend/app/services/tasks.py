@@ -44,8 +44,13 @@ def delete_task(id: int) -> Task or False:
 
 
 def get_tasks() -> list[Task]:
-    task = Task.query.all()
-    return task
+    tasks = Task.query.all()
+    return tasks
+
+
+def get_active_tasks() -> list[Task]:
+    tasks = Task.query.filter(Task.date >= date.today())
+    return tasks
 
 
 def get_tasks_by_date(date_to_query: date) -> list[Task]:

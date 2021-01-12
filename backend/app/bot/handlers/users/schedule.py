@@ -2,21 +2,20 @@ import calendar
 from datetime import datetime, timedelta
 
 from telebot.types import Message, CallbackQuery
-from app.bot.loader import bot
 
-from app.bot.base import base, callback_query_base
+from ...loader import bot
+from ...base import base, callback_query_base
+from ...keyboards.inline import get_week_inline_markup
 
 from app.models import User
 
 from app.services.timetable import get_subjects_by_week
 
-from app.bot.keyboards.inline import get_week_inline_markup
-
 
 @bot.message_handler(regexp='^📃Расписание📃$')
 @bot.message_handler(commands=['schedule'])
 @base()
-def send_schedule(message: Message, current_user: User):
+def schedule_handler(message: Message, current_user: User):
     # set next week markup
     next = False
 
@@ -35,7 +34,7 @@ def send_schedule(message: Message, current_user: User):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('schedule'))
 @callback_query_base()
-def inline_send_schedule(call: CallbackQuery, current_user: User):
+def inline_schedule_handler(call: CallbackQuery, current_user: User):
     query, option = call.data.split('_')
     if option == 'this':
         date = datetime.today()
@@ -53,8 +52,10 @@ def inline_send_schedule(call: CallbackQuery, current_user: User):
     message_id = call.message.message_id
 
     text = _get_text(timetable)
-    bot.edit_message_text(text, chat_id, message_id, parse_mode='HTML', reply_markup=markup,
-                          disable_web_page_preview=True)
+    if call.message.chat.id != 'private':
+        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+
+    bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
 
 
 def _get_text(timetable):

@@ -1,7 +1,7 @@
 from telebot.types import Message
-from app.bot.loader import bot
 
-from app.bot.base import base
+from ...loader import bot
+from ...base import base
 
 from app.models import User
 
@@ -9,7 +9,7 @@ from app.models import User
 @bot.message_handler(regexp='^🆘Помощь🆘$')
 @bot.message_handler(commands=['help'])
 @base()
-def send_help(message: Message, current_user: User):
+def help_handler(message: Message, current_user: User):
     text = """
 🆘🆘🆘Помощь🆘🆘🆘
 

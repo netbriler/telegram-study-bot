@@ -58,9 +58,9 @@ gulp.task('build-sass', () => {
     .pipe(browserSync.stream());
 });
 
-gulp.task('copy-assets', () => {
-  return gulp.src('./app/assets/**/*.*')
-    .pipe(gulp.dest(dist + '/assets'))
+gulp.task('copy-static', () => {
+  return gulp.src('./app/static/**/*.*')
+    .pipe(gulp.dest(dist))
     .pipe(browserSync.stream());
 });
 
@@ -76,18 +76,18 @@ gulp.task('watch', () => {
   });
 
   gulp.watch('./app/src/index.html', gulp.parallel('copy-html')).on('change', browserSync.reload);
-  gulp.watch('./app/assets/**/*.*', gulp.parallel('copy-assets')).on('change', browserSync.reload);
+  gulp.watch('./app/static/**/*.*', gulp.parallel('copy-static')).on('change', browserSync.reload);
   gulp.watch('./app/scss/**/*.scss', gulp.parallel('build-sass')).on('change', browserSync.reload);
   gulp.watch('./app/src/**/*.js', gulp.parallel('build-js')).on('change', browserSync.reload);
 });
 
-gulp.task('build', gulp.parallel('copy-html', 'copy-assets', 'build-sass', 'build-js'));
+gulp.task('build', gulp.parallel('copy-html', 'copy-static', 'build-sass', 'build-js'));
 
 gulp.task('prod', () => {
   gulp.src('./app/src/index.html')
     .pipe(gulp.dest(prod));
-  gulp.src('./app/assets/**/*.*')
-    .pipe(gulp.dest(prod + '/assets'));
+  gulp.src('./app/static/**/*.*')
+    .pipe(gulp.dest(prod + '/static'));
 
   gulp.src('./app/src/main.js')
     .pipe(webpack({
