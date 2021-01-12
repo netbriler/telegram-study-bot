@@ -5,6 +5,7 @@ import pathlib
 
 DIR = str(pathlib.Path(__file__).parent.absolute())
 
+
 class LocalConfig:
     CONFIG_KEY = 'local'
     APP_DIR = DIR + '/app'

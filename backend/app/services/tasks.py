@@ -50,7 +50,7 @@ def get_tasks() -> list[Task]:
 
 def get_tasks_by_date(date_to_query: date) -> list[Task]:
     tasks = Task.query.filter_by(date=date_to_query)
-    return tasks
+    return tasks if tasks.count() else []
 
 
 def get_tasks_by_week(week: int, year: int = datetime.now().year) -> list[list[Task]]:
