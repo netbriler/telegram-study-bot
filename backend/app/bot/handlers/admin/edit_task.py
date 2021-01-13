@@ -71,6 +71,7 @@ def inline_edit_handler(call: CallbackQuery, current_user: User):
         bot.answer_callback_query(call.id, 'Удаленно')
         bot.delete_message(chat_id, message_id)
     else:
+        bot.answer_callback_query(call.id, 'Отменено')
         bot.delete_message(chat_id, message_id)
 
 

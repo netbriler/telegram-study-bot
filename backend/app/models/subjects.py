@@ -12,10 +12,10 @@ class Subject(db.Model):
     _aliases = db.Column('aliases', db.Text)
     teacher = db.Column(db.String(225))
     info = db.Column(db.Text)
-    files = db.Column(db.Text)
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
-    tasks = db.relationship('Task', backref='subject', lazy='dynamic')
+    tasks = db.relationship('Task', backref='subject', lazy=True)
+    files = db.relationship('File', backref='subject', lazy=True)
 
     @hybrid_property
     def aliases(self) -> list:

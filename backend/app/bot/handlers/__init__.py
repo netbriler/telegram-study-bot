@@ -1,5 +1,5 @@
-from .users import bot
 from .admin import bot
+from .users import bot
 
 
 __all__ = ['bot']

@@ -1,5 +1,7 @@
 import requests
 
+from telebot.types import Message, CallbackQuery
+
 from app.bot.loader import app, bot
 from app.services.users import get_user, create_user, edit_user
 
@@ -8,10 +10,9 @@ from .utils import send_message_private
 
 
 def base(is_admin=False):
-
     def error_boundary(func):
 
-        def wrapper(message, *args, **kwargs):
+        def wrapper(message: Message, *args, **kwargs):
             try:
                 bot.send_chat_action(message.chat.id, 'typing')
 
@@ -23,7 +24,11 @@ def base(is_admin=False):
                     if is_admin and not current_user.is_admin():
                         return bot.reply_to(message, 'У вас нет прав')
 
-                    return func(message, current_user, *args, **kwargs)
+                    func(message, current_user, *args, **kwargs)
+
+                if message.content_type == 'text':
+                    app.logger.debug(f'from_user: {message.from_user.id} message_id: {message.message_id} '
+                                     f'text: {message.text}')
 
             except Exception as e:
                 app.logger.error(e)
@@ -34,18 +39,27 @@ def base(is_admin=False):
 
 
 def callback_query_base(is_admin=False):
-
     def error_boundary(func):
 
-        def wrapper(call):
+        def wrapper(call: CallbackQuery, *args, **kwargs):
             try:
+                chat_id = call.message.chat.id
+                message_id = call.message.message_id
+
+                if call.data == 'cancel':
+                    bot.answer_callback_query(call.id, 'Отменено')
+                    return bot.delete_message(chat_id, message_id)
+
                 with app.app_context():
                     current_user = _get_or_create_user(call.from_user)
                     if is_admin and not current_user.is_admin():
                         return bot.answer_callback_query(call.id, 'У вас нет прав')
 
-                    return func(call, current_user)
+                    func(call, current_user, *args, **kwargs)
 
+                if call.data:
+                    app.logger.debug(f'from_user: {call.from_user.id} chat_id: {chat_id} '
+                                     f'message_id: {message_id} data: {call.data}')
             except Exception as e:
                 app.logger.error(e)
 
@@ -80,4 +94,3 @@ def _get_or_create_user(from_user):
         user = edit_user(id, name, username, photo_id)
 
     return user
-

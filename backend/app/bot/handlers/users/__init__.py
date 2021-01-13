@@ -3,7 +3,8 @@ from .help import bot
 from .schedule import bot
 from .homework import bot
 from .keyboard import bot
-from .delete import bot
+from .info import bot
+from .helper import bot
 
 
 __all__ = ['bot']
