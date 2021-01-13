@@ -2,12 +2,13 @@ from telebot.types import Message, CallbackQuery
 
 from ...loader import bot
 from ...base import base, callback_query_base
-from ...keyboards.inline import get_subjects_inline_markup
+from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
 from ...utils import send_message_private
 
 from app.models import User
 
 from app.services.subjects import get_subject
+from app.services.files import get_file
 
 
 @bot.message_handler(regexp='^👀Информация👀$')
@@ -39,5 +40,23 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
     if call.message.chat.type != 'private':
         text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
 
-    bot.send_message(chat_id, text, disable_web_page_preview=True)
+    if subject.files:
+        text += '\n\nСписок документов 👇'
 
+    bot.send_message(chat_id, text, reply_markup=get_subject_files_inline_markup(subject), disable_web_page_preview=True)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('file'))
+@callback_query_base()
+def inline_info_handler(call: CallbackQuery, current_user: User):
+    data = call.data.split('_')
+    file = get_file(data[1])
+    if not file:
+        return bot.answer_callback_query(call.id, 'Файл не найден')
+
+    text = file.title
+
+    if call.message.chat.type != 'private':
+        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+
+    bot.send_document(call.message.chat.id, file.file_id, caption=text)

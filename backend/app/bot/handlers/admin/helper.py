@@ -2,6 +2,7 @@ from telebot.types import Message
 
 from ...loader import bot
 from ...base import base
+from ...keyboards.default import get_cancel_keyboard_markup
 
 from app.models import User
 
@@ -43,3 +44,22 @@ def delete_handler(message: Message, current_user: User):
 
     bot.delete_message(chat_id, message.reply_to_message.message_id)
     bot.delete_message(chat_id, message.message_id)
+
+
+@bot.message_handler(commands=['add_file'])
+@base(is_admin=True)
+def file_add_handler(message: Message, current_user: User):
+    text = 'Отправте мне файл, а я пришлю его ID'
+
+    response = bot.send_message(message.chat.id, text, reply_markup=get_cancel_keyboard_markup())
+    bot.register_next_step_handler(response, file_handler)
+
+
+@base(is_admin=True)
+def file_handler(message: Message, current_user: User):
+    if message.content_type == 'document':
+        bot.reply_to(message, f'<pre>{message.document.file_id}</pre>')
+    else:
+        response = bot.reply_to(message, f'Мне нужен документ, а вы отправили {message.content_type}',
+                                reply_markup=get_cancel_keyboard_markup())
+        bot.register_next_step_handler(response, file_handler)
