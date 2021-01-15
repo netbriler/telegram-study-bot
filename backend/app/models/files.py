@@ -9,5 +9,13 @@ class File(db.Model):
     file_id = db.Column(db.String(255))
     subject_codename = db.Column(db.String(64), db.ForeignKey('subjects.codename'))
 
+    def to_json(self) -> dict:
+        json_story = {
+            'id': self.id,
+            'title': self.title,
+            'file_id': self.file_id,
+        }
+        return json_story
+
     def __repr__(self) -> str:
         return f'<Timetable {self.id} {self.is_work_day}>'

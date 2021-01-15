@@ -41,9 +41,10 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
         text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
 
     if subject.files:
-        text += '\n\nСписок документов 👇'
+        text += '\nСписок документов 👇'
 
     bot.send_message(chat_id, text, reply_markup=get_subject_files_inline_markup(subject), disable_web_page_preview=True)
+    return bot.answer_callback_query(call.id, subject.name)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('file'))

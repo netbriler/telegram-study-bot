@@ -26,8 +26,11 @@ class Subject(db.Model):
         return aliases
 
     @aliases.setter
-    def aliases(self, aliases: list):
-        self._aliases = ','.join(aliases)
+    def aliases(self, aliases: list or str):
+        if type(aliases) == str:
+            self._aliases = aliases
+        elif type(aliases) == list:
+            self._aliases = ','.join(aliases)
 
     def __repr__(self) -> str:
         return f'<Subject {self.name}>'
@@ -36,9 +39,18 @@ class Subject(db.Model):
         json_story = {
             'codename': self.codename,
             'name': self.name,
+            'teacher': self.teacher
+        }
+        return json_story
+
+    def to_full_json(self) -> dict:
+        json_story = {
+            'codename': self.codename,
+            'name': self.name,
             'aliases': self._aliases.split(','),
             'teacher': self.teacher,
             'info': self.info,
             'created_at': str(self.created_at),
+            'files': list(map(lambda f: f.to_json(), self.files))
         }
         return json_story

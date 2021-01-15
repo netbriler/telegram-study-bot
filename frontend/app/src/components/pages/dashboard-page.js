@@ -3,7 +3,13 @@ import Chart from '../chart'
 import { connect } from 'react-redux';
 import { isLoaded, isLoading } from '../../actions';
 
+import { PageTemplate } from '../page-templates'
+
 class DashboardPage extends Component {
+    title = 'Аналитика'
+    description = 'За последние 28 дней было добавлено 34 домашки'
+    icon = 'ion-speedometer'
+
     constructor(props) {
         super(props);
 
@@ -76,92 +82,76 @@ class DashboardPage extends Component {
         };
 
         return (
-            <>
-                <div className="content-padder content-background">
-                    <div className="uk-section-small uk-section-default header">
-                        <div className="uk-container uk-container-large">
-                            <h1><span className="ion-speedometer" /> Аналитика</h1>
-
-                            <p>За последние 28 дней было добавлено 34 домашки</p>
-
-                            <ul className="uk-breadcrumb">
-                                <li><a href="#">Главная</a></li>
-                                <li><span href="#">Аналитика</span></li>
-                            </ul>
+            <PageTemplate title={this.title} description={this.description} icon={this.icon}>
+                <div className="uk-container uk-container-large">
+                    <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@xl uk-grid">
+                        <div className="uk-first-column">
+                            <div className="uk-card uk-card-default uk-card-body">
+                                <span className="statistics-text">Всего сообщений</span><br />
+                                <span className="statistics-number">
+                                    1.980
+                  <span className="uk-label uk-label-success">
+                                        8% <span className="ion-arrow-up-c" />
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="uk-card uk-card-default uk-card-body">
+                                <span className="statistics-text">Личных сообщений</span><br />
+                                <span className="statistics-number">
+                                    123.238
+                  <span className="uk-label uk-label-danger">
+                                        13% <span className="ion-arrow-down-c" />
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="uk-card uk-card-default uk-card-body">
+                                <span className="statistics-text">Груповых сообщений</span><br />
+                                <span className="statistics-number">
+                                    2.316
+                  <span className="uk-label uk-label-success">
+                                        37% <span className="ion-arrow-up-c" />
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="uk-card uk-card-default uk-card-body">
+                                <span className="statistics-text">Всего домашек</span><br />
+                                <span className="statistics-number">
+                                    38
+                  <span className="uk-label uk-label-success">
+                                        26% <span className="ion-arrow-up-c" />
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="uk-section-small">
-                        <div className="uk-container uk-container-large">
-                            <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@xl uk-grid">
-                                <div className="uk-first-column">
-                                    <div className="uk-card uk-card-default uk-card-body">
-                                        <span className="statistics-text">Всего сообщений</span><br />
-                                        <span className="statistics-number">
-                                            1.980
-                  <span className="uk-label uk-label-success">
-                                                8% <span className="ion-arrow-up-c" />
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="uk-card uk-card-default uk-card-body">
-                                        <span className="statistics-text">Личных сообщений</span><br />
-                                        <span className="statistics-number">
-                                            123.238
-                  <span className="uk-label uk-label-danger">
-                                                13% <span className="ion-arrow-down-c" />
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="uk-card uk-card-default uk-card-body">
-                                        <span className="statistics-text">Груповых сообщений</span><br />
-                                        <span className="statistics-number">
-                                            2.316
-                  <span className="uk-label uk-label-success">
-                                                37% <span className="ion-arrow-up-c" />
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="uk-card uk-card-default uk-card-body">
-                                        <span className="statistics-text">Всего домашек</span><br />
-                                        <span className="statistics-number">
-                                            38
-                  <span className="uk-label uk-label-success">
-                                                26% <span className="ion-arrow-up-c" />
-                                            </span>
-                                        </span>
-                                    </div>
+                    <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@l uk-grid">
+                        <div className="uk-first-column">
+                            <div className="uk-card uk-card-default">
+                                <div className="uk-card-header">Трафик в личке</div>
+
+                                <div className="uk-card-body">
+                                    <Chart type={'line'} data={data} />
                                 </div>
                             </div>
-                            <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@l uk-grid">
-                                <div className="uk-first-column">
-                                    <div className="uk-card uk-card-default">
-                                        <div className="uk-card-header">Трафик в личке</div>
+                        </div>
+                        <div>
+                            <div className="uk-card uk-card-default">
+                                <div className="uk-card-header">Трафик в группе</div>
 
-                                        <div className="uk-card-body">
-                                            <Chart type={'line'} data={data} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div className="uk-card uk-card-default">
-                                        <div className="uk-card-header">Трафик в группе</div>
-
-                                        <div className="uk-card-body">
-                                            <Chart type={'bar'} data={data} />
-                                        </div>
-                                    </div>
+                                <div className="uk-card-body">
+                                    <Chart type={'bar'} data={data} />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </>
+            </PageTemplate>
         )
     }
 }

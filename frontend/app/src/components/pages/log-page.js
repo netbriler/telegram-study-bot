@@ -1,4 +1,5 @@
 import React from 'react'
+import { PageTemplate } from '../page-templates'
 
 export default function LogPage() {
 
@@ -11,26 +12,10 @@ export default function LogPage() {
     }
 
     return (
-        <>
-            <div className="content-padder content-background">
-                <div className="uk-section-small uk-section-default header">
-                    <div className="uk-container uk-container-large">
-                        <h1><span className="ion-clipboard"/> Логи</h1>
-
-                        <p>Инструмент для разработчиков</p>
-
-                        <ul className="uk-breadcrumb">
-                            <li><a href="#">Главная</a></li>
-                            <li><span href="#">Логи</span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="uk-section-small">
-                    <div className="uk-container uk-container-large">
-                        <pre>{logs}</pre>
-                    </div>
-                </div>
+        <PageTemplate name='Логи' description='Инструмент для разработчиков' icon='ion-clipboard'>
+            <div className="uk-container uk-container-large uk-section-default">
+                {log}
             </div>
-        </>
+        </PageTemplate>
     )
 }

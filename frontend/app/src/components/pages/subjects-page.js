@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
 
+import { PageTemplate } from '../page-templates'
 
 class SubjectsPage extends Component {
+    title = 'Предметы'
+    description = 'Список всех предметов'
+    icon = 'ion-android-list'
 
     constructor(props) {
         super(props);
@@ -36,7 +41,7 @@ class SubjectsPage extends Component {
 
         let subjects_list_elements = '';
 
-        if(subjects){
+        if (subjects) {
             subjects_list_elements = subjects.map((subject, i) => (
                 <div key={i}>
                     <div className="uk-card uk-card-default uk-card-body uk-card-hover">
@@ -47,7 +52,7 @@ class SubjectsPage extends Component {
                             </div>
                         </div>
                         <hr />
-                        <a href={'#'+subject.codename} className="uk-button uk-button-text">Редактировать</a>
+                        <Link to={'/subject/' + subject.codename} className="uk-button uk-button-text">Редактировать</Link>
                     </div>
                 </div>
             ))
@@ -57,29 +62,13 @@ class SubjectsPage extends Component {
 
 
         return (
-            <>
-                <div className="content-padder content-background">
-                    <div className="uk-section-small uk-section-default header">
-                        <div className="uk-container uk-container-large">
-                            <h1><span className="ion-android-list" /> Предметы</h1>
-
-                            <p>Список всех предметов</p>
-
-                            <ul className="uk-breadcrumb">
-                                <li><a href="#">Главная</a></li>
-                                <li><span href="#">Предметы</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="uk-section-small">
-                        <div className="uk-container uk-container-large">
-                            <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@xl uk-grid">
-                                {subjects_list_elements}
-                            </div>
-                        </div>
+            <PageTemplate title={this.title} description={this.description} icon={this.icon}>
+                <div className="uk-container uk-container-large">
+                    <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@xl uk-grid">
+                        {subjects_list_elements}
                     </div>
                 </div>
-            </>
+            </PageTemplate>
         )
     }
 }

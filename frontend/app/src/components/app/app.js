@@ -6,7 +6,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import Panel from '../panel'
-import {DashboardPage, LogPage, SubjectsPage, UsersPage} from '../pages'
+import {DashboardPage, LogPage, SubjectsPage, SubjectPage, UsersPage} from '../pages'
 import UIkit from 'uikit'
 import {isLoaded, isLoading, setCurrentUser} from '../../actions';
 import WithAdminService from '../hoc';
@@ -48,9 +48,10 @@ class App extends Component {
                 <Switch>
                     <Route path="/dashboard" component={DashboardPage}></Route>
                     <Route path="/subjects" component={SubjectsPage}></Route>
+                    <Route path="/subject/:codename" component={SubjectPage}></Route>
                     <Route path="/users" component={UsersPage}></Route>
                     <Route path="/log" component={LogPage}></Route>
-                    <Redirect from="/" exact to="/dashboard"></Redirect>
+                    <Redirect from="*" exact to="/dashboard"></Redirect>
                 </Switch>
             </>
         )
