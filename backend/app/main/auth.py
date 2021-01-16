@@ -28,7 +28,7 @@ def login_redirect():
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    return render_template('login.html', bot_username=current_app.config['TELEGRAM_BOT_USERNAME'])
 
 
 @main.route('/login/<string:user_id>', methods=['GET', 'POST'])

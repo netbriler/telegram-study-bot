@@ -26,6 +26,8 @@ class LocalConfig:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
+    TELEGRAM_BOT_USERNAME = env_conf('TELEGRAM_BOT_USERNAME', default='', cast=str)
+
     @classmethod
     def init_app(cls, app):
         app.logger.setLevel(logging.DEBUG)
@@ -53,6 +55,7 @@ class Develop:
     SECRET_KEY = env_conf('SECRET_KEY', cast=str, default='12345')
 
     TELEGRAM_BOT_TOKEN = env_conf('TELEGRAM_BOT_TOKEN', default='', cast=str)
+    TELEGRAM_BOT_USERNAME = env_conf('TELEGRAM_BOT_USERNAME', default='', cast=str)
 
     @staticmethod
     def init_app(app):
@@ -77,6 +80,7 @@ class Testing:
     SECRET_KEY = 'sdfniwuihuwefhuwipfihjwfijsdhjfip12903234'
 
     TELEGRAM_BOT_TOKEN = '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+    TELEGRAM_BOT_USERNAME = 'testbot'
 
     @staticmethod
     def init_app(app):

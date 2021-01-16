@@ -5,13 +5,15 @@ from .subjects import get_none_subject, get_subject
 
 from app.models import Timetable, Subject
 
+from typing import List
 
-def get_subjects_by_date(current_date: date) -> list[Subject] or None:
+
+def get_subjects_by_date(current_date: date) -> List[Subject] or None:
     day = _get_day_number_by_date(current_date)
     return _get_subjects(day)
 
 
-def get_subjects_by_week(week: int, year: int = datetime.now().year) -> list[list[Subject]]:
+def get_subjects_by_week(week: int, year: int = datetime.now().year) -> List[List[Subject]]:
     subjects_list = []
     for i in range(5):
         subjects_date = datetime.combine(date.fromisocalendar(year, week, i + 1), datetime.min.time()).date()
@@ -36,7 +38,7 @@ def _get_day_number_by_date(current_date: date) -> int:
     return int(day)
 
 
-def _get_subjects(day: int) -> list[Subject]:
+def _get_subjects(day: int) -> List[Subject]:
     timetable = Timetable.query.filter_by(id=day).first()
 
     if not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
@@ -53,7 +55,7 @@ def _get_subjects(day: int) -> list[Subject]:
     return subjects_list
 
 
-def get_subject_timetable(subject_codename: str) -> list[dict]:
+def get_subject_timetable(subject_codename: str) -> List[dict]:
     """Returns an array with days in the timetable in which the given subject is present"""
     timetable = Timetable.query.filter(Timetable.subjects.like(f'%{subject_codename}%')).all()
     date_now = datetime.now().date()

@@ -5,6 +5,8 @@ from .files import get_file
 from app.models import Subject, File
 from app import db
 
+from typing import List
+
 
 def get_subject(codename: str) -> Subject:
     subject = Subject.query.filter_by(codename=codename).first()
@@ -44,7 +46,7 @@ def edit_subject(codename: str, name: str = None, aliases: str or list = None,
     return subject
 
 
-def get_all_subjects() -> list[Subject]:
+def get_all_subjects() -> List[Subject]:
     subjects = Subject.query.all()
     return sorted(subjects, key=lambda k: k.name.lower())
 

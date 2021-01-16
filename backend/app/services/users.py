@@ -2,6 +2,7 @@ from app.models import User
 
 from app import db
 
+from typing import List
 
 def get_user(id: int) -> User:
     user = User.query.filter_by(id=id).first()
@@ -12,7 +13,7 @@ def get_user(id: int) -> User:
     return user
 
 
-def get_users() -> list[User]:
+def get_users() -> List[User]:
     users = User.query.all()
 
     return users

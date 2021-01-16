@@ -5,6 +5,8 @@ from app import db
 
 from .timetable import get_subject_timetable
 
+from typing import List
+
 
 def get_task(id: int) -> Task:
     task = Task.query.filter_by(id=id).first()
@@ -43,22 +45,22 @@ def delete_task(id: int) -> Task or False:
     return task
 
 
-def get_tasks() -> list[Task]:
+def get_tasks() -> List[Task]:
     tasks = Task.query.all()
     return tasks
 
 
-def get_active_tasks() -> list[Task]:
+def get_active_tasks() -> List[Task]:
     tasks = Task.query.filter(Task.date >= date.today())
     return tasks
 
 
-def get_tasks_by_date(date_to_query: date) -> list[Task]:
+def get_tasks_by_date(date_to_query: date) -> List[Task]:
     tasks = Task.query.filter_by(date=date_to_query)
     return tasks if tasks.count() else []
 
 
-def get_tasks_by_week(week: int, year: int = datetime.now().year) -> list[list[Task]]:
+def get_tasks_by_week(week: int, year: int = datetime.now().year) -> List[List[Task]]:
     tasks_list = []
     for i in range(5):
         task_date = date.fromisocalendar(year, week, i + 1)
