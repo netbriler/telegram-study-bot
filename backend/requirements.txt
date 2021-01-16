@@ -1,6 +1,7 @@
 flask
-Flask-Migrate
+flask_migrate
 Flask-SQLAlchemy
 flask_login
-
+python-decouple
 fuzzywuzzy
+pyTelegramBotApi

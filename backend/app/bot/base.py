@@ -81,12 +81,13 @@ def _get_or_create_user(from_user):
     photo_id = None
 
     photos = bot.get_user_profile_photos(id).photos
+
     if len(photos) > 0:
         photo_id = photos[0][-1].file_id
 
-    if not user or user.photo_id != photo_id:
-        r = requests.get(bot.get_file_url(photo_id), allow_redirects=True)
-        open(f'{app.config["APP_DIR"]}/static/pictures/{photo_id}.jpg', 'wb').write(r.content)
+        if not user or user.photo_id != photo_id:
+            r = requests.get(bot.get_file_url(photo_id), allow_redirects=True)
+            open(f'{app.config["APP_DIR"]}/static/pictures/{photo_id}.jpg', 'wb').write(r.content)
 
     if not user:
         user = create_user(id, name, username, photo_id)
