@@ -16,6 +16,9 @@ class User(UserMixin, db.Model):
     def is_admin(self) -> bool:
         return self.status in ['admin', 'super_admin']
 
+    def is_super_admin(self) -> bool:
+        return self.status == 'super_admin'
+
     def __repr__(self) -> str:
         return f'<User {self.username}>'
 

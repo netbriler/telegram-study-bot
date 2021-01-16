@@ -225,7 +225,7 @@ class SubjectPage extends Component {
                                     </div>
                                 }
 
-                                <span className="uk-text-meta">Чтобы получить ID документа, отправьте боту команду /add_file</span>
+                                <span className="uk-text-meta">Чтобы получить ID документа, отправьте боту команду /get_file_id</span>
 
                             </div>
                         </div>

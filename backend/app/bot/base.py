@@ -9,19 +9,22 @@ from .keyboards.default import get_remove_keyboard_markup
 from .utils import send_message_private
 
 
-def base(is_admin=False):
+def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action: str or bool = 'typing'):
     def error_boundary(func):
 
         def wrapper(message: Message, *args, **kwargs):
             try:
-                bot.send_chat_action(message.chat.id, 'typing')
+                if send_chat_action:
+                    bot.send_chat_action(message.chat.id, send_chat_action)
 
                 if message.text == '❌Отменить❌':
                     return send_message_private(message, 'Ок 👍', reply_markup=get_remove_keyboard_markup())
 
                 with app.app_context():
-                    current_user = _get_or_create_user(message.from_user)
+                    current_user = get_or_create_user(message.from_user)
                     if is_admin and not current_user.is_admin():
+                        return bot.reply_to(message, 'У вас нет прав')
+                    if is_super_admin and not current_user.is_super_admin():
                         return bot.reply_to(message, 'У вас нет прав')
 
                     func(message, current_user, *args, **kwargs)
@@ -38,7 +41,7 @@ def base(is_admin=False):
     return error_boundary
 
 
-def callback_query_base(is_admin=False):
+def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
     def error_boundary(func):
 
         def wrapper(call: CallbackQuery, *args, **kwargs):
@@ -51,8 +54,10 @@ def callback_query_base(is_admin=False):
                     return bot.delete_message(chat_id, message_id)
 
                 with app.app_context():
-                    current_user = _get_or_create_user(call.from_user)
+                    current_user = get_or_create_user(call.from_user)
                     if is_admin and not current_user.is_admin():
+                        return bot.answer_callback_query(call.id, 'У вас нет прав')
+                    if is_super_admin and not current_user.is_super_admin():
                         return bot.answer_callback_query(call.id, 'У вас нет прав')
 
                     func(call, current_user, *args, **kwargs)
@@ -68,7 +73,7 @@ def callback_query_base(is_admin=False):
     return error_boundary
 
 
-def _get_or_create_user(from_user):
+def get_or_create_user(from_user):
     id = from_user.id
     user = get_user(id)
 

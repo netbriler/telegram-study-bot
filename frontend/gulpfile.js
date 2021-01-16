@@ -10,7 +10,7 @@ const sass = require('gulp-sass');
 const webpack = require('webpack-stream');
 
 const dist = '../backend/app/static';
-const prod = './build/';
+const prod = '../backend/app/static';
 
 gulp.task('copy-html', () => {
   return gulp.src('./app/src/index.html')
@@ -91,7 +91,7 @@ gulp.task('prod', () => {
   gulp.src('./app/src/index.html')
     .pipe(gulp.dest(prod));
   gulp.src('./app/static/**/*.*')
-    .pipe(gulp.dest(prod + '/static'));
+    .pipe(gulp.dest(prod));
 
   gulp.src('./app/src/main.js')
     .pipe(webpack({

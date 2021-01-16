@@ -20,7 +20,7 @@ def schedule_handler(message: Message, current_user: User):
     next = False
 
     now = datetime.now()
-    if now.weekday() >= 4 and now.hour > 13:
+    if now.weekday() > 4 or (now.weekday() == 4 and now.hour > 13):
         next = True
         now += timedelta(weeks=1)
 
@@ -55,7 +55,11 @@ def inline_schedule_handler(call: CallbackQuery, current_user: User):
     if call.message.chat.type != 'private':
         text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
 
-    bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
+    try:
+        bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
+    except Exception as e:
+        if e.error_code == 400:
+            bot.answer_callback_query(call.id, 'Ничего не поменялось')
 
 
 def _get_text(timetable):
@@ -69,5 +73,3 @@ def _get_text(timetable):
         text += '\n'
 
     return text
-
-

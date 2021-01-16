@@ -7,7 +7,7 @@ from app.models import User
 
 
 @bot.message_handler(content_types=['text'], func=lambda m: True)
-@base()
+@base(send_chat_action=False)
 def get_all_messages(message: Message, current_user: User):
     pass
 
