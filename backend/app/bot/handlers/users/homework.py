@@ -54,7 +54,7 @@ def inline_homework_handler(call: CallbackQuery, current_user: User):
 
     text = _get_text(timetable)
     if call.message.chat.type != 'private':
-        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+        text += f'<a href="tg://user?id={call.from_user.id}">⠀</a>'
     try:
         bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
     except Exception as e:
@@ -75,5 +75,5 @@ def _get_text(timetable):
 
         text += '\n'
 
-    return text
+    return text.rstrip()
 

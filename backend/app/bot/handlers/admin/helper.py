@@ -1,3 +1,5 @@
+import requests
+
 from telebot.types import Message
 
 from ...loader import bot
@@ -93,5 +95,3 @@ def call_all_members_handler(message: Message, current_user: User):
         bot.send_message(current_user.id, text)
     else:
         bot.send_message(current_user.id, 'Ну и кого в личке добавлять то?)')
-
-

@@ -36,11 +36,12 @@ def _get_subject(codename: str):
 def _update_subject(codename: str):
     try:
         assert request.json
-        assert request.json['name'] or request.json['aliases'] or request.json['info'] or request.json['teacher'] or request.json['']
+        assert request.json['name'] or request.json['aliases'] or request.json['info'] \
+               or request.json['teacher'] or request.json['audience'] or request.json['files']
 
         params = {}
 
-        for name in ['name', 'aliases', 'info', 'teacher', 'files']:
+        for name in ['name', 'aliases', 'info', 'teacher', 'audience', 'files']:
             if name in request.json:
                 params[name] = request.json[name]
 

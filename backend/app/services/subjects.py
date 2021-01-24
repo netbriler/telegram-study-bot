@@ -14,7 +14,7 @@ def get_subject(codename: str) -> Subject:
 
 
 def edit_subject(codename: str, name: str = None, aliases: str or list = None,
-                 info: str = None, teacher: str = None, files: list = None, *args, **kwargs) -> Subject or False:
+                 info: str = None, teacher: str = None, audience: str = None, files: list = None, *args, **kwargs) -> Subject or False:
     subject = get_subject(codename)
     if not subject:
         return False
@@ -27,6 +27,8 @@ def edit_subject(codename: str, name: str = None, aliases: str or list = None,
         subject.info = info
     if teacher:
         subject.teacher = teacher
+    if audience:
+        subject.audience = audience
     if files:
         files_list = list()
         for file in files:

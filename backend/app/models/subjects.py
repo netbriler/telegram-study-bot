@@ -11,6 +11,7 @@ class Subject(db.Model):
     name = db.Column(db.String(255))
     _aliases = db.Column('aliases', db.Text)
     teacher = db.Column(db.String(225))
+    audience = db.Column(db.String(225), default='')
     info = db.Column(db.Text)
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
@@ -49,6 +50,7 @@ class Subject(db.Model):
             'name': self.name,
             'aliases': self._aliases.split(','),
             'teacher': self.teacher,
+            'audience': self.audience,
             'info': self.info,
             'created_at': str(self.created_at),
             'files': list(map(lambda f: f.to_json(), self.files))

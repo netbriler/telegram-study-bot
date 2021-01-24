@@ -66,6 +66,14 @@ class SubjectPage extends Component {
         });
     }
 
+    handleAudienceChange = (value) => {
+        this.setState((state) => {
+            const subject = state.subject;
+            subject.audience = value;
+            return { subject }
+        });
+    }
+
     handleAliasesChange = (value) => {
         this.setState((state) => {
             const subject = state.subject;
@@ -126,12 +134,14 @@ class SubjectPage extends Component {
             name: subject.name,
             aliases: subject.aliases,
             teacher: subject.teacher,
+            audience: subject.audience,
             info: subject.info,
             files: subject.files
         };
 
         this.AdminService.editSubject(subject.codename, params)
             .then(subject => {
+                console.log(subject);
                 this.setState(() => { return { subject, title: subject.name } });
             })
             .then(() => {
@@ -188,6 +198,13 @@ class SubjectPage extends Component {
                             <label className="uk-form-label" htmlFor="teacher">Учитель</label>
                             <div className="uk-form-controls">
                                 <input className="uk-input" id="teacher" type="text" placeholder="Имя учителя" value={subject ? subject.teacher : ''} onChange={e => this.handleTeacherChange(e.target.value)} />
+                            </div>
+                        </div>
+
+                        <div className="uk-margin">
+                            <label className="uk-form-label" htmlFor="audience">Аудитория</label>
+                            <div className="uk-form-controls">
+                                <input className="uk-input" id="audience" type="text" placeholder="Номер аудитории" value={subject ? subject.audience : ''} onChange={e => this.handleAudienceChange(e.target.value)} />
                             </div>
                         </div>
 

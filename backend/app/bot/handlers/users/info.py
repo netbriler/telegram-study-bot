@@ -33,15 +33,16 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
     data = call.data.split('_')
     subject = get_subject(data[1])
 
-    text = (f'{subject.name}\n'
-            f'Учитель: <b>{subject.teacher}</b>\n'
-            f'{subject.info}')
-
-    if call.message.chat.type != 'private':
-        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+    text = (f'<b>{subject.name}</b>\n\n'
+            f'Аудитория: <b>{subject.audience}</b>\n'
+            f'Учитель: <b>{subject.teacher}</b>\n\n'
+            f'{subject.info}').rstrip()
 
     if subject.files:
         text += '\nСписок документов 👇'
+
+    if call.message.chat.type != 'private':
+        text += f'<a href="tg://user?id={call.from_user.id}">⠀</a>'
 
     bot.send_message(chat_id, text, reply_markup=get_subject_files_inline_markup(subject), disable_web_page_preview=True)
     return bot.answer_callback_query(call.id, subject.name)
@@ -58,6 +59,6 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
     text = file.title
 
     if call.message.chat.type != 'private':
-        text = f'<a href="tg://user?id={call.from_user.id}">*</a>{text}'
+        text = f'<a href="tg://user?id={call.from_user.id}">⠀</a>{text}'
 
     bot.send_document(call.message.chat.id, file.file_id, caption=text)
