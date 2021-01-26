@@ -16,6 +16,7 @@ def help_handler(message: Message, current_user: User):
 /info - Узнать информацию по предмету
 /schedule - Узнать расписание
 /homework - Узнать ДЗ
+/current_info - Определить, сколько времени осталось до конца пары и какая пара будет следующая
 
 /help - Помощь по боту
 /keyboard - Подключить клавиатуру

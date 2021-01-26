@@ -5,3 +5,4 @@ flask_login
 python-decouple
 fuzzywuzzy
 pyTelegramBotApi
+humanize

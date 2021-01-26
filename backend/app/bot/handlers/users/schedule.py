@@ -9,7 +9,7 @@ from ...keyboards.inline import get_week_inline_markup
 
 from app.models import User
 
-from app.services.timetable import get_subjects_by_week
+from app.services.timetable import get_subjects_by_date
 
 
 @bot.message_handler(regexp='^📃Расписание📃$')
@@ -63,12 +63,12 @@ def inline_schedule_handler(call: CallbackQuery, current_user: User):
 
 
 def _get_text(timetable):
-    text = 'Расписание:\n'
+    text = ''
     for i in range(len(timetable)):
         subjects = timetable[i]
         text += calendar.day_name[i].capitalize() + ':\n'
         for j in range(len(subjects)):
-            text += f'{j + 1}) {subjects[j].name}\n'
+            text += f'{j + 1}) <b>{subjects[j].name}</b>\n'
 
         text += '\n'
 

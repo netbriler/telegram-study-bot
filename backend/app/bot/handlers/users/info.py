@@ -3,7 +3,6 @@ from telebot.types import Message, CallbackQuery
 from ...loader import bot
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
-from ...utils import send_message_private
 
 from app.models import User
 

@@ -63,17 +63,17 @@ def inline_homework_handler(call: CallbackQuery, current_user: User):
 
 
 def _get_text(timetable):
-    text = 'ДЗ:\n'
+    text = ''
     for i in range(len(timetable)):
         tasks = timetable[i]
         text += calendar.day_name[i].capitalize() + ':\n'
 
         j = 1
         for task in tasks:
-            text += f'{j}) {task.subject.name} - {escape(task.text)}\n'
+            text += f'{j}) <b>{task.subject.name}</b>\n{escape(task.text)}\n\n'
             j += 1
 
-        text += '\n'
+        text = text.rstrip() + '\n\n'
 
     return text.rstrip()
 
