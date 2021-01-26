@@ -4,7 +4,7 @@ from math import floor
 from datetime import datetime, date, timedelta, time
 from telebot.types import Message, CallbackQuery
 
-from ...loader import bot, current_app, DIR
+from ...loader import bot, current_app
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_update_inline_markup
 from ...utils import send_message_private
