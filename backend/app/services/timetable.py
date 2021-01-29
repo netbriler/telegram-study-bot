@@ -1,3 +1,4 @@
+import re
 import datetime
 from datetime import datetime, timedelta, date
 
@@ -58,6 +59,8 @@ def _get_subjects(day: int) -> List[Subject]:
 def get_subject_timetable(subject_codename: str) -> List[dict]:
     """Returns an array with days in the timetable in which the given subject is present"""
     timetable = Timetable.query.filter(Timetable.subjects.like(f'%{subject_codename}%')).all()
+    timetable = list(filter(lambda s: re.search(fr'(^|,){subject_codename}', s.subjects), timetable))
+
     date_now = datetime.now().date()
     current_day = _get_day_number_by_date(date_now)
     days_list = []

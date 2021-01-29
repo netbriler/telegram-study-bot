@@ -9,7 +9,7 @@ from ...keyboards.inline import get_week_inline_markup
 
 from app.models import User
 
-from app.services.timetable import get_subjects_by_date
+from app.services.timetable import get_subjects_by_week
 
 
 @bot.message_handler(regexp='^📃Расписание📃$')
