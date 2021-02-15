@@ -5,6 +5,7 @@ from telebot.types import Message
 from ...loader import bot
 from ...base import base, get_or_create_user
 from ...keyboards.default import get_cancel_keyboard_markup
+from ...utils import send_message_private
 
 from app.models import User
 
@@ -34,7 +35,7 @@ def get_id_handler(message: Message, current_user: User):
 def file_add_handler(message: Message, current_user: User):
     text = 'Отправьте мне файл, а я пришлю его id'
 
-    response = bot.send_message(message.chat.id, text, reply_markup=get_cancel_keyboard_markup())
+    response = send_message_private(message, text, reply_markup=get_cancel_keyboard_markup())
     bot.register_next_step_handler(response, file_handler)
 
 

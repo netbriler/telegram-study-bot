@@ -68,7 +68,7 @@ def _get_text(timetable):
         subjects = timetable[i]
         text += calendar.day_name[i].capitalize() + ':\n'
         for j in range(len(subjects)):
-            text += f'{j + 1}) <b>{subjects[j].name}</b>\n'
+            text += f'{j + 1}) <b>{subjects[j].name}</b> (<i>{subjects[j].audience}</i>)\n'
 
         text += '\n'
 

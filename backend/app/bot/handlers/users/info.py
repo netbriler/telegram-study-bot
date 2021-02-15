@@ -49,7 +49,7 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('file'))
 @callback_query_base()
-def inline_info_handler(call: CallbackQuery, current_user: User):
+def inline_file_handler(call: CallbackQuery, current_user: User):
     data = call.data.split('_')
     file = get_file(data[1])
     if not file:
