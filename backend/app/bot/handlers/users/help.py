@@ -3,6 +3,8 @@ from telebot.types import Message
 from ...loader import bot
 from ...base import base
 
+from ...utils import send_message_private
+
 from app.models import User
 
 
@@ -36,11 +38,10 @@ def help_handler(message: Message, current_user: User):
 /get_file_id - Получить id файла
 /delete - Удалить сообщение бота
 /call_all - Позвать всех участников группы
+
 """
 
-    text += """
-Создатель @briler
-"""
+    text += 'Создатель @briler'
 
-    bot.send_message(message.chat.id, text)
+    send_message_private(message, text)
 

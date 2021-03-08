@@ -3,6 +3,7 @@ from telebot.types import Message, CallbackQuery
 from ...loader import bot
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
+from ...utils import send_message_private
 
 from app.models import User
 
@@ -16,7 +17,7 @@ from app.services.files import get_file
 def start_info(message: Message, current_user: User):
     text = 'Узнать информацию по предмету: '
 
-    bot.send_message(message.chat.id, text, reply_markup=get_subjects_inline_markup('info'))
+    send_message_private(message, text, reply_markup=get_subjects_inline_markup('info'))
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('info'))
@@ -58,6 +59,10 @@ def inline_file_handler(call: CallbackQuery, current_user: User):
     text = file.title
 
     if call.message.chat.type != 'private':
-        text = f'<a href="tg://user?id={call.from_user.id}">⠀</a>{text}'
+        text = f'{text}<a href="tg://user?id={call.from_user.id}">⠀</a>'
 
-    bot.send_document(call.message.chat.id, file.file_id, caption=text)
+    try:
+        bot.send_document(call.message.chat.id, file.file_id, caption=text)
+    except Exception as e:
+        if e.error_code == 400:
+            return bot.answer_callback_query(call.id, 'Похоже файл был удален')

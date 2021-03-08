@@ -7,6 +7,7 @@ from telebot.types import Message, CallbackQuery
 from ...loader import bot
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_week_inline_markup
+from ...utils import send_message_private
 
 from app.models import User
 
@@ -30,7 +31,7 @@ def homework_handler(message: Message, current_user: User):
     text = _get_text(timetable)
 
     markup = get_week_inline_markup('homework', next)
-    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
+    send_message_private(message, text, reply_markup=markup, disable_web_page_preview=True)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('homework'))
