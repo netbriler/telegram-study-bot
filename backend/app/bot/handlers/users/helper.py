@@ -23,8 +23,6 @@ def get_all_messages(message: Message, current_user: User):
     if pf.is_profane(message.text):
         send_message_private(message, random.choice(answer_list), reply_to_message_id=message.message_id)
 
-    print(pf.censor(message.text))
-
 
 @bot.callback_query_handler(func=lambda call: True)
 @callback_query_base()
