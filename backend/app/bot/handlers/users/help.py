@@ -34,6 +34,8 @@ def help_handler(message: Message, current_user: User):
 /add - Добавить ДЗ
 /edit - Изменить ДЗ
 
+/users_list - Получить список пользователей
+
 /get_id - Получить id сообщения (id прийдет в личку)
 /get_file_id - Получить id файла
 /delete - Удалить сообщение бота
