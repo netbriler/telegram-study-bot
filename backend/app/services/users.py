@@ -1,8 +1,8 @@
-from app.models import User
+from typing import List
 
 from app import db
+from app.models import User
 
-from typing import List
 
 def get_user(id: int) -> User:
     user = User.query.filter_by(id=id).first()

@@ -1,17 +1,14 @@
-import humanize
-
-from math import floor
 from datetime import datetime, date, timedelta, time
+
+import humanize
+from app.models import User
+from app.services.timetable import get_subjects_by_date
 from telebot.types import Message, CallbackQuery
 
-from ...loader import bot, current_app
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_update_inline_markup
+from ...loader import bot, current_app
 from ...utils import send_message_private
-
-from app.models import User
-
-from app.services.timetable import get_subjects_by_date
 
 
 @bot.message_handler(commands=['current_info'])
@@ -80,7 +77,7 @@ def _get_text():
 
             text = ('Сейчас перемена\n'
                     f'До конца еще <b>{humanize_time_to_end}</b>\n\n'
-                    f'Следующая пара: <b>{subjects[i+1].name}</b>')
+                    f'Следующая пара: <b>{subjects[i + 1].name}</b>')
 
             break
         checking_datetime += timedelta(minutes=10)
@@ -89,4 +86,3 @@ def _get_text():
         text = 'Сегодня пар больше не будет'
 
     return text.rstrip()
-

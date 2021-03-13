@@ -1,10 +1,7 @@
-from flask import jsonify, current_app, abort, request
-
-from app.exceptions import BadRequest
-
 from app.api import api
-
+from app.exceptions import BadRequest
 from app.services.subjects import get_subject, get_all_subjects, edit_subject
+from flask import jsonify, current_app, abort, request
 
 
 @api.route('/subjects', methods=['GET'])

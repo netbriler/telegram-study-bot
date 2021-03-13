@@ -1,16 +1,14 @@
 from html import escape
 
+from app.models import User
+from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
 from telebot.types import Message, CallbackQuery
 
-from ...loader import bot
 from ...base import base, callback_query_base
 from ...keyboards.default import get_cancel_keyboard_markup, get_remove_keyboard_markup
 from ...keyboards.inline import get_edit_inline_markup
+from ...loader import bot
 from ...utils import send_message_private, send_message_inline_private
-
-from app.models import User
-
-from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
 
 
 @bot.message_handler(regexp='^🛠️Редактировать🛠️$')
@@ -41,7 +39,8 @@ def get_edit_task_handler(message: Message, current_user: User):
 
     text = f'{task.subject.name} - {escape(task.text)}'
 
-    bot.send_message(message.chat.id, text, reply_markup=get_edit_inline_markup('task', id), disable_web_page_preview=True)
+    bot.send_message(message.chat.id, text, reply_markup=get_edit_inline_markup('task', id),
+                     disable_web_page_preview=True)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('task'))

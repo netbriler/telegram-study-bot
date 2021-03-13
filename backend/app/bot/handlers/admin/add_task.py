@@ -1,16 +1,14 @@
 from html import escape
 
-from telebot.types import Message
-
-from ...loader import bot
-from ...base import base
-from ...keyboards.default import get_subjects_keyboard_markup, get_cancel_keyboard_markup, get_remove_keyboard_markup
-from ...utils import send_message_private
-
 from app.models import User
-
 from app.services.subjects import recognize_subject
 from app.services.tasks import add_task
+from telebot.types import Message
+
+from ...base import base
+from ...keyboards.default import get_subjects_keyboard_markup, get_cancel_keyboard_markup, get_remove_keyboard_markup
+from ...loader import bot
+from ...utils import send_message_private
 
 
 @bot.message_handler(regexp='^➕Добавить➕$')

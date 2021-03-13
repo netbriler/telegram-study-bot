@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 from decouple import config
 
 api_token = config('TELEGRAM_BOT_TOKEN', default='', cast=str)

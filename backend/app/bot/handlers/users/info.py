@@ -1,14 +1,12 @@
+from app.models import User
+from app.services.files import get_file
+from app.services.subjects import get_subject
 from telebot.types import Message, CallbackQuery
 
-from ...loader import bot
 from ...base import base, callback_query_base
 from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
+from ...loader import bot
 from ...utils import send_message_private
-
-from app.models import User
-
-from app.services.subjects import get_subject
-from app.services.files import get_file
 
 
 @bot.message_handler(regexp='^👀Информация👀$')
@@ -44,7 +42,8 @@ def inline_info_handler(call: CallbackQuery, current_user: User):
     if call.message.chat.type != 'private':
         text += f'<a href="tg://user?id={call.from_user.id}">⠀</a>'
 
-    bot.send_message(chat_id, text, reply_markup=get_subject_files_inline_markup(subject), disable_web_page_preview=True)
+    bot.send_message(chat_id, text, reply_markup=get_subject_files_inline_markup(subject),
+                     disable_web_page_preview=True)
     return bot.answer_callback_query(call.id, subject.name)
 
 

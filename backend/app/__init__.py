@@ -1,13 +1,11 @@
 import locale
 
-# Flask Imports
-from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask import Flask, url_for
-
 from config import config_dict
+from flask import Flask
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()

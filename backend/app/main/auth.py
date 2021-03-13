@@ -1,10 +1,8 @@
 from app.main import main
+from app.models import User
+from app.services.telegram_auth import verify_authorization
 from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
 from flask_login import login_user, logout_user, login_required, current_user
-
-from app.services.telegram_auth import verify_authorization
-
-from app.models import User
 
 
 @main.route('/login_redirect', methods=['GET'])

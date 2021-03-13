@@ -1,9 +1,6 @@
-import telebot
-from telebot import types
-
-from app.services.subjects import get_all_subjects
-
 from app.models import Subject
+from app.services.subjects import get_all_subjects
+from telebot import types
 
 
 def get_subjects_inline_markup(query: str):
@@ -12,7 +9,7 @@ def get_subjects_inline_markup(query: str):
     for s in range(int(len(subjects) / 2)):
         s *= 2
         btn = types.InlineKeyboardButton(subjects[s].name, callback_data=f'{query}_{subjects[s].codename}')
-        btn2 = types.InlineKeyboardButton(subjects[s + 1].name, callback_data=f'{query}_{subjects[s+1].codename}')
+        btn2 = types.InlineKeyboardButton(subjects[s + 1].name, callback_data=f'{query}_{subjects[s + 1].codename}')
         markup.row(btn, btn2)
     if len(subjects) % 2:
         markup.add(types.InlineKeyboardButton(subjects[-1].name, callback_data=f'{query}_{subjects[-1].codename}'))

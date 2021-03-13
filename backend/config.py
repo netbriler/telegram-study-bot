@@ -1,7 +1,8 @@
-from app.utils.logging import file_logger, client_logger
-from decouple import config as env_conf
 import logging
 import pathlib
+
+from app.utils.logging import file_logger, client_logger
+from decouple import config as env_conf
 
 DIR = str(pathlib.Path(__file__).parent.absolute())
 

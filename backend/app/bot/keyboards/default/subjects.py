@@ -1,7 +1,5 @@
-import telebot
-from telebot import types
-
 from app.services.subjects import get_all_subjects
+from telebot import types
 
 
 def get_subjects_keyboard_markup():

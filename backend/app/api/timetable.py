@@ -1,12 +1,10 @@
-from flask import jsonify, current_app, abort
-
-from app.exceptions import BadRequest
+from datetime import datetime
 
 from app.api import api
-
-from datetime import datetime
-from app.services.timetable import get_subjects_by_date, get_subjects_by_week, get_subject_timetable
+from app.exceptions import BadRequest
 from app.services.subjects import get_subject
+from app.services.timetable import get_subjects_by_date, get_subjects_by_week, get_subject_timetable
+from flask import jsonify, current_app, abort
 
 
 @api.route('/timetable/<string:input_date>', methods=['GET'])

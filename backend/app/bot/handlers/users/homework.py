@@ -1,17 +1,15 @@
 import calendar
-from html import escape
 from datetime import datetime, timedelta
-
-from telebot.types import Message, CallbackQuery
-
-from ...loader import bot
-from ...base import base, callback_query_base
-from ...keyboards.inline import get_week_inline_markup
-from ...utils import send_message_private
+from html import escape
 
 from app.models import User
-
 from app.services.tasks import get_tasks_by_week
+from telebot.types import Message, CallbackQuery
+
+from ...base import base, callback_query_base
+from ...keyboards.inline import get_week_inline_markup
+from ...loader import bot
+from ...utils import send_message_private
 
 
 @bot.message_handler(regexp='^📝ДЗ📝$')
@@ -77,4 +75,3 @@ def _get_text(timetable):
         text = text.rstrip() + '\n\n'
 
     return text.rstrip()
-

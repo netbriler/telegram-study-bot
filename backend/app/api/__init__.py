@@ -3,8 +3,6 @@ from flask.wrappers import Response
 
 from flask_login import current_user
 
-from app.models import User
-
 api = Blueprint('api', __name__)
 
 

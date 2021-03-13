@@ -1,11 +1,10 @@
+from app.models import User
 from telebot.types import Message
 
-from ...loader import bot
 from ...base import base
 from ...keyboards.default import get_menu_keyboard_markup, get_remove_keyboard_markup
+from ...loader import bot
 from ...utils import send_message_private
-
-from app.models import User
 
 
 @bot.message_handler(commands=['keyboard'])
@@ -22,4 +21,3 @@ def keyboard_off_handler(message: Message, current_user: User):
     text = 'Меню отключено. ❌'
 
     send_message_private(message, text, reply_markup=get_remove_keyboard_markup())
-

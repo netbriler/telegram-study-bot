@@ -1,11 +1,10 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
+from typing import List
 
-from app.models import Task
 from app import db
+from app.models import Task
 
 from .timetable import get_subject_timetable
-
-from typing import List
 
 
 def get_task(id: int) -> Task:

@@ -1,6 +1,6 @@
-from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from decouple import config
+from flask_migrate import Migrate
 
 env_config = config('ENV', cast=str, default='develop')
 

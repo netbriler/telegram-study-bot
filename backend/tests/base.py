@@ -1,21 +1,17 @@
 import urllib
-from unittest import TestCase
-
 from datetime import date
+from unittest import TestCase
 
 from app import create_app, db
 from app.models import Subject, User, Task, Timetable
-
 from app.services.telegram_auth import _generate_hash
-
-from flask_login import login_user, current_user
-
 
 app = create_app('testing')
 
 
 class BaseTestCase(TestCase):
     """A base test case."""
+
     def __init__(self, *args, **kwargs):
         super(BaseTestCase, self).__init__(*args, **kwargs)
         self._app = app
@@ -63,5 +59,5 @@ class BaseTestCase(TestCase):
 
         data = urllib.parse.urlencode(data)
 
-        response = self.client.get('/login_redirect?'+data, content_type='html/text')
+        response = self.client.get('/login_redirect?' + data, content_type='html/text')
         self.assertEqual(response.status_code, 302)

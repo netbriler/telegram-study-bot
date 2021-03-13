@@ -1,9 +1,7 @@
 import requests
-
-from telebot.types import Message, CallbackQuery
-
 from app.bot.loader import app, bot
 from app.services.users import get_user, create_user, edit_user
+from telebot.types import Message, CallbackQuery
 
 from .keyboards.default import get_remove_keyboard_markup
 from .utils import send_message_private

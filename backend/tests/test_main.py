@@ -2,8 +2,6 @@ import unittest
 
 from .base import BaseTestCase
 
-from flask_login import login_user, current_user
-
 
 class FlaskTestCase(BaseTestCase):
     def test_index(self):

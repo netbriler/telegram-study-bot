@@ -1,12 +1,10 @@
+from app.models import User
+from app.services.users import get_user, get_users
 from telebot.types import Message
 
-from ...loader import bot
 from ...base import base
+from ...loader import bot
 from ...utils import send_message_private
-
-from app.services.users import get_user, get_users
-
-from app.models import User
 
 
 @bot.message_handler(commands=['users_list'])
@@ -44,4 +42,3 @@ def get_user_handler(message: Message, current_user: User):
     else:
         print(text)
         bot.send_message(message.chat.id, text)
-

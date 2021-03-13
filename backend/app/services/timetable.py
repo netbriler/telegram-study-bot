@@ -1,12 +1,11 @@
-import re
 import datetime
+import re
 from datetime import datetime, timedelta, date
-
-from .subjects import get_none_subject, get_subject
+from typing import List
 
 from app.models import Timetable, Subject
 
-from typing import List
+from .subjects import get_none_subject, get_subject
 
 
 def get_subjects_by_date(current_date: date) -> List[Subject] or None:

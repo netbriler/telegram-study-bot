@@ -1,5 +1,5 @@
-import hmac
 import hashlib
+import hmac
 
 
 def verify_authorization(data: dict, api_token: str) -> bool:

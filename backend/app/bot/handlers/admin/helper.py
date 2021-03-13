@@ -1,11 +1,10 @@
+from app.models import User
 from telebot.types import Message
 
-from ...loader import bot
 from ...base import base, get_or_create_user
 from ...keyboards.default import get_cancel_keyboard_markup
+from ...loader import bot
 from ...utils import send_message_private
-
-from app.models import User
 
 
 @bot.message_handler(commands=['get_id'])

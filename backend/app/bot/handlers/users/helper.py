@@ -1,14 +1,12 @@
 import random
 
+from app.models import User
+from app.utils.profanity_filter import ProfanityFilter
 from telebot.types import Message, CallbackQuery
 
-from ...loader import bot
 from ...base import base, callback_query_base
-
+from ...loader import bot
 from ...utils import send_message_private
-from app.utils.profanity_filter import ProfanityFilter
-
-from app.models import User
 
 
 @bot.message_handler(content_types=['text'], func=lambda m: True)

@@ -1,11 +1,9 @@
+from app.models import User
 from telebot.types import Message
 
-from ...loader import bot
 from ...base import base
-
+from ...loader import bot
 from ...utils import send_message_private
-
-from app.models import User
 
 
 @bot.message_handler(regexp='^🆘Помощь🆘$')
@@ -40,10 +38,8 @@ def help_handler(message: Message, current_user: User):
 /get_file_id - Получить id файла
 /delete - Удалить сообщение бота
 /call_all - Позвать всех участников группы
-
 """
 
-    text += 'Создатель @briler'
+    text += '\nСоздатель @briler'
 
     send_message_private(message, text)
-

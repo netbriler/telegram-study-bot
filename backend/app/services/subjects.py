@@ -1,11 +1,10 @@
+from typing import List
+
+from app import db
+from app.models import Subject, File
 from fuzzywuzzy import fuzz
 
 from .files import get_file
-
-from app.models import Subject, File
-from app import db
-
-from typing import List
 
 
 def get_subject(codename: str) -> Subject:
@@ -14,7 +13,8 @@ def get_subject(codename: str) -> Subject:
 
 
 def edit_subject(codename: str, name: str = None, aliases: str or list = None,
-                 info: str = None, teacher: str = None, audience: str = None, files: list = None, *args, **kwargs) -> Subject or False:
+                 info: str = None, teacher: str = None, audience: str = None, files: list = None, *args,
+                 **kwargs) -> Subject or False:
     subject = get_subject(codename)
     if not subject:
         return False

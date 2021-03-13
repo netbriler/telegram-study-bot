@@ -1,6 +1,6 @@
-from app.models import File
-
 from typing import List
+
+from app.models import File
 
 
 def get_file(id: int) -> File:
@@ -11,4 +11,3 @@ def get_file(id: int) -> File:
 def get_all_files() -> List[File]:
     files = File.query.all()
     return files
-

@@ -1,12 +1,11 @@
-from flask import jsonify, current_app, abort, request
-
-from app.exceptions import BadRequest
+from datetime import datetime
 
 from app.api import api
-
-from datetime import datetime
-from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, add_task
+from app.exceptions import BadRequest
 from app.services.subjects import get_subject
+from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, \
+    add_task
+from flask import jsonify, current_app, abort, request
 
 
 @api.route('/tasks', methods=['GET'])
@@ -136,5 +135,3 @@ def _get_tasks_by_week(week: int):
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')
-
-
