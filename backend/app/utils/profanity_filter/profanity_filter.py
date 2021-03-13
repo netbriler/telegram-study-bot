@@ -17,7 +17,7 @@ class ProfanityFilter(object):
     """
 
     def censor(self, string):
-        exp = '(%s)' % '|'.join(self.bad_words)
+        exp = '(\W|^)(%s)(\W|$)' % '|'.join(self.bad_words)
         r = re.compile(exp, re.IGNORECASE)
 
         return r.sub(lambda text: self._censor_char(text), string)
@@ -27,7 +27,7 @@ class ProfanityFilter(object):
     """
 
     def is_clean(self, string):
-        exp = '(%s)' % '|'.join(self.bad_words)
+        exp = '(\W|^)(%s)(\W|$)' % '|'.join(self.bad_words)
         r = re.compile(exp, re.IGNORECASE)
         return not r.search(string)
 
@@ -36,7 +36,7 @@ class ProfanityFilter(object):
     """
 
     def is_profane(self, string):
-        exp = '(%s)' % '|'.join(self.bad_words)
+        exp = '(\W|^)(%s)(\W|$)' % '|'.join(self.bad_words)
         r = re.compile(exp, re.IGNORECASE)
         return r.search(string)
 
