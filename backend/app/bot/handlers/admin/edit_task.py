@@ -22,7 +22,7 @@ def edit_tasks_handler(message: Message, current_user: User):
     i = 1
     for task in tasks:
         task_text = (task.text[:75] + '..') if len(task.text) > 75 else task.text
-        text += f'{i}) {task.subject.name} - {escape(task_text)} /edit{task.id}\n'
+        text += f'{i}) <b>{task.subject.name}</b>\n{escape(task_text)} /edit{task.id}\n\n'
         i += 1
 
     bot.send_message(message.chat.id, text, disable_web_page_preview=True)
