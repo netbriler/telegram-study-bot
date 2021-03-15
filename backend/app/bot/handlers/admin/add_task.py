@@ -42,7 +42,7 @@ def add_task_handler(message: Message, current_user: User, subject):
     send_message_private(message, text, reply_markup=get_remove_keyboard_markup())
 
 
-@bot.message_handler(regexp='^!.+-.+$')
+@bot.message_handler(regexp='^!(.+)-(.|\s)+$')
 @base(is_admin=True)
 def add_task_via_decorator_handler(message: Message, current_user: User):
     query = message.text.replace('!', '').strip()
