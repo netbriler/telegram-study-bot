@@ -47,7 +47,7 @@ def add_task_handler(message: Message, current_user: User, subject):
 def add_task_via_decorator_handler(message: Message, current_user: User):
     query = message.text.replace('!', '').strip()
     subject_name = query.split('-')[0]
-    task_text = query.replace(subject_name, '').replace('-', '').strip()
+    task_text = query.replace(subject_name, '', 1).replace('-', '', 1).strip()
 
     subject = recognize_subject(subject_name)
 
