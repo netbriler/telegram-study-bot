@@ -9,8 +9,8 @@ const postcss = require('gulp-postcss');
 const sass = require('gulp-sass');
 const webpack = require('webpack-stream');
 
-const dist = '../backend/app/static';
-const prod = '../backend/app/static';
+const dist = '../app/static';
+const prod = '../app/static';
 
 gulp.task('copy-html', () => {
   return gulp.src('./app/src/index.html')

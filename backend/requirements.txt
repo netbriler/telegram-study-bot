@@ -1,8 +1,0 @@
-flask
-flask_migrate
-Flask-SQLAlchemy
-flask_login
-python-decouple
-fuzzywuzzy
-pyTelegramBotApi
-humanize
