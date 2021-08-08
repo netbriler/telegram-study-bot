@@ -1,8 +1,9 @@
 import telebot
-from app.bot import bot
-from app.main import main
 from flask import request, current_app, url_for, jsonify
 from flask_login import login_required
+
+from app.bot import bot
+from app.main import main
 
 
 @main.route('/setWebhook')

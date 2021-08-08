@@ -1,8 +1,9 @@
+from flask import jsonify, current_app, abort
+from flask_login import current_user
+
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.users import get_user, get_users
-from flask import jsonify, current_app, abort
-from flask_login import current_user
 
 
 @api.route('/users', methods=['GET'])

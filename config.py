@@ -64,7 +64,7 @@ class Develop:
 class Testing:
     CONFIG_KEY = 'testing'
     APP_DIR = DIR + '/app'
-    LOCATE = 'uk_UA'
+    LOCATE = 'uk_UA.utf8'
 
     DB_HOST = 'testing.sqlite3'
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'

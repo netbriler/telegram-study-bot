@@ -1,16 +1,21 @@
+from telebot.types import ReplyKeyboardMarkup
+
 from app.services.subjects import get_all_subjects
-from telebot import types
 
 
-def get_subjects_keyboard_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+def get_subjects_keyboard_markup() -> ReplyKeyboardMarkup:
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True, row_width=2)
     subjects = get_all_subjects()
-    for s in range(int(len(subjects) / 2)):
-        s *= 2
-        btn = types.KeyboardButton(subjects[s].name)
-        btn2 = types.KeyboardButton(subjects[s + 1].name)
-        markup.row(btn, btn2)
-    if len(subjects) % 2:
-        markup.add(types.KeyboardButton(subjects[-1].name))
-    markup.add(types.KeyboardButton('❌Отменить❌'))
+
+    names = list(map(lambda s: s.name, subjects))
+
+    try:
+        markup.add(names[0])
+        markup.add(*names[1:5])
+        markup.add(names[5])
+        markup.add(*names[6:])
+    except:
+        pass
+
+    markup.add('❌Отменить❌')
     return markup

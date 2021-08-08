@@ -29,18 +29,26 @@ class BaseTestCase(TestCase):
         return self._app
 
     def setUp(self):
-        db.create_all()
-        db.session.add(Subject(codename='math', name='Математика', _aliases='матеша,матан,алгебра'))
-        db.session.add(Subject(codename='history', name='История', _aliases='истор'))
+        try:
+            db.drop_all()
+            db.create_all()
+            db.session.add(Subject(codename='math', name='Математика', _aliases='матеша,матан,алгебра'))
+            db.session.add(Subject(codename='history', name='История', _aliases='истор'))
 
-        db.session.add(Task(subject_codename='math', date=date(2020, 3, 4), text='тестовое задание с математики'))
+            db.session.add(Task(subject_codename='math', date=date(2020, 3, 4), text='тестовое задание с математики'))
 
-        for i in range(14):
-            db.session.add(Timetable(subjects='math', is_work_day=True))
+            for i in range(14):
+                db.session.add(Timetable(subjects='math', is_work_day=True))
 
-        db.session.add(User(id=45345234, username='admin', name='Админ', status='super_admin'))
-        db.session.add(User(id=64564562, username='user', name='Человек', status='user'))
-        db.session.commit()
+            db.session.add(User(id=45345234, username='admin', name='Админ', status='super_admin'))
+            db.session.add(User(id=64564562, username='user', name='Человек', status='user'))
+
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
         self.login()
 

@@ -1,11 +1,11 @@
-from telebot import types
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_edit_inline_markup(query: str, id: int):
+def get_edit_inline_markup(query: str, id: int) -> InlineKeyboardMarkup:
     query = query + str(id)
-    markup = types.InlineKeyboardMarkup()
-    markup.row(types.InlineKeyboardButton('🛠️Редактировать🛠️', callback_data=f'{query}_edit'),
-               types.InlineKeyboardButton('☢Удалить☢', callback_data=f'{query}_delete'))
+    markup = InlineKeyboardMarkup()
+    markup.row(InlineKeyboardButton('🛠️Редактировать🛠️', callback_data=f'{query}_edit'),
+               InlineKeyboardButton('☢Удалить☢', callback_data=f'{query}_delete'))
 
-    markup.row(types.InlineKeyboardButton('❌Отменить❌', callback_data=f'{query}_cancel'))
+    markup.row(InlineKeyboardButton('❌Отменить❌', callback_data=f'{query}_cancel'))
     return markup

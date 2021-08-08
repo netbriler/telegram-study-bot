@@ -1,10 +1,10 @@
-from app.models import User
 from telebot.types import Message
 
+from app.models import User
 from ...base import base, get_or_create_user
+from ...helpers import send_message_private, mark_user
 from ...keyboards.default import get_cancel_keyboard_markup
 from ...loader import bot
-from ...utils import send_message_private
 
 
 @bot.message_handler(commands=['get_id'])
@@ -29,7 +29,7 @@ def get_id_handler(message: Message, current_user: User):
 
 @bot.message_handler(commands=['get_file_id'])
 @base(is_admin=True)
-def file_add_handler(message: Message, current_user: User):
+def file_add_handler(message: Message):
     text = 'Отправьте мне файл, а я пришлю его id'
 
     response = send_message_private(message, text, reply_markup=get_cancel_keyboard_markup())
@@ -37,7 +37,7 @@ def file_add_handler(message: Message, current_user: User):
 
 
 @base(is_admin=True)
-def file_handler(message: Message, current_user: User):
+def file_handler(message: Message):
     if message.content_type == 'document':
         bot.reply_to(message, f'<pre>{message.document.file_id}</pre>')
     else:
@@ -48,7 +48,7 @@ def file_handler(message: Message, current_user: User):
 
 @bot.message_handler(commands=['call_all'])
 @base(is_admin=True)
-def call_all_members_handler(message: Message, current_user: User):
+def call_all_members_handler(message: Message):
     chat_id = message.chat.id
     text = 'Внимание, внимание!'
 
@@ -57,7 +57,7 @@ def call_all_members_handler(message: Message, current_user: User):
     if message.chat.type != 'private':
         chat_members = bot.get_chat_administrators(chat_id)
         for chat_member in chat_members:
-            text += f'<a href="tg://user?id={chat_member.user.id}">⠀</a>'
+            text = mark_user(text, chat_member.user.id)
 
         bot.send_message(chat_id, text)
     else:
@@ -66,7 +66,7 @@ def call_all_members_handler(message: Message, current_user: User):
 
 @bot.message_handler(commands=['delete'])
 @base(is_admin=True)
-def delete_handler(message: Message, current_user: User):
+def delete_handler(message: Message):
     chat_id = message.chat.id
     if not message.reply_to_message or not message.reply_to_message.from_user.is_bot:
         return bot.reply_to(message, 'Ответьте на мое сообщение командой чтобы удалить')

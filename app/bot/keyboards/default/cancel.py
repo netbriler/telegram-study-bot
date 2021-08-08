@@ -1,7 +1,7 @@
-from telebot import types
+from telebot.types import ReplyKeyboardMarkup
 
 
-def get_cancel_keyboard_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-    markup.add(types.KeyboardButton('❌Отменить❌'))
+def get_cancel_keyboard_markup() -> ReplyKeyboardMarkup:
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup.add('❌Отменить❌')
     return markup

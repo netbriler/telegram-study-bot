@@ -1,17 +1,13 @@
-from telebot import types
+from telebot.types import ReplyKeyboardMarkup
 
 
-def get_menu_keyboard_markup(is_admin=False):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+def get_menu_keyboard_markup(is_admin: bool = False) -> ReplyKeyboardMarkup:
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True, row_width=2)
+
     if is_admin:
-        add = types.KeyboardButton('➕Добавить➕')
-        edit = types.KeyboardButton('🛠️Редактировать🛠️')
-        markup.row(add, edit)
-    schedule = types.KeyboardButton('📃Расписание📃')
-    homework = types.KeyboardButton('📝ДЗ📝')
-    helpme = types.KeyboardButton('🆘Помощь🆘')
-    info = types.KeyboardButton('👀Информация👀')
-    markup.row(schedule, homework)
-    markup.row(helpme)
-    markup.row(info)
+        markup.add('➕Добавить➕', '🛠️Редактировать🛠️')
+
+    markup.row('📃Расписание📃', '📝ДЗ📝')
+    markup.row('🆘Помощь🆘')
+    markup.row('👀Информация👀')
     return markup

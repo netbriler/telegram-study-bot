@@ -1,6 +1,7 @@
-from app.main import main
 from flask import current_app
 from flask_login import login_required
+
+from app.main import main
 
 
 @main.route('/', defaults={'path': ''}, methods=['GET', 'POST'])

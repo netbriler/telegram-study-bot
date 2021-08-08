@@ -1,11 +1,12 @@
 from datetime import datetime
 
+from flask import jsonify, current_app, abort, request
+
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject
 from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, \
     add_task
-from flask import jsonify, current_app, abort, request
 
 
 @api.route('/tasks', methods=['GET'])

@@ -1,18 +1,16 @@
-from app.models import User
-from app.services.users import get_user, get_users
 from telebot.types import Message
 
+from app.services.users import get_user, get_users
 from ...base import base
+from ...helpers import send_message_private
 from ...loader import bot
-from ...utils import send_message_private
 
 
 @bot.message_handler(commands=['users_list'])
 @base(is_admin=True)
-def users_list_handler(message: Message, current_user: User):
+def users_list_handler(message: Message):
     text = ''
     for user in get_users():
-        print(user.to_json())
         text += f'{user.name}'
 
         if user.username:
@@ -25,7 +23,7 @@ def users_list_handler(message: Message, current_user: User):
 
 @bot.message_handler(regexp=f'^/user_\\d+(@{bot.get_me().username})?$')
 @base(is_admin=True)
-def get_user_handler(message: Message, current_user: User):
+def get_user_handler(message: Message):
     id = int(message.text[6:].replace(f'@{bot.get_me().username}', '').strip())
     user = get_user(id)
 
@@ -34,11 +32,20 @@ def get_user_handler(message: Message, current_user: User):
     if user.username:
         text += f' @{user.username}'
 
-    text += f'\n\nСтатус: {user.status}\n'
-    text += f'\nДата первого обращения: \n<pre>{user.created_at}</pre>'
+    text += f'\n\nСтатус: {user.status}\n' \
+            f'\nДата первого обращения: \n<pre>{user.created_at}</pre>'
 
-    if user.photo_id:
-        bot.send_photo(message.chat.id, user.photo_id, text)
-    else:
-        print(text)
-        bot.send_message(message.chat.id, text)
+    photo_id = None
+    try:
+        photos = bot.get_user_profile_photos(id).photos
+
+        if len(photos):
+            photo_id = photos[0][-1].file_id
+    except Exception as e:
+        if e.error_code == 400:
+            text += '<b>НЕ АКТИВНЫЙ❗</b>'
+
+    if photo_id:
+        return bot.send_photo(message.chat.id, photo_id, text)
+
+    bot.send_message(message.chat.id, text)

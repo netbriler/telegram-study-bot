@@ -1,9 +1,7 @@
-from typing import List
+from fuzzywuzzy import fuzz
 
 from app import db
 from app.models import Subject, File
-from fuzzywuzzy import fuzz
-
 from .files import get_file
 
 
@@ -48,7 +46,7 @@ def edit_subject(codename: str, name: str = None, aliases: str or list = None,
     return subject
 
 
-def get_all_subjects() -> List[Subject]:
+def get_all_subjects() -> list[Subject]:
     subjects = Subject.query.all()
     return sorted(subjects, key=lambda k: k.name.lower())
 

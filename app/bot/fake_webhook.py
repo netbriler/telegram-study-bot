@@ -19,8 +19,8 @@ while True:
     if last_update == update['update_id']:
         continue
 
-    print(update)
-
     last_update = update['update_id']
 
-    requests.post(f'http://172.29.241.237:8000/{api_token}', data=json.dumps(update))
+    r = requests.post(f'http://0.0.0.0:8000/{api_token}', data=json.dumps(update))
+
+    print(r.content)

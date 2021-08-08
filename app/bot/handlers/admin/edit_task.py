@@ -1,20 +1,20 @@
 from html import escape
 
-from app.models import User
-from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
 from telebot.types import Message, CallbackQuery
 
+from app.models import User
+from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
 from ...base import base, callback_query_base
-from ...keyboards.default import get_cancel_keyboard_markup, get_remove_keyboard_markup
+from ...helpers import send_message_private, send_message_inline_private
+from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
 from ...keyboards.inline import get_edit_inline_markup
 from ...loader import bot
-from ...utils import send_message_private, send_message_inline_private
 
 
 @bot.message_handler(regexp='^🛠️Редактировать🛠️$')
 @bot.message_handler(commands=['edit'])
 @base(is_admin=True)
-def edit_tasks_handler(message: Message, current_user: User):
+def edit_tasks_handler(message: Message):
     text = 'ДЗ:\n'
 
     tasks = get_active_tasks()
@@ -30,7 +30,7 @@ def edit_tasks_handler(message: Message, current_user: User):
 
 @bot.message_handler(regexp=f'^/edit\\d+(@{bot.get_me().username})?$')
 @base(is_admin=True)
-def get_edit_task_handler(message: Message, current_user: User):
+def get_edit_task_handler(message: Message):
     id = int(message.text[5:].replace(f'@{bot.get_me().username}', '').strip())
     task = get_task(id)
 
@@ -39,13 +39,13 @@ def get_edit_task_handler(message: Message, current_user: User):
 
     text = f'{task.subject.name} - {escape(task.text)}'
 
-    bot.send_message(message.chat.id, text, reply_markup=get_edit_inline_markup('task', id),
-                     disable_web_page_preview=True)
+    markup = get_edit_inline_markup('task', id)
+    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('task'))
 @callback_query_base(is_admin=True)
-def inline_edit_handler(call: CallbackQuery, current_user: User):
+def inline_edit_handler(call: CallbackQuery):
     chat_id = call.message.chat.id
     message_id = call.message.message_id
 
@@ -54,15 +54,16 @@ def inline_edit_handler(call: CallbackQuery, current_user: User):
 
     task = get_task(id)
     if not task:
-        bot.answer_callback_query(call.id, 'Задача уже удалена')
+        bot.answer_callback_query(call.id, 'Задание уже удалено')
         bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
         text = ('Введите измененное задание:\n'
                 f'{task.subject.name} - <pre>{task.text}</pre>')
 
-        response = send_message_inline_private(call, text, reply_markup=get_cancel_keyboard_markup())
-        bot.register_next_step_handler(response, edit_task_handler, id)
+        markup = get_cancel_keyboard_markup()
+        response = send_message_inline_private(call, text, reply_markup=markup)
+        bot.register_next_step_handler(response, edit_task_handler, id=id)
 
         bot.delete_message(chat_id, message_id)
     elif option == 'delete':
@@ -75,10 +76,11 @@ def inline_edit_handler(call: CallbackQuery, current_user: User):
 
 
 @base(is_admin=True)
-def edit_task_handler(message: Message, current_user: User, id):
+def edit_task_handler(message: Message, id: int, current_user: User):
     task = edit_task(id, message.text)
 
     text = ('Изменено:\n'
             f'{task.subject.name} - {escape(task.text)}')
 
-    send_message_private(message, text, reply_markup=get_remove_keyboard_markup())
+    markup = get_menu_keyboard_markup(current_user.is_admin())
+    send_message_private(message, text, reply_markup=markup)

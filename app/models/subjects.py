@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from app import db
 from sqlalchemy.ext.hybrid import hybrid_property
+
+from app import db
 
 
 class Subject(db.Model):

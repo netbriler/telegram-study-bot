@@ -1,8 +1,9 @@
+from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
+from flask_login import login_user, logout_user, login_required, current_user
+
 from app.main import main
 from app.models import User
 from app.services.telegram_auth import verify_authorization
-from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
-from flask_login import login_user, logout_user, login_required, current_user
 
 
 @main.route('/login_redirect', methods=['GET'])
@@ -31,10 +32,11 @@ def login():
 
 @main.route('/login/<string:user_id>', methods=['GET', 'POST'])
 def _login_user(user_id):
-    user = User.query.filter_by(id=user_id).first()
-    login_user(user, remember=True)
+    if current_app.config['DEBUG']:
+        user = User.query.filter_by(id=user_id).first()
+        login_user(user, remember=True)
 
-    return jsonify(current_user.to_json())
+        return jsonify(current_user.to_json())
 
 
 @main.route('/logout')
