@@ -29,14 +29,13 @@ def create_user(id: int, name, username=None) -> [User, None]:
     return user
 
 
-def edit_user(id: int, name, username=None, photo_id=None) -> [User, None]:
+def edit_user(id: int, name, username=None) -> [User, None]:
     user = get_user(id)
     if not user:
         return None
 
     user.name = name
     user.username = username
-    user.photo_id = photo_id
 
     db.session.commit()
 
@@ -57,14 +56,13 @@ def get_or_create_user(id: int, name: str, username: str) -> User:
 def download_user_avatar(user: User, bot):
     photos = bot.get_user_profile_photos(user.id).photos
 
-    photo_id = None
     if len(photos) > 0:
         photo_id = photos[0][-1].file_id
 
-        if not user or user.photo_id != photo_id:
+        if photo_id and user.photo_id != photo_id:
             r = requests.get(bot.get_file_url(photo_id), allow_redirects=True)
             open(f'{current_app.config["APP_DIR"]}/static/pictures/{photo_id}.jpg', 'wb').write(r.content)
 
-    user.photo_id = photo_id
+            user.photo_id = photo_id
 
-    db.session.commit()
+            db.session.commit()

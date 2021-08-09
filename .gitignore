@@ -181,6 +181,4 @@ Thumbs.db
 
 *.sqlite3
 
-**/app/static/pictures/**.jpg
-
-**/app/static/**.js.map
+**/app/static
