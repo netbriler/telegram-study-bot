@@ -1,4 +1,4 @@
-name: Generate a build and push to another branch
+name: Generate a build and push to build branch
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         working-directory: ./frontend
         run: npm run build # The build command of your project
 
-      - name: Copy files
+      - name: Copy files to deploy
         working-directory: .
         run: |
           mkdir deploy
@@ -30,6 +30,7 @@ jobs:
           cp ./cron.py ./deploy
           cp ./config.py ./deploy
           cp ./requirements.txt ./deploy
+          cp ./.env.template ./deploy
           cp ./README.md ./deploy
 
       - name: Push
