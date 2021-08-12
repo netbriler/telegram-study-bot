@@ -1,9 +1,26 @@
+import calendar
 import datetime
 import re
 from datetime import datetime, timedelta, date
 
 from app.models import Timetable, Subject
 from .subjects import get_none_subject, get_subject
+
+
+def get_timetable() -> list[dict[str, [list, any]]]:
+    timetable = Timetable.query.all()
+
+    timetable_list = []
+    for day in timetable:
+        day_name_id = day.id if day.id < 8 else day.id - 7
+        day_name = calendar.day_name[day_name_id - 1].capitalize()
+        timetable_list.append({
+            'day_id': day.id,
+            'day_name': day_name,
+            'subjects': list(map(lambda s: s.to_json(), _get_subjects(day.id)))
+        })
+
+    return timetable_list
 
 
 def get_subjects_by_date(current_date: date) -> list[Subject] or None:

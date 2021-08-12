@@ -1,26 +1,25 @@
-from datetime import datetime
+from flask import jsonify, current_app, abort
 
 from flask import jsonify, current_app, abort
 
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject
-from app.services.timetable import get_subjects_by_date, get_subjects_by_week, get_subject_timetable
+from app.services.timetable import get_subjects_by_week, get_subject_timetable, get_timetable
 
 
-@api.route('/timetable/<string:input_date>', methods=['GET'])
-def _get_timetable_by_date(input_date: str):
+@api.route('/timetable/', methods=['GET'])
+def _get_timetable():
+    timetable = get_timetable()
+    print(timetable)
+
+    return jsonify(timetable)
     try:
-        try:
-            date_to_get = datetime.strptime(input_date, '%Y-%m-%d').date()
-        except ValueError:
-            raise BadRequest('the date must be in the format %Y-%m-%d')
+        timetable = get_timetable()
 
-        subjects = get_subjects_by_date(date_to_get)
-        if not subjects:
-            raise BadRequest('there are no subjects on this date')
-
-        return jsonify(list(map(lambda s: s.to_json(), subjects)))
+        return jsonify(
+            {k: list(map(lambda s: s.to_json(), v)) for k, v in timetable.items()}
+        )
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:

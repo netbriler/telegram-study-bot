@@ -6,7 +6,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import Panel from '../panel'
-import {LogPage, SubjectsPage, SubjectPage, UsersPage} from '../pages'
+import {LogPage, SubjectsPage, SubjectPage, UsersPage, TimetablePage} from '../pages'
 import UIkit from 'uikit'
 import {isLoaded, isLoading, setCurrentUser} from '../../actions';
 import WithAdminService from '../hoc';
@@ -49,6 +49,7 @@ class App extends Component {
                     <Route path="/subjects" component={SubjectsPage}></Route>
                     <Route path="/subject/:codename" component={SubjectPage}></Route>
                     <Route path="/users" component={UsersPage}></Route>
+                    <Route path="/timetable" component={TimetablePage}></Route>
                     <Route path="/log" component={LogPage}></Route>
                     <Redirect from="*" exact to="/subjects"></Redirect>
                 </Switch>
