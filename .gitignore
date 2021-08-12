@@ -181,4 +181,4 @@ Thumbs.db
 
 *.sqlite3
 
-**/app/static
+/app/static

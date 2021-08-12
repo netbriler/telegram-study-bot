@@ -8,7 +8,7 @@ from ...loader import bot
 
 
 @bot.message_handler(commands=['get_id'])
-@base(is_admin=True)
+@base(is_admin=True, send_chat_action=None)
 def get_id_handler(message: Message, current_user: User):
     bot.delete_message(message.chat.id, message.message_id)
 
@@ -65,18 +65,19 @@ def call_all_members_handler(message: Message):
 
 
 @bot.message_handler(commands=['delete'])
-@base(is_admin=True)
+@base(is_admin=True, send_chat_action=None)
 def delete_handler(message: Message):
     chat_id = message.chat.id
     if not message.reply_to_message or not message.reply_to_message.from_user.is_bot:
-        return bot.reply_to(message, 'Ответьте на мое сообщение командой чтобы удалить')
+        bot.delete_message(chat_id, message.message_id)
+        return bot.send_message(message.from_user.id, 'Ответьте /delete на мое сообщение чтобы удалить')
 
-    bot.delete_message(chat_id, message.reply_to_message.message_id)
     bot.delete_message(chat_id, message.message_id)
+    bot.delete_message(chat_id, message.reply_to_message.message_id)
 
 
 @bot.message_handler(commands=['load_all'])
-@base(is_super_admin=True)
+@base(is_super_admin=True, send_chat_action=None)
 def call_all_members_handler(message: Message, current_user: User):
     chat_id = message.chat.id
     text = 'Готово'
@@ -87,7 +88,11 @@ def call_all_members_handler(message: Message, current_user: User):
         chat_members = bot.get_chat_administrators(chat_id)
         for chat_member in chat_members:
             if not chat_member.user.is_bot:
-                user = get_or_create_user(chat_member.user)
+                name = chat_member.user.first_name
+                if chat_member.user.last_name:
+                    name += ' ' + chat_member.user.last_name
+
+                user = get_or_create_user(chat_member.user.id, name, chat_member.user.username)
                 text += f'\n<a href="tg://user?id={user.id}">{user.name}</a>'
 
         bot.send_message(current_user.id, text)
