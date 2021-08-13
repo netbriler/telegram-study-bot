@@ -4,9 +4,7 @@ import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
 
 import { PageTemplate } from '../page-templates'
-
-import ReactDOM from "react-dom";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Timetable } from '../timetable';
 
 import UIkit from 'uikit';
 
@@ -24,20 +22,17 @@ const move = (source, destination, droppableSource, droppableDestination) => {
     const destClone = Array.from(destination);
     const [removed] = sourceClone.splice(droppableSource.index, 1);
 
+
     destClone.splice(droppableDestination.index, 0, removed);
 
+    console.log(destClone, sourceClone);
+
     const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
+    result[droppableSource.droppableId - 1] = sourceClone;
+    result[droppableDestination.droppableId - 1] = destClone;
 
     return result;
 };
-
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: 20,
-    width: 250
-});
 
 
 class TimetablePage extends Component {
@@ -78,7 +73,7 @@ class TimetablePage extends Component {
 
                         return day
 
-                        
+
                     });
 
                     return { timetable }
@@ -96,8 +91,8 @@ class TimetablePage extends Component {
             return;
         }
 
-        const sInd = +source.droppableId;
-        const dInd = +destination.droppableId;
+        const sInd = +source.droppableId - 1;
+        const dInd = +destination.droppableId - 1;
 
         let newState = [...timetable];
 
@@ -130,49 +125,8 @@ class TimetablePage extends Component {
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
-                <div className="uk-container uk-container-large uk-section-default">
-                    <DragDropContext onDragEnd={this.onDragEnd}>
-                        <div className="timetable__container">
-
-                            {timetable.map((day, dayIndex) => (
-                                <Droppable key={dayIndex} droppableId={`${dayIndex}`}>
-                                    {(provided, snapshot) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            style={getListStyle(snapshot.isDraggingOver)}
-                                            {...provided.droppableProps}
-                                        >
-
-                                            <h3>
-                                                {day.day_name}
-                                            </h3>
-
-                                            {day.subjects.map((subject, index) => (
-                                                <Draggable
-                                                    key={subject.id}
-                                                    draggableId={subject.id}
-                                                    index={index}
-                                                >
-                                                    {(provided, snapshot) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                        >
-                                                            {subject.content}
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            ))}
-
-                        </div>
-
-                    </DragDropContext>
+                <div className="uk-container uk-container-large">
+                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} />
                 </div>
             </PageTemplate>
         )

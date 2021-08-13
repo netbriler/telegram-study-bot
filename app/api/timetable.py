@@ -10,16 +10,10 @@ from app.services.timetable import get_subjects_by_week, get_subject_timetable, 
 
 @api.route('/timetable/', methods=['GET'])
 def _get_timetable():
-    timetable = get_timetable()
-    print(timetable)
-
-    return jsonify(timetable)
     try:
         timetable = get_timetable()
 
-        return jsonify(
-            {k: list(map(lambda s: s.to_json(), v)) for k, v in timetable.items()}
-        )
+        return jsonify(timetable)
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
