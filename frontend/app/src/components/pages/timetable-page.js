@@ -25,8 +25,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
     destClone.splice(droppableDestination.index, 0, removed);
 
-    console.log(destClone, sourceClone);
-
     const result = {};
     result[droppableSource.droppableId - 1] = sourceClone;
     result[droppableDestination.droppableId - 1] = destClone;
@@ -62,18 +60,12 @@ class TimetablePage extends Component {
             .then(timetable => {
                 this.setState(() => {
                     timetable = timetable.map(day => {
-
-
                         day.subjects = Object.entries(day.subjects).map(([subjectIndex, subject]) => ({
                             id: `${day.day_id}-${subjectIndex}-${subject.codename}`,
                             content: subject.name,
                             codename: subject.codename
                         }))
-
-
                         return day
-
-
                     });
 
                     return { timetable }
@@ -114,6 +106,16 @@ class TimetablePage extends Component {
         });
     }
 
+    deleteSubject = (day_id, subject_index) => {
+        this.setState(({ timetable }) => {
+            delete timetable[day_id - 1]['subjects'][subject_index];
+
+            timetable[day_id - 1]['subjects'] = timetable[day_id - 1]['subjects'].filter(e =>  e);
+
+            return timetable;
+        });
+    }
+
     render() {
         const { timetable } = this.state;
 
@@ -121,12 +123,10 @@ class TimetablePage extends Component {
             return '';
         }
 
-        console.log(timetable)
-
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
                 <div className="uk-container uk-container-large">
-                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} />
+                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} />
                 </div>
             </PageTemplate>
         )

@@ -320,3 +320,9 @@ div.ReactTags__selected a.ReactTags__remove {
         height: 200px;
     }
 }
+
+.trash-icon {
+    &:hover {
+        color: rgb(255, 60, 60);
+    }
+}

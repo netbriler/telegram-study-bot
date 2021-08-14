@@ -3,12 +3,12 @@ import React from 'react';
 import TimetableDay from './timetable-day';
 
 
-export default function TimetableWeek({ timetable }) {
+export default function TimetableWeek({ timetable, deleteSubject }) {
     return (
         <div className="uk-card uk-card-default uk-card-body">
             <div className="timetable__week-container">
                 {timetable.map((day, i) => (
-                    <TimetableDay key={i} day={day} />
+                    <TimetableDay key={i} day={day} deleteSubject={deleteSubject}/>
                 ))}
             </div>
             <hr style={{marginTop:0}}/>
