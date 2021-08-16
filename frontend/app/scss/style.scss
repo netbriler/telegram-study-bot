@@ -3,6 +3,7 @@ $global-link-color: #da7d02;
 @import "../../node_modules/uikit/src/scss/variables-theme.scss";
 @import "../../node_modules/uikit/src/scss/mixins-theme.scss";
 @import "../../node_modules/uikit/src/scss/uikit-theme.scss";
+@import "./components/select-searck.scss";
 
 * {
     box-sizing: border-box;
@@ -310,14 +311,13 @@ div.ReactTags__selected a.ReactTags__remove {
     }
 
     &__day{
-        height: 100px;
         min-height: 275px;
         padding: 0 20px;
     }
 
     &__subjects{
         width: 250px;
-        height: 200px;
+        min-height: 200px;
     }
 }
 
@@ -326,3 +326,5 @@ div.ReactTags__selected a.ReactTags__remove {
         color: rgb(255, 60, 60);
     }
 }
+
+

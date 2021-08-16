@@ -1,15 +1,29 @@
 import React from 'react';
 
-import ReactDOM from "react-dom";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
-export default function TimetableDay({ day, deleteSubject }) {
+import UIkit from 'uikit';
+
+import ChooseModal from '../choose-modal';
+
+
+function TimetableDay({ day, deleteSubject, addSubject, subjects }) {
+    const modal = true;
+
+    const toggleModal = () => {
+        UIkit.modal(`#modal-subjects-day-${day.day_id}`).toggle()
+    }
+
+    const onSubjectSelected = (subject) => {
+        addSubject(day, subject)
+    }
+
     return (
         <div key={day.day_id} className="timetable__day">
             <h3>
-                {day.day_name} <span className="ion-plus"></span>
+                {day.day_name} <span className="ion-plus" onClick={toggleModal}></span>
             </h3>
-            <Droppable droppableId={`${day.day_id}`}>
+            <Droppable droppableId={`${day.day_id}`} isUsingPlaceholder={false}>
                 {(provided, snapshot) => (
                     <div
                         className="timetable__subjects"
@@ -36,19 +50,19 @@ export default function TimetableDay({ day, deleteSubject }) {
                                             }}
                                         >
                                             {subject.content} <span className="ion-android-delete trash-icon" style={{ display: 'none', cursor: 'pointer' }} onClick={() => deleteSubject(day.day_id, index)}></span>
-                                            {provided.placeholder}
                                         </li>
                                     )}
                                 </Draggable>
-
                             ))}
                         </ul>
+                        <div style={{ display: 'none' }}>{provided.placeholder}</div>
                     </div>
                 )}
             </Droppable>
-
-
+            <ChooseModal modal={modal} target={`modal-subjects-day-${day.day_id}`} onChoose={onSubjectSelected} subjects={subjects} addSubject={addSubject} />
         </div>
     )
 
 }
+
+export default TimetableDay;

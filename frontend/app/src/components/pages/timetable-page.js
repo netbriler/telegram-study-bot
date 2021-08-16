@@ -42,7 +42,8 @@ class TimetablePage extends Component {
         super(props);
 
         this.state = {
-            timetable: null
+            timetable: null,
+            subjects: []
         }
 
         this.AdminService = this.props.AdminService;
@@ -53,6 +54,15 @@ class TimetablePage extends Component {
     componentDidMount() {
         this.isLoading();
         this.loadTimetable(this.isLoaded);
+        this.loadSubjects(this.isLoaded);
+    }
+
+    loadSubjects(callback) {
+        this.AdminService.getAllSubjects()
+            .then(subjects => {
+                this.setState(() => { return { subjects } });
+            })
+            .then(callback);
     }
 
     loadTimetable(callback) {
@@ -110,14 +120,26 @@ class TimetablePage extends Component {
         this.setState(({ timetable }) => {
             delete timetable[day_id - 1]['subjects'][subject_index];
 
-            timetable[day_id - 1]['subjects'] = timetable[day_id - 1]['subjects'].filter(e =>  e);
+            timetable[day_id - 1]['subjects'] = timetable[day_id - 1]['subjects'].filter(e => e);
 
             return timetable;
         });
     }
 
+    addSubject = (day, subject) => {
+        this.setState(({ timetable }) => {
+            timetable[day.day_id - 1]['subjects'].push({
+                id: `${day.day_id}-${timetable[day.day_id - 1]['subjects'].length}-${subject.codename}`,
+                content: subject.name,
+                codename: subject.codename
+            });
+
+            return { timetable }
+        });
+    }
+
     render() {
-        const { timetable } = this.state;
+        const { timetable, subjects } = this.state;
 
         if (!timetable) {
             return '';
@@ -126,7 +148,7 @@ class TimetablePage extends Component {
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
                 <div className="uk-container uk-container-large">
-                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} />
+                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} addSubject={this.addSubject} subjects={subjects} />
                 </div>
             </PageTemplate>
         )
