@@ -115,7 +115,7 @@
   
   .select-search__option {
     &.is-selected {
-      background: #2FCC8B;
+      background: #1e87f0 ;
       color: #fff;
     }
   
@@ -188,7 +188,7 @@
   
   .select-search:not(.select-search--multiple) {
     .select-search__input:hover {
-      border-color: #2FCC8B;
+      border-color: #1e87f0 ;
     }
   
     .select-search__select {

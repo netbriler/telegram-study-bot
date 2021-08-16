@@ -3,8 +3,25 @@ import datetime
 import re
 from datetime import datetime, timedelta, date
 
+from app import db
 from app.models import Timetable, Subject
 from .subjects import get_none_subject, get_subject
+
+
+def edit_timetable(id: int, subjects: str):
+    day = Timetable.query.filter_by(id=id).first()
+    if not day:
+        return False
+
+    if not subjects:
+        day.is_work_day = False
+    else:
+        day.is_work_day = True
+        day.subjects = subjects
+
+    db.session.commit()
+
+    return True
 
 
 def get_timetable() -> list[dict[str, [list, any]]]:

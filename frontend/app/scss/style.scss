@@ -211,12 +211,13 @@ body {
 .ql-editor {
     min-height: 150px;
 }
-.ql-toolbar, .ql-container {
-    border: 1px solid #e5e5e5!important;
+.ql-toolbar,
+.ql-container {
+    border: 1px solid #e5e5e5 !important;
 }
 
-.ql-container{
-    border-top: 0!important;
+.ql-container {
+    border-top: 0 !important;
 }
 
 .ql-editor em {
@@ -231,15 +232,15 @@ body {
 }
 
 .ql-snow .ql-tooltip::before {
-    content: 'Ссылка: '!important;
+    content: "Ссылка: " !important;
 }
 
 .ql-snow .ql-tooltip a.ql-action::after {
-    content: 'Изменить'!important;
+    content: "Изменить" !important;
 }
 
 .ql-snow .ql-tooltip a.ql-remove::before {
-    content: 'Удалить'!important;
+    content: "Удалить" !important;
 }
 
 /* Styles for the input */
@@ -281,10 +282,10 @@ div.ReactTags__selected a.ReactTags__remove {
     cursor: pointer;
 }
 
-.tag-wrapper.ReactTags__tag{
+.tag-wrapper.ReactTags__tag {
     font-size: 14px;
 
-    &:first-child{
+    &:first-child {
         margin-left: 0;
     }
 }
@@ -297,7 +298,7 @@ div.ReactTags__selected a.ReactTags__remove {
 }
 
 .timetable {
-    &__container{
+    &__container {
         display: flex;
         justify-content: space-around;
     }
@@ -310,12 +311,12 @@ div.ReactTags__selected a.ReactTags__remove {
         grid-auto-flow: column;
     }
 
-    &__day{
+    &__day {
         min-height: 275px;
         padding: 0 20px;
     }
 
-    &__subjects{
+    &__subjects {
         width: 250px;
         min-height: 200px;
     }
@@ -327,4 +328,28 @@ div.ReactTags__selected a.ReactTags__remove {
     }
 }
 
+@media screen and (max-width: 1700px) {
+    .timetable {
+        &__container {
+            & .uk-card-body {
+                padding: 40px 25px;
+                margin: 0 12px;
+            }
+        }
+    }
+}
 
+
+@media screen and (max-width: 1600px) {
+    .timetable {
+        &__container {
+            flex-direction: column;
+            margin: 0 auto;
+            max-width: 760px;
+
+            & .uk-card-body {
+                margin: 10px 0;
+            }
+        }
+    }
+}

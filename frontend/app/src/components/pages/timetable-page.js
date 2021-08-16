@@ -138,6 +138,30 @@ class TimetablePage extends Component {
         });
     }
 
+    onTimetableSave = (timetable) => {
+        const formatedTimetable = timetable.map((day) => {
+            return {
+                id: day.day_id,
+                subjects: day.subjects.map(subject => subject.codename).join(',')
+            }
+        })
+
+        this.isLoading();
+
+        this.AdminService.editTimetable(formatedTimetable)
+            .then(() => {
+                this.showNotification('Сохранено', 'success')
+            })
+            .then(this.isLoaded)
+            .catch(({ response }) => {
+                this.showNotification('Произошла ошибка при изменении', 'danger')
+            });
+    }
+
+    showNotification = (message, status) => {
+        UIkit.notification({ message, status });
+    }
+
     render() {
         const { timetable, subjects } = this.state;
 
@@ -148,7 +172,7 @@ class TimetablePage extends Component {
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
                 <div className="uk-container uk-container-large">
-                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} addSubject={this.addSubject} subjects={subjects} />
+                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} addSubject={this.addSubject} subjects={subjects} onTimetableSave={this.onTimetableSave} />
                 </div>
             </PageTemplate>
         )
