@@ -14,7 +14,7 @@ export default function TimetableWeek({ timetable, deleteSubject, addSubject, su
             <hr style={{ marginTop: 0 }} />
             <a className="uk-button uk-button-text uk-align-right" onClick={(e) => {
                 e.preventDefault();
-                onTimetableSave(timetable)
+                onTimetableSave()
             }} href="">Сохранить</a>
         </div>
 

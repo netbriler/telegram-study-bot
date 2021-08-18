@@ -25,8 +25,8 @@ export default class AdminService {
         return await AdminService.get('timetable');
     }
 
-    static async editTimetable(timetable) {
-        return await AdminService.patch('timetable/', timetable);
+    static async editTimetable(params) {
+        return await AdminService.patch('timetable/', params);
     }
 
     static async getAllSubjects() {

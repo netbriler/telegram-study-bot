@@ -63,6 +63,9 @@ def _get_text(timetable: list[list[Task]]):
     text = ''
     for i in range(len(timetable)):
         tasks = timetable[i]
+        if not tasks:
+            continue
+
         text += calendar.day_name[i].capitalize() + ':\n'
 
         j = 1
@@ -72,4 +75,9 @@ def _get_text(timetable: list[list[Task]]):
 
         text = text.rstrip() + '\n\n'
 
-    return text.rstrip()
+    text = text.rstrip()
+
+    if not text:
+        return 'Нет ДЗ'
+
+    return text

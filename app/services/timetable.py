@@ -47,7 +47,7 @@ def get_subjects_by_date(current_date: date) -> list[Subject] or None:
 
 def get_subjects_by_week(week: int, year: int = datetime.now().year) -> list[list[Subject]]:
     subjects_list = []
-    for i in range(5):
+    for i in range(7):
         subjects_date = datetime.combine(date.fromisocalendar(year, week, i + 1), datetime.min.time()).date()
         subjects_list.append(get_subjects_by_date(current_date=subjects_date))
 
@@ -73,7 +73,7 @@ def _get_day_number_by_date(current_date: date) -> int:
 def _get_subjects(day: int) -> list[Subject]:
     timetable = Timetable.query.filter_by(id=day).first()
 
-    if not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
+    if not timetable or not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
         return []
 
     subjects_list = list()

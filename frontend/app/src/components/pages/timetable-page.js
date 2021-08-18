@@ -138,7 +138,9 @@ class TimetablePage extends Component {
         });
     }
 
-    onTimetableSave = (timetable) => {
+    onTimetableSave = () => {
+        const { timetable } = this.state;
+
         const formatedTimetable = timetable.map((day) => {
             return {
                 id: day.day_id,
@@ -148,7 +150,7 @@ class TimetablePage extends Component {
 
         this.isLoading();
 
-        this.AdminService.editTimetable(formatedTimetable)
+        this.AdminService.editTimetable({ timetable: formatedTimetable })
             .then(() => {
                 this.showNotification('Сохранено', 'success')
             })

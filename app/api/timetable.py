@@ -2,7 +2,7 @@ from flask import jsonify, current_app, abort, request
 
 from app.api import api
 from app.exceptions import BadRequest
-from app.services.subjects import get_subject
+from app.services.subjects import get_subject, get_all_subjects
 from app.services.timetable import get_subjects_by_week, get_subject_timetable, get_timetable, edit_timetable
 
 
@@ -57,8 +57,17 @@ def _get_subject_timetable(codename: str):
 def _update_timetable():
     try:
         assert request.json
+        assert request.json['timetable']
 
-        for day in request.json:
+        subjects = get_all_subjects()
+        subject_codename_list = [s.codename for s in subjects]
+
+        for day in request.json['timetable']:
+            if day['subjects']:
+                for subject in day['subjects'].split(','):
+                    if subject not in subject_codename_list:
+                        raise BadRequest(f'subject "{subject}" not found')
+
             edit_timetable(day['id'], day['subjects'])
 
         return jsonify({'ok': True})

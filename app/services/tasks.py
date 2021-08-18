@@ -59,7 +59,7 @@ def get_tasks_by_date(date_to_query: date) -> list[Task]:
 
 def get_tasks_by_week(week: int, year: int = datetime.now().year) -> list[list[Task]]:
     tasks_list = []
-    for i in range(5):
+    for i in range(7):
         task_date = date.fromisocalendar(year, week, i + 1)
         tasks_list.append(get_tasks_by_date(task_date))
 
