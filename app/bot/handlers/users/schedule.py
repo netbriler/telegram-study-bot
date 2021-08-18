@@ -63,12 +63,19 @@ def inline_schedule_handler(call: CallbackQuery):
 def _get_text(timetable: list[list[Subject]]):
     text = ''
     for i in range(len(timetable)):
+        subjects = timetable[i]
+        if not subjects:
+            continue
+
         text += calendar.day_name[i].capitalize() + ':\n'
 
-        subjects = timetable[i]
         for j in range(len(subjects)):
             text += f'{j + 1}) <b>{subjects[j].name}</b> (<i>{subjects[j].audience}</i>)\n'
 
         text += '\n'
 
-    return text.rstrip()
+    if not text:
+        return 'Нет расписания'
+
+    return text
+

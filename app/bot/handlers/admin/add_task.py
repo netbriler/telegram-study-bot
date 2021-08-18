@@ -2,7 +2,7 @@ from html import escape
 
 from telebot.types import Message
 
-from app.models import User, Subject
+from app.models import User
 from app.services.subjects import recognize_subject
 from app.services.tasks import add_task
 from ...base import base

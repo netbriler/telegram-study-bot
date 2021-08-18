@@ -1,9 +1,43 @@
+import calendar
 import datetime
 import re
 from datetime import datetime, timedelta, date
 
+from app import db
 from app.models import Timetable, Subject
 from .subjects import get_none_subject, get_subject
+
+
+def edit_timetable(id: int, subjects: str):
+    day = Timetable.query.filter_by(id=id).first()
+    if not day:
+        return False
+
+    if not subjects:
+        day.is_work_day = False
+    else:
+        day.is_work_day = True
+        day.subjects = subjects
+
+    db.session.commit()
+
+    return True
+
+
+def get_timetable() -> list[dict[str, [list, any]]]:
+    timetable = Timetable.query.all()
+
+    timetable_list = []
+    for day in timetable:
+        day_name_id = day.id if day.id < 8 else day.id - 7
+        day_name = calendar.day_name[day_name_id - 1].capitalize()
+        timetable_list.append({
+            'day_id': day.id,
+            'day_name': day_name,
+            'subjects': list(map(lambda s: s.to_json(), _get_subjects(day.id)))
+        })
+
+    return timetable_list
 
 
 def get_subjects_by_date(current_date: date) -> list[Subject] or None:
@@ -13,7 +47,7 @@ def get_subjects_by_date(current_date: date) -> list[Subject] or None:
 
 def get_subjects_by_week(week: int, year: int = datetime.now().year) -> list[list[Subject]]:
     subjects_list = []
-    for i in range(5):
+    for i in range(7):
         subjects_date = datetime.combine(date.fromisocalendar(year, week, i + 1), datetime.min.time()).date()
         subjects_list.append(get_subjects_by_date(current_date=subjects_date))
 
@@ -39,7 +73,7 @@ def _get_day_number_by_date(current_date: date) -> int:
 def _get_subjects(day: int) -> list[Subject]:
     timetable = Timetable.query.filter_by(id=day).first()
 
-    if not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
+    if not timetable or not timetable.is_work_day or len(timetable.subjects.strip()) < 1:
         return []
 
     subjects_list = list()

@@ -10,3 +10,10 @@ class Timetable(db.Model):
 
     def __repr__(self) -> str:
         return f'<Timetable {self.id} {self.is_work_day}>'
+
+
+def init_timetable():
+    if not Timetable.query.all():
+        for i in range(14):
+            db.session.add(Timetable(subjects=''))
+        db.session.commit()
