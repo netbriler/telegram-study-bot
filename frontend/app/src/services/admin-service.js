@@ -21,6 +21,14 @@ export default class AdminService {
             });
     }
 
+    static async getTimetable() {
+        return await AdminService.get('timetable');
+    }
+
+    static async editTimetable(params) {
+        return await AdminService.patch('timetable/', params);
+    }
+
     static async getAllSubjects() {
         return await AdminService.get('subjects');
     }
