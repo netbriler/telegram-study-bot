@@ -12,9 +12,28 @@ export default class AdminService {
             });
     }
 
+    static async post(link, params) {
+        return await axios
+            .post(this._apiBase + link, params)
+            .then(({ data }) => data.ok ? data.response : false)
+            .catch(({ response }) => {
+                if (response.status == 401) AdminService.logout();
+                return response;
+            });
+    }
+
     static async patch(link, params) {
         return await axios
             .patch(this._apiBase + link, params)
+            .then(({ data }) => data.ok ? data.response : false)
+            .catch(({ response }) => {
+                if (response.status == 401) AdminService.logout();
+            });
+    }
+
+    static async delete(link) {
+        return await axios
+            .delete(this._apiBase + link)
             .then(({ data }) => data.ok ? data.response : false)
             .catch(({ response }) => {
                 if (response.status == 401) AdminService.logout();
@@ -37,8 +56,16 @@ export default class AdminService {
         return await AdminService.get('subjects/' + codename);
     }
 
+    static async createSubject(params) {
+        return await AdminService.post('subjects', params);
+    }
+
     static async editSubject(codename, params) {
         return await AdminService.patch('subjects/' + codename, params);
+    }
+
+    static async deleteSubject(codename) {
+        return await AdminService.delete('subjects/' + codename);
     }
 
     static async getAllUsers() {

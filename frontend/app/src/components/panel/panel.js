@@ -10,7 +10,7 @@ const Panel = ({ user }) => {
                     <nav uk-navbar="true" className="uk-navbar">
                         <div className="uk-navbar-left">
                             <a id="sidebar_toggle" className="uk-navbar-toggle uk-navbar-toggle-icon uk-icon" uk-toggle="target: #offcanvas-reveal" style={{color:'white'}}><svg width={20} height={20} viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-svg="navbar-toggle-icon"><rect y={9} width={20} height={2} /><rect y={3} width={20} height={2} /><rect y={15} width={20} height={2} /></svg></a>
-                            <a href="#" className="uk-navbar-item uk-logo">
+                            <a href="/" className="uk-navbar-item uk-logo">
                                 Briler Admin
                             </a>
                         </div>

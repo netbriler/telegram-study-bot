@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 
-export default function PageTemplate({ title, links=[], description, children, icon }) {
+export default function PageTemplate({ title, links = [], description, children, icon }) {
 
     let breadcrumb = '';
 
