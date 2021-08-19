@@ -9,7 +9,7 @@ const Panel = ({ user }) => {
                 <div className="uk-container uk-container-expand">
                     <nav uk-navbar="true" className="uk-navbar">
                         <div className="uk-navbar-left">
-                            <a id="sidebar_toggle" className="uk-navbar-toggle uk-navbar-toggle-icon uk-icon" uk-toggle="target: #offcanvas-reveal"><svg width={20} height={20} viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-svg="navbar-toggle-icon"><rect y={9} width={20} height={2} /><rect y={3} width={20} height={2} /><rect y={15} width={20} height={2} /></svg></a>
+                            <a id="sidebar_toggle" className="uk-navbar-toggle uk-navbar-toggle-icon uk-icon" uk-toggle="target: #offcanvas-reveal" style={{color:'white'}}><svg width={20} height={20} viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-svg="navbar-toggle-icon"><rect y={9} width={20} height={2} /><rect y={3} width={20} height={2} /><rect y={15} width={20} height={2} /></svg></a>
                             <a href="#" className="uk-navbar-item uk-logo">
                                 Briler Admin
                             </a>
@@ -31,7 +31,7 @@ const Panel = ({ user }) => {
                 </div>
             </div>
             <div id="offcanvas-reveal" uk-offcanvas="mode: reveal; overlay: false;container: true">
-                <div class="uk-offcanvas-bar uk-flex uk-flex-column">
+                <div className="uk-offcanvas-bar uk-flex uk-flex-column">
 
                     <div className="uk-margin-auto-vertical">
                         <center>
@@ -44,14 +44,14 @@ const Panel = ({ user }) => {
                             <br />
                         </center>
 
-                        <ul class="uk-nav uk-nav-primary uk-nav-center">
+                        <ul className="uk-nav uk-nav-primary uk-nav-center">
                             <li><Link to="/subjects">Предметы</Link></li>
                             <li><Link to="/timetable">Расписание</Link></li>
                             <li><Link to="/users">Пользователи</Link></li>
-                            <li><a href="#">Домашние задания</a></li>
-                            <li class="uk-nav-divider"></li>
-                            <li><a href="#">Переписка</a></li>
-                            <li><a href="#">Рассылка</a></li>
+                            {/* <li><a href="#">Домашние задания</a></li> */}
+                            <li className="uk-nav-divider"></li>
+                            {/* <li><a href="#">Переписка</a></li>
+                            <li><a href="#">Рассылка</a></li> */}
                             <li><Link to="/log">Логи</Link></li>
                         </ul>
                     </div>

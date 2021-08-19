@@ -12,10 +12,13 @@ export default function LogPage() {
     }
 
     return (
-        <PageTemplate name='Логи' description='Инструмент для разработчиков' icon='ion-clipboard'>
-            <div className="uk-container uk-container-large uk-section-default">
-                {log}
-            </div>
+        <PageTemplate title='Логи' description='Инструмент для разработчиков' icon='ion-clipboard'>
+            <iframe src="/logs" frameBorder={0} style={{ border: 0, width: '100%', height: '100%' }} onLoad={(e) => {
+                e.target.style.height = 0;
+                e.target.style.height = e.target.contentWindow.document.body.scrollHeight + 50 + 'px';
+
+                setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 100);
+            }}></iframe>
         </PageTemplate>
     )
 }

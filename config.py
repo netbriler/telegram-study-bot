@@ -10,6 +10,7 @@ DIR = str(pathlib.Path(__file__).parent.absolute())
 class ProductionConfig:
     CONFIG_KEY = 'production'
     APP_DIR = DIR + '/app'
+    LOGGING_DIR = DIR + '/logs'
     LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
@@ -37,6 +38,7 @@ class ProductionConfig:
 class Develop:
     CONFIG_KEY = 'develop'
     APP_DIR = DIR + '/app'
+    LOGGING_DIR = DIR + '/logs'
     LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
@@ -64,6 +66,7 @@ class Develop:
 class Testing:
     CONFIG_KEY = 'testing'
     APP_DIR = DIR + '/app'
+    LOGGING_DIR = DIR + '/logs'
     LOCATE = 'uk_UA.utf8'
 
     DB_HOST = 'testing.sqlite3'
