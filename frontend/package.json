@@ -42,7 +42,7 @@
     "react-tag-input": "^6.5.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "uikit": "^3.5.8"
+    "uikit": "^3.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.0",
