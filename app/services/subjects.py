@@ -10,24 +10,51 @@ def get_subject(codename: str) -> Subject:
     return subject
 
 
-def edit_subject(codename: str, name: str = None, aliases: str or list = None,
+def create_subject(codename: str, name: str, aliases: str or list = None,
+                   info: str = None, teacher: str = None, audience: str = None, files: list = None, *args,
+                   **kwargs) -> Subject or False:
+    subject = Subject(codename=codename)
+
+    subject.name = name
+    subject.aliases = aliases
+    subject.info = info
+    subject.teacher = teacher
+    subject.audience = audience
+
+    if files or type(files) == list:
+        files_list = list()
+        for file in files:
+            if 'id' in file:
+                file_model = get_file(file['id'])
+                file_model.title = file['title']
+                file_model.file_id = file['file_id']
+            else:
+                file_model = File(title=file['title'], file_id=file['file_id'])
+
+            files_list.append(file_model)
+
+        subject.files = files_list
+
+    db.session.add(subject)
+    db.session.commit()
+
+    return subject
+
+
+def edit_subject(codename: str, name: str, aliases: str or list = None,
                  info: str = None, teacher: str = None, audience: str = None, files: list = None, *args,
                  **kwargs) -> Subject or False:
     subject = get_subject(codename)
     if not subject:
         return False
 
-    if name:
-        subject.name = name
-    if aliases:
-        subject.aliases = aliases
-    if info:
-        subject.info = info
-    if teacher:
-        subject.teacher = teacher
-    if audience:
-        subject.audience = audience
-    if files:
+    subject.name = name
+    subject.aliases = aliases
+    subject.info = info
+    subject.teacher = teacher
+    subject.audience = audience
+
+    if files or type(files) == list:
         files_list = list()
         for file in files:
             if 'id' in file:
@@ -44,6 +71,17 @@ def edit_subject(codename: str, name: str = None, aliases: str or list = None,
     db.session.commit()
 
     return subject
+
+
+def delete_subject(codename: str):
+    subject = get_subject(codename)
+    if not subject:
+        return False
+
+    db.session.delete(subject)
+    db.session.commit()
+
+    return True
 
 
 def get_all_subjects() -> list[Subject]:

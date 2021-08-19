@@ -70,8 +70,9 @@ def _get_text(timetable: list[list[Task]]):
 
         j = 1
         for task in tasks:
-            text += f'{j}) <b>{task.subject.name}</b>\n{escape(task.text)}\n\n'
-            j += 1
+            if task.subject:
+                text += f'{j}) <b>{task.subject.name}</b>\n{escape(task.text)}\n\n'
+                j += 1
 
         text = text.rstrip() + '\n\n'
 

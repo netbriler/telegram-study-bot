@@ -13,11 +13,8 @@ def edit_timetable(id: int, subjects: str):
     if not day:
         return False
 
-    if not subjects:
-        day.is_work_day = False
-    else:
-        day.is_work_day = True
-        day.subjects = subjects
+    day.is_work_day = True if subjects else False
+    day.subjects = subjects if subjects else None
 
     db.session.commit()
 
@@ -79,12 +76,24 @@ def _get_subjects(day: int) -> list[Subject]:
     subjects_list = list()
     subjects = timetable.subjects.split(',')
 
-    for subject in subjects:
-        if subject == 'None':
+    for subject_codename in subjects:
+        if subject_codename == 'None':
             subjects_list.append(get_none_subject())
         else:
-            subjects_list.append(get_subject(subject))
+            subject = get_subject(subject_codename)
+            if subject:
+                subjects_list.append(subject)
     return subjects_list
+
+
+def delete_subject_from_timetable(subject_codename: str):
+    """Returns an array with days in the timetable in which the given subject is present"""
+    timetable = Timetable.query.filter(Timetable.subjects.like(f'%{subject_codename}%')).all()
+    timetable = list(filter(lambda s: re.search(fr'(^|,){subject_codename}', s.subjects), timetable))
+
+    for day in timetable:
+        subjects = [s for s in day.subjects.split(',') if s != subject_codename]
+        edit_timetable(day.id, ','.join(subjects))
 
 
 def get_subject_timetable(subject_codename: str) -> list[dict]:
