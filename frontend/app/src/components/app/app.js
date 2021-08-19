@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
     Switch,
     Route,
     Redirect,
 } from "react-router-dom";
 import Panel from '../panel'
-import {LogPage, SubjectsPage, SubjectPage, UsersPage, TimetablePage} from '../pages'
+import { LogPage, SubjectsPage, SubjectPage, UsersPage, TimetablePage } from '../pages'
 import UIkit from 'uikit'
-import {isLoaded, isLoading, setCurrentUser} from '../../actions';
+import { isLoaded, isLoading, setCurrentUser } from '../../actions';
 import WithAdminService from '../hoc';
 
 class App extends Component {
@@ -44,11 +44,12 @@ class App extends Component {
 
         return (
             <>
-                <Panel/>
+                <Panel />
                 <Switch>
-                    <Route path="/subjects" component={SubjectsPage}></Route>
+                    <Route path="/subjects/new" component={SubjectPage}></Route>
                     <Route path="/subject/:codename" component={SubjectPage}></Route>
                     <Route path="/users" component={UsersPage}></Route>
+                    <Route path="/subjects" component={SubjectsPage}></Route>
                     <Route path="/timetable" component={TimetablePage}></Route>
                     <Route path="/log" component={LogPage}></Route>
                     <Redirect from="*" exact to="/subjects"></Redirect>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
+import { Redirect } from "react-router-dom";
 
 import { PageTemplate } from '../page-templates'
 
@@ -9,7 +10,9 @@ import { TextEditor } from '../text-editor'
 import { TagsEditor } from '../tags-editor'
 
 import UIkit from 'uikit';
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 
+const cyrillicToTranslit = new CyrillicToTranslit();
 
 class SubjectPage extends Component {
     description = 'Страница редактирования предмета'
@@ -26,7 +29,13 @@ class SubjectPage extends Component {
         super(props);
 
         this.state = {
-            subject: null
+            subject: null,
+            is_new: false,
+
+            errors: {
+                name: false,
+                codename: false
+            }
         }
 
         this.AdminService = this.props.AdminService;
@@ -37,23 +46,67 @@ class SubjectPage extends Component {
     }
 
     componentDidMount() {
-        this.isLoading();
-        this.loadSubject(this.codename, this.isLoaded);
+        if (this.codename != null) {
+            this.isLoading();
+            this.loadSubject(this.codename, this.isLoaded);
+        } else {
+            this.setState(() => {
+                return {
+                    subject: {
+                        audience: '',
+                        codename: '',
+                        aliases: [],
+                        files: [{ title: '', file_id: '' }],
+                        info: '',
+                        name: '',
+                        teacher: '',
+                    }, title: 'Новый предмет', is_new: true
+                }
+            });
+            this.description = 'Страница создания предмета'
+        }
     }
 
     loadSubject(codename, callback) {
         this.AdminService.getSubject(codename)
             .then(subject => {
+                if (subject == null) {
+                    this.props.history.push('/subjects')
+                }
+                subject.files.push({ title: '', file_id: '' });
                 this.setState(() => { return { subject, title: subject.name } });
             })
             .then(callback);
     }
 
+    _formatCodename(codename) {
+        return cyrillicToTranslit.transform(codename.trim(), '_').toLowerCase().replace(/[^_0-9a-z]/gi, '');
+    }
+
+    handleCodenameChange = (value) => {
+        this.setState((state) => {
+            const { subject, errors } = state;
+            if (state.is_new) {
+                subject.codename = this._formatCodename(value);
+                errors.codename = value.trim() == '';
+            }
+
+            return { subject, errors }
+        });
+    }
 
     handleNameChange = (value) => {
         this.setState((state) => {
-            const subject = state.subject;
+            const { subject, errors } = state;
+
             subject.name = value;
+            errors.name = value.trim() == '';
+
+            if (state.is_new) {
+                subject.codename = this._formatCodename(value);
+                errors.codename = subject.codename == '';
+            }
+
             return { subject }
         });
     }
@@ -98,6 +151,7 @@ class SubjectPage extends Component {
             }
             subject.files[key].title = value.trim();
             subject.files = subject.files.filter((file) => (file.title !== '' || file.file_id !== ''));
+            subject.files.push({ title: '', file_id: '' });
             return { subject }
         });
     }
@@ -120,12 +174,18 @@ class SubjectPage extends Component {
             }
             subject.files[key].file_id = value.trim();
             subject.files = subject.files.filter((file) => (file.title !== '' || file.file_id !== ''));
+            subject.files.push({ title: '', file_id: '' });
             return { subject }
         });
     }
 
-    handleSubmit = (e) => {
+    handleEditSubmit = (e) => {
         e.preventDefault();
+
+        if (this.state.errors.name || this.state.errors.codename) {
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
+
         this.isLoading();
 
         const { subject } = this.state;
@@ -136,12 +196,12 @@ class SubjectPage extends Component {
             teacher: subject.teacher,
             audience: subject.audience,
             info: subject.info,
-            files: subject.files
+            files: subject.files.filter((file) => (file.title !== '' || file.file_id !== ''))
         };
 
         this.AdminService.editSubject(subject.codename, params)
             .then(subject => {
-                console.log(subject);
+                subject.files.push({ title: '', file_id: '' });
                 this.setState(() => { return { subject, title: subject.name } });
             })
             .then(() => {
@@ -153,25 +213,59 @@ class SubjectPage extends Component {
             });
     }
 
+    handleCreateSubmit = (e) => {
+        e.preventDefault();
+
+        if (this.state.errors.name || this.state.errors.codename) {
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
+
+        this.isLoading();
+
+        const { subject } = this.state;
+
+        const params = {
+            codename: subject.codename,
+            name: subject.name,
+            aliases: subject.aliases,
+            teacher: subject.teacher,
+            audience: subject.audience,
+            info: subject.info,
+            files: subject.files.filter((file) => (file.title !== '' || file.file_id !== ''))
+        };
+
+        this.AdminService.createSubject(params)
+            .then((response) => {
+                if (response.status == 409) {
+                    this.setState(({ errors }) => {
+                        errors.codename = true;
+                        return { errors }
+                    });
+                    return this.showNotification('Предмет с таким кодовым именем уже существует', 'danger')
+                }
+                this.setState(() => { return { redirect: true } });
+            })
+            .then(this.isLoaded)
+            .catch(({ response }) => {
+                this.showNotification('Произошла ошибка при создании', 'danger')
+            });
+
+        this.isLoaded();
+    }
+
     showNotification = (message, status) => {
         UIkit.notification({ message, status });
     }
 
     render() {
-        const { title, subject } = this.state;
+        const { is_new, title, subject, errors, redirect } = this.state;
 
         if (!subject) {
             return '';
         }
 
-        let showNewFileInput = false;
-        if (subject.files.length < 1) {
-            showNewFileInput = true;
-        } else {
-            const lastFile = subject.files.slice(-1).pop();
-
-            if (typeof lastFile !== 'undefined' && lastFile.title !== '' && lastFile.file_id !== '')
-                showNewFileInput = true;
+        if (redirect) {
+            return <Redirect to={'/subjects'} />;
         }
 
         return (
@@ -180,11 +274,24 @@ class SubjectPage extends Component {
 
                     <div className="uk-form-stacked" >
                         <div className="uk-margin">
-                            <label className="uk-form-label" htmlFor="name">Название</label>
+                            <label className="uk-form-label" htmlFor="name">Название*</label>
                             <div className="uk-form-controls">
-                                <input className="uk-input" id="name" type="text" placeholder="Название пердмета" value={subject ? subject.name : ''} onChange={e => this.handleNameChange(e.target.value)} />
+                                <input className={
+                                    errors.name ? 'uk-input uk-form-danger' : 'uk-input'
+                                } id="name" type="text" autoFocus required placeholder="Название пердмета" value={subject ? subject.name : ''} onChange={e => this.handleNameChange(e.target.value)} />
                             </div>
                         </div>
+
+                        {is_new &&
+                            <div className="uk-margin">
+                                <label className="uk-form-label" htmlFor="codename">Уникальное кодовое имя*</label>
+                                <div className="uk-form-controls">
+                                    <input className={
+                                        errors.codename ? 'uk-input uk-form-danger' : 'uk-input'
+                                    } id="codename" type="text" required placeholder="Уникальное кодовое имя" value={subject ? subject.codename : ''} onChange={e => this.handleCodenameChange(e.target.value)} />
+                                </div>
+                            </div>
+                        }
 
                         <div className="uk-margin">
                             <label className="uk-form-label">Алиасы</label>
@@ -231,23 +338,16 @@ class SubjectPage extends Component {
                                     </div>
                                 ) : ''}
 
-                                {showNewFileInput &&
-                                    <div className="uk-grid-small" uk-grid="true" key={subject.files.length}>
-                                        <div className="uk-width-1-2@s">
-                                            <input className="uk-input" type="text" placeholder="Название документа" onChange={e => this.handleFileTitleChange(subject.files.length, e.target.value)} />
-                                        </div>
-                                        <div className="uk-width-1-2@s">
-                                            <input className="uk-input" type="text" placeholder="ID документа" onChange={e => this.handleFileIDChange(subject.files.length, e.target)} />
-                                        </div>
-                                    </div>
-                                }
-
                                 <span className="uk-text-meta">Чтобы получить ID документа, отправьте боту команду /get_file_id</span>
 
                             </div>
                         </div>
 
-                        <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleSubmit}>Сохранить</button>
+
+                        {is_new ?
+                            <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleCreateSubmit}>Создать</button> :
+                            <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleEditSubmit}>Сохранить</button>
+                        }
                     </div>
                 </div>
             </PageTemplate>

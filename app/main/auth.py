@@ -37,6 +37,7 @@ def _login_user(user_id):
         login_user(user, remember=True)
 
         return jsonify(current_user.to_json())
+    return 404
 
 
 @main.route('/logout')

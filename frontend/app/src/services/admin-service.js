@@ -12,6 +12,16 @@ export default class AdminService {
             });
     }
 
+    static async post(link, params) {
+        return await axios
+            .post(this._apiBase + link, params)
+            .then(({ data }) => data.ok ? data.response : false)
+            .catch(({ response }) => {
+                if (response.status == 401) AdminService.logout();
+                return response;
+            });
+    }
+
     static async patch(link, params) {
         return await axios
             .patch(this._apiBase + link, params)
@@ -35,6 +45,10 @@ export default class AdminService {
 
     static async getSubject(codename) {
         return await AdminService.get('subjects/' + codename);
+    }
+
+    static async createSubject(params) {
+        return await AdminService.post('subjects', params);
     }
 
     static async editSubject(codename, params) {

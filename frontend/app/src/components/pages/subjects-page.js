@@ -63,6 +63,7 @@ class SubjectsPage extends Component {
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
+                <Link to='/subjects/new' className="uk-button uk-align-center">Создать новый предмет <span className="ion-plus"></span></Link>
                 <div className="uk-container uk-container-large">
                     <div uk-grid="true" className="uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@xl uk-grid">
                         {subjects_list_elements}

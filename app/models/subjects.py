@@ -11,10 +11,10 @@ class Subject(db.Model):
     codename = db.Column(db.String(64), primary_key=True)
 
     name = db.Column(db.String(255))
-    _aliases = db.Column('aliases', db.Text)
-    teacher = db.Column(db.String(225))
+    _aliases = db.Column('aliases', db.Text, default='')
+    teacher = db.Column(db.String(225), default='')
     audience = db.Column(db.String(225), default='')
-    info = db.Column(db.Text)
+    info = db.Column(db.Text, default='')
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     tasks = db.relationship('Task', backref='subject', lazy=True)
@@ -50,7 +50,7 @@ class Subject(db.Model):
         json_story = {
             'codename': self.codename,
             'name': self.name,
-            'aliases': self._aliases.split(','),
+            'aliases': self._aliases.split(',') if self._aliases else [],
             'teacher': self.teacher,
             'audience': self.audience,
             'info': self.info,

@@ -56,6 +56,7 @@ class TagsEditor extends Component {
                     handleDelete={this.handleDelete}
                     handleAddition={this.handleAddition}
                     allowDragDrop={false}
+                    autofocus={false}
                     delimiters={delimiters}
                     placeholder={this.placeholder} />
             </>
