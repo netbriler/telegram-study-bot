@@ -41,39 +41,41 @@ class UsersPage extends Component {
         let users_list_elements = '';
 
         if (users) {
-            users_list_elements = users.map((user, i) => (
-                <tr key={i}>
-                    <td><img className="uk-preserve-width uk-border-circle" src={'/static/pictures/' + (user.photo_id ? user.photo_id + '.jpg' : 'default-avatar.png')} width="40" alt="" /></td>
-                    <td>
-                        {user.username ? <a href={'https://t.me/' + user.username}>@{user.username}</a> : <span className='uk-text-meta'>Не указан</span>}
-                    </td>
-                    <td>{user.name}</td>
-                    <td>{user.id}</td>
-                    <td>{user.status}</td>
-                    <td>
-                        <p uk-margin="true">
-                            <button className="uk-button uk-button-default" type="button" style={{ marginRight: 8 }}>Редактировать</button><button className="uk-button uk-button-danger" type="button">Удалить</button>
-                        </p>
-                    </td>
-                </tr>
-            ))
+            users_list_elements = users.map((user, i) => {
+                let style = {}
+
+                if (['super_admin', 'admin'].includes(user.status)) {
+                    style = { background: 'rgb(84 179 71 / 28%)' }
+                }
+
+                return (
+                    <tr key={i} style={style}>
+                        <td>{user.id}</td>
+                        <td><img className="uk-preserve-width uk-border-circle" src={'/static/pictures/' + (user.photo_id ? user.photo_id + '.jpg' : 'default-avatar.png')} width="40" alt="" /></td>
+                        <td>{user.name}</td>
+                        <td>
+                            {user.username ? <a href={'https://t.me/' + user.username}>@{user.username}</a> : <span className='uk-text-meta'>Не указан</span>}
+                        </td>
+                        <td>{user.status}</td>
+                    </tr>
+                )
+            })
         } else {
-            users_list_elements = 'Не удалось загрузить предметы';
+            users_list_elements = 'Не удалось загрузить пользователей';
         }
 
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
-                <div className="uk-container uk-section-default">
+                <div className="uk-container uk-section-default" style={{ overflow: 'scroll' }}>
                     <table className="uk-table uk-table-middle uk-table-divider">
                         <thead>
                             <tr>
-                                <th>Аватарка</th>
-                                <th>Логин</th>
-                                <th>Имя Фамилия</th>
                                 <th>ID</th>
+                                <th>Аватарка</th>
+                                <th>Имя Фамилия</th>
+                                <th>Логин</th>
                                 <th>Статус</th>
-                                <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody>

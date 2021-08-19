@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 
 const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
-    const [subjectCodename, setSubject] = useState();
+    const [subjectCodename, setSubject] = useState(null);
 
     const options = subjects.map(subject => {
         return {
@@ -20,7 +20,8 @@ const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
         })
 
         if (selectedSubject !== undefined) {
-            onChoose(selectedSubject)
+            onChoose(selectedSubject);
+            setSubject(null);
         }
     }
 
@@ -30,6 +31,7 @@ const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
                 <h2 className="uk-modal-title">{title}</h2>
                 <ul className="uk-list uk-list-divider">
                     <SelectSearch
+                        value={subjectCodename}
                         options={options}
                         search
                         filterOptions={fuzzySearch}
@@ -40,7 +42,6 @@ const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
                 </ul>
                 <p className="uk-text-right">
                     <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={onModalConfirm}>Ок</button>
-                    <button className="uk-button uk-button-default uk-modal-close" type="button">Отменить</button>
                 </p>
             </div>
         </div>
