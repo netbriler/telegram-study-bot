@@ -2,7 +2,8 @@ from flask import jsonify, current_app, abort, request
 
 from app.api import api
 from app.exceptions import BadRequest, Conflict
-from app.services.subjects import get_subject, get_all_subjects, create_subject, edit_subject
+from app.services.subjects import get_subject, get_all_subjects, create_subject, edit_subject, delete_subject
+from app.services.timetable import delete_subject_from_timetable
 
 
 @api.route('/subjects', methods=['GET'])
@@ -55,6 +56,23 @@ def _get_subject(codename: str):
             raise BadRequest('subject not found')
 
         return jsonify(subject.to_full_json())
+    except BadRequest as e:
+        abort(400, description=str(e))
+    except Exception as e:
+        current_app.logger.error(e)
+        abort(500, description='Server error')
+
+
+@api.route('/subjects/<string:codename>', methods=['DELETE'])
+def _delete_subject(codename: str):
+    try:
+        subject = delete_subject(codename)
+        if not subject:
+            raise BadRequest('subject not found')
+
+        delete_subject_from_timetable(codename)
+
+        return jsonify({})
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:

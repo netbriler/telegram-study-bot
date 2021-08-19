@@ -213,6 +213,23 @@ class SubjectPage extends Component {
             });
     }
 
+    handleDelete = (e) => {
+        e.preventDefault();
+        const { subject } = this.state;
+
+        UIkit.modal.confirm('Вы точно хотите удалить предмет?', { labels: { ok: 'Да', cancel: 'Отмена' }, stack: true })
+            .then(() => {
+                this.AdminService.deleteSubject(subject.codename)
+                .then(() => {
+                    this.setState(() => { return { redirect: true } });
+                })
+                .then(this.isLoaded)
+                .catch(({ response }) => {
+                    this.showNotification('Произошла ошибка при удалении', 'danger')
+                });
+            }, () => {});
+    }
+
     handleCreateSubmit = (e) => {
         e.preventDefault();
 
@@ -346,7 +363,10 @@ class SubjectPage extends Component {
 
                         {is_new ?
                             <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleCreateSubmit}>Создать</button> :
-                            <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleEditSubmit}>Сохранить</button>
+                            <>
+                                <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleEditSubmit}>Сохранить</button>
+                                <button className="uk-button uk-button-danger uk-button-large" onClick={this.handleDelete} style={{ marginLeft: 10 }}>Удалить</button>
+                            </>
                         }
                     </div>
                 </div>

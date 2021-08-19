@@ -31,6 +31,15 @@ export default class AdminService {
             });
     }
 
+    static async delete(link) {
+        return await axios
+            .delete(this._apiBase + link)
+            .then(({ data }) => data.ok ? data.response : false)
+            .catch(({ response }) => {
+                if (response.status == 401) AdminService.logout();
+            });
+    }
+
     static async getTimetable() {
         return await AdminService.get('timetable');
     }
@@ -53,6 +62,10 @@ export default class AdminService {
 
     static async editSubject(codename, params) {
         return await AdminService.patch('subjects/' + codename, params);
+    }
+
+    static async deleteSubject(codename) {
+        return await AdminService.delete('subjects/' + codename);
     }
 
     static async getAllUsers() {

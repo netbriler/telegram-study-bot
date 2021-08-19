@@ -17,7 +17,7 @@ class Subject(db.Model):
     info = db.Column(db.Text, default='')
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
-    tasks = db.relationship('Task', backref='subject', lazy=True)
+    tasks = db.relationship('Task', backref='subject', lazy=True, cascade='all,delete')
     files = db.relationship('File', backref='subject', lazy=True)
 
     @hybrid_property

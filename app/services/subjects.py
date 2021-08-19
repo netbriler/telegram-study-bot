@@ -73,6 +73,17 @@ def edit_subject(codename: str, name: str, aliases: str or list = None,
     return subject
 
 
+def delete_subject(codename: str):
+    subject = get_subject(codename)
+    if not subject:
+        return False
+
+    db.session.delete(subject)
+    db.session.commit()
+
+    return True
+
+
 def get_all_subjects() -> list[Subject]:
     subjects = Subject.query.all()
     return sorted(subjects, key=lambda k: k.name.lower())
