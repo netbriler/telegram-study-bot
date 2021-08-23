@@ -11,7 +11,7 @@ from ...keyboards.default import get_subjects_keyboard_markup, get_cancel_keyboa
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^➕Добавить➕$')
+@bot.message_handler(regexp='^➕ Добавить$')
 @bot.message_handler(commands=['add'])
 @base(is_admin=True)
 def add_task_handler(message: Message):
@@ -24,6 +24,10 @@ def add_task_handler(message: Message):
 
 @base(is_admin=True)
 def get_subject_handler(message: Message):
+    if message.content_type != 'text':
+        response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно название предмета!')
+        return bot.register_next_step_handler(response, get_subject_handler)
+
     subject = recognize_subject(message.text)
 
     text = f'Напишите задание для предмета: {subject.name}'
@@ -34,6 +38,10 @@ def get_subject_handler(message: Message):
 
 @base(is_admin=True)
 def add_task_handler(message: Message, subject: dict, current_user: User):
+    if message.content_type != 'text':
+        response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно задание для предмета!')
+        return bot.register_next_step_handler(response, add_task_handler, subject=subject, current_user=current_user)
+
     task = add_task(subject['codename'], message.text)
 
     text = ('Добавлено:\n'

@@ -12,7 +12,7 @@ from ...keyboards.inline import get_week_inline_markup
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^📝ДЗ📝$')
+@bot.message_handler(regexp='^📝 Домашнее задание$')
 @bot.message_handler(commands=['homework'])
 @base()
 def homework_handler(message: Message):

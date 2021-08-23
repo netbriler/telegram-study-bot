@@ -25,7 +25,7 @@ def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action:
 
             current_user = get_or_create_user(from_user.id, name, from_user.username)
 
-            if message.text == '❌Отменить❌':
+            if message.text == '❌ Отменить':
                 markup = get_menu_keyboard_markup(current_user.is_admin())
                 return send_message_private(message, 'Ок 👍', reply_markup=markup)
 
