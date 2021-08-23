@@ -18,7 +18,10 @@ class ProductionConfig:
     DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)
     DB_PORT = env_conf('DATABASE_PORT', default='', cast=str)
     DB_NAME = env_conf('DATABASE_NAME', default='', cast=str)
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+    if DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
+        SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}{":"+DB_PORT if DB_PORT else ""}/{DB_NAME}'
+    else:
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
@@ -46,7 +49,10 @@ class Develop:
     DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)
     DB_PORT = env_conf('DATABASE_PORT', default='', cast=str)
     DB_NAME = env_conf('DATABASE_NAME', default='', cast=str)
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+    if DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
+        SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}{":"+DB_PORT if DB_PORT else ""}/{DB_NAME}'
+    else:
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
