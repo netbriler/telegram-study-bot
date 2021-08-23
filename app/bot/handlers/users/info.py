@@ -8,7 +8,7 @@ from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_in
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^👀Информация👀$')
+@bot.message_handler(regexp='^👀 Информация$')
 @bot.message_handler(commands=['info'])
 @base()
 def start_info(message: Message):

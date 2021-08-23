@@ -17,5 +17,5 @@ def get_subjects_keyboard_markup() -> ReplyKeyboardMarkup:
     except:
         pass
 
-    markup.add('❌Отменить❌')
+    markup.add('❌ Отменить')
     return markup

@@ -6,7 +6,7 @@ from ...helpers import send_message_private
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^🆘Помощь🆘$')
+@bot.message_handler(regexp='^🆘 Помощь$')
 @bot.message_handler(commands=['help'])
 @base()
 def help_handler(message: Message, current_user: User):
@@ -27,6 +27,7 @@ def help_handler(message: Message, current_user: User):
              '<pre>!Название предмета - задание</pre>\n',
              '/add - Добавить ДЗ',
              '/edit - Изменить ДЗ\n',
+             '/add_file - Добавить файл в информацию по предмету\n',
              '/users_list - Получить список пользователей\n',
              '/get_id - Получить id сообщения (id прийдет в личку)',
              '/get_file_id - Получить id файла',

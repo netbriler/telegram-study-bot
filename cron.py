@@ -29,12 +29,19 @@ def clean_old_avatars(users):
             os.remove(photo)
 
 
+def backup_database():
+    return os.system(f"mysqldump -u {app.config['DB_USER']} -h {app.config['DB_HOST']} --set-gtid-purged=OFF "
+                     f"--no-tablespaces --column-statistics=0 '{app.config['DB_NAME']}' > db-backup.sql")
+
+
 @logger.catch
 def main():
     users = get_users()
 
     load_new_avatars(users)
     clean_old_avatars(users)
+
+    backup_database()
 
 
 main()

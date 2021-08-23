@@ -17,7 +17,7 @@ def get_subjects_inline_markup(query: str) -> InlineKeyboardMarkup:
     if len(subjects) % 2:
         markup.add(InlineKeyboardButton(subjects[-1].name, callback_data=f'{query}_{subjects[-1].codename}'))
 
-    markup.row(InlineKeyboardButton('❌Отменить❌', callback_data=f'{query}_cancel'))
+    markup.row(InlineKeyboardButton('❌ Отменить', callback_data=f'{query}_cancel'))
     return markup
 
 
