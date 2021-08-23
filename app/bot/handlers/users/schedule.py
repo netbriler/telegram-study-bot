@@ -11,7 +11,7 @@ from ...keyboards.inline import get_week_inline_markup
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^📃Расписание📃$')
+@bot.message_handler(regexp='^📃 Расписание$')
 @bot.message_handler(commands=['schedule'])
 @base()
 def schedule_handler(message: Message):

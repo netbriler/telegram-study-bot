@@ -78,8 +78,11 @@ def delete_subject(codename: str):
     if not subject:
         return False
 
-    db.session.delete(subject)
-    db.session.commit()
+    try:
+        db.session.delete(subject)
+        db.session.commit()
+    except DatabaseError as e:
+        db.session.rollback()
 
     return True
 

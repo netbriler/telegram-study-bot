@@ -11,7 +11,7 @@ from ...keyboards.inline import get_edit_inline_markup
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^🛠️Редактировать🛠️$')
+@bot.message_handler(regexp='^🛠 Редактировать$')
 @bot.message_handler(commands=['edit'])
 @base(is_admin=True)
 def edit_tasks_handler(message: Message):
@@ -77,6 +77,10 @@ def inline_edit_handler(call: CallbackQuery):
 
 @base(is_admin=True)
 def edit_task_handler(message: Message, id: int, current_user: User):
+    if message.content_type != 'text':
+        response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно задание для предмета!')
+        return bot.register_next_step_handler(response, edit_task_handler, id=id, current_user=current_user)
+
     task = edit_task(id, message.text)
 
     text = ('Изменено:\n'
