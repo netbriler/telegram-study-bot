@@ -2,7 +2,7 @@ from flask import jsonify, current_app, abort, request
 
 from app.api import api
 from app.exceptions import BadRequest
-from app.services.subjects import get_subject, get_all_subjects
+from app.services.subjects import get_subject, get_all_subjects, get_none_subject
 from app.services.timetable import get_subjects_by_week, get_subject_timetable, get_timetable, edit_timetable
 
 
@@ -60,6 +60,7 @@ def _update_timetable():
         assert request.json['timetable']
 
         subjects = get_all_subjects()
+        subjects.append(get_none_subject())
         subject_codename_list = [s.codename for s in subjects]
 
         for day in request.json['timetable']:

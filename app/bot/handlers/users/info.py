@@ -8,7 +8,7 @@ from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_in
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^👀 Информация$')
+@bot.message_handler(regexp='^📚 Информация$')
 @bot.message_handler(commands=['info'])
 @base()
 def start_info(message: Message):
@@ -62,6 +62,7 @@ def inline_file_handler(call: CallbackQuery):
 
     try:
         bot.send_document(call.message.chat.id, file.file_id, caption=text)
+        return bot.answer_callback_query(call.id, file.title)
     except Exception as e:
         if e.error_code == 400:
             return bot.answer_callback_query(call.id, 'Похоже файл был удален')

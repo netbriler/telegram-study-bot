@@ -15,7 +15,10 @@ def get_all_files() -> list[File]:
 def add_file(subject_codename: str, title: str, file_id: str) -> File or False:
     file = File(subject_codename=subject_codename, title=title, file_id=file_id)
 
-    db.session.add(file)
-    db.session.commit()
+    try:
+        db.session.add(file)
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return file

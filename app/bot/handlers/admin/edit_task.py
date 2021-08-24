@@ -11,18 +11,18 @@ from ...keyboards.inline import get_edit_inline_markup
 from ...loader import bot
 
 
-@bot.message_handler(regexp='^🛠 Редактировать$')
+@bot.message_handler(regexp='^✏ Редактировать$')
 @bot.message_handler(commands=['edit'])
 @base(is_admin=True)
 def edit_tasks_handler(message: Message):
-    text = 'ДЗ:\n'
+    text = 'Домашнее задание:\n'
 
     tasks = get_active_tasks()
 
     i = 1
     for task in tasks:
         task_text = (task.text[:75] + '..') if len(task.text) > 75 else task.text
-        text += f'{i}) <b>{task.subject.name}</b>\n{escape(task_text)} /edit{task.id}\n\n'
+        text += f'{i}) <b>{task.subject.name}</b>\n{task_text} /edit{task.id}\n\n'
         i += 1
 
     bot.send_message(message.chat.id, text, disable_web_page_preview=True)
@@ -37,7 +37,7 @@ def get_edit_task_handler(message: Message):
     if not task:
         return bot.reply_to(message, f'Задание с id <b>{id}</b> не найдено')
 
-    text = f'{task.subject.name} - {escape(task.text)}'
+    text = f'{task.subject.name} - {task.text}'
 
     markup = get_edit_inline_markup('task', id)
     bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
@@ -81,10 +81,10 @@ def edit_task_handler(message: Message, id: int, current_user: User):
         response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно задание для предмета!')
         return bot.register_next_step_handler(response, edit_task_handler, id=id, current_user=current_user)
 
-    task = edit_task(id, message.text)
+    task = edit_task(id, escape(message.text))
 
     text = ('Изменено:\n'
-            f'{task.subject.name} - {escape(task.text)}')
+            f'{task.subject.name} - {task.text}')
 
     markup = get_menu_keyboard_markup(current_user.is_admin())
     send_message_private(message, text, reply_markup=markup)

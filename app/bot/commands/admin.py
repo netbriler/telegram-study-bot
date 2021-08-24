@@ -8,8 +8,8 @@ def get_admin_commands(user_id: int, chat_id: int = None) -> list[BotCommand]:
     commands = get_default_commands()
 
     commands.extend([
-        BotCommand('/add', 'Добавить ДЗ'),
-        BotCommand('/edit', 'Изменить ДЗ'),
+        BotCommand('/add', 'Добавить домашнее задание'),
+        BotCommand('/edit', 'Изменить домашнее задание'),
         BotCommand('/add_file', 'Добавить файл в информацию по предмету'),
         BotCommand('/users_list', 'Получить список пользователей'),
         BotCommand('/get_file_id', 'Получить id файла'),

@@ -1,3 +1,5 @@
+from html import escape
+
 from fuzzywuzzy import fuzz
 
 from app import db
@@ -15,11 +17,11 @@ def create_subject(codename: str, name: str, aliases: str or list = None,
                    **kwargs) -> Subject or False:
     subject = Subject(codename=codename)
 
-    subject.name = name
+    subject.name = escape(name)
     subject.aliases = aliases
     subject.info = info
-    subject.teacher = teacher
-    subject.audience = audience
+    subject.teacher = escape(teacher)
+    subject.audience = escape(audience)
 
     if files or type(files) == list:
         files_list = list()
@@ -35,8 +37,11 @@ def create_subject(codename: str, name: str, aliases: str or list = None,
 
         subject.files = files_list
 
-    db.session.add(subject)
-    db.session.commit()
+    try:
+        db.session.add(subject)
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return subject
 
@@ -48,27 +53,30 @@ def edit_subject(codename: str, name: str, aliases: str or list = None,
     if not subject:
         return False
 
-    subject.name = name
+    subject.name = escape(name)
     subject.aliases = aliases
     subject.info = info
-    subject.teacher = teacher
-    subject.audience = audience
+    subject.teacher = escape(teacher)
+    subject.audience = escape(audience)
 
     if files or type(files) == list:
         files_list = list()
         for file in files:
             if 'id' in file:
                 file_model = get_file(file['id'])
-                file_model.title = file['title']
+                file_model.title = escape(file['title'])
                 file_model.file_id = file['file_id']
             else:
-                file_model = File(title=file['title'], file_id=file['file_id'])
+                file_model = File(title=escape(file['title']), file_id=file['file_id'])
 
             files_list.append(file_model)
 
         subject.files = files_list
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return subject
 
@@ -81,7 +89,7 @@ def delete_subject(codename: str):
     try:
         db.session.delete(subject)
         db.session.commit()
-    except DatabaseError as e:
+    except:
         db.session.rollback()
 
     return True
@@ -95,7 +103,7 @@ def get_all_subjects() -> list[Subject]:
 def get_none_subject() -> Subject:
     return Subject(
         codename='None',
-        name='Нету пары',
+        name='Нет пары',
         _aliases=''
     )
 
