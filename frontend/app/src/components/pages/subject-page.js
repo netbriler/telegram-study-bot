@@ -1,16 +1,14 @@
+import CyrillicToTranslit from 'cyrillic-to-translit-js';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from "react-router-dom";
+import UIkit from 'uikit';
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
-import { Redirect } from "react-router-dom";
+import { PageTemplate } from '../page-templates';
+import { TagsEditor } from '../tags-editor';
+import { TextEditor } from '../text-editor';
 
-import { PageTemplate } from '../page-templates'
-
-import { TextEditor } from '../text-editor'
-import { TagsEditor } from '../tags-editor'
-
-import UIkit from 'uikit';
-import CyrillicToTranslit from 'cyrillic-to-translit-js';
 
 const cyrillicToTranslit = new CyrillicToTranslit();
 
@@ -76,7 +74,7 @@ class SubjectPage extends Component {
                 subject.files.push({ title: '', file_id: '' });
                 this.setState(() => { return { subject, title: subject.name } });
             })
-            .then(callback);
+            .finally(this.isLoaded);
     }
 
     _formatCodename(codename) {
@@ -207,10 +205,10 @@ class SubjectPage extends Component {
             .then(() => {
                 this.showNotification('Сохранено', 'success')
             })
-            .then(this.isLoaded)
             .catch(({ response }) => {
                 this.showNotification('Произошла ошибка при изменении', 'danger')
-            });
+            })
+            .finally(this.isLoaded);
     }
 
     handleDelete = (e) => {
@@ -220,14 +218,14 @@ class SubjectPage extends Component {
         UIkit.modal.confirm('Вы точно хотите удалить предмет?', { labels: { ok: 'Да', cancel: 'Отмена' }, stack: true })
             .then(() => {
                 this.AdminService.deleteSubject(subject.codename)
-                .then(() => {
-                    this.setState(() => { return { redirect: true } });
-                })
-                .then(this.isLoaded)
-                .catch(({ response }) => {
-                    this.showNotification('Произошла ошибка при удалении', 'danger')
-                });
-            }, () => {});
+                    .then(() => {
+                        this.setState(() => { return { redirect: true } });
+                    })
+                    .catch(({ response }) => {
+                        this.showNotification('Произошла ошибка при удалении', 'danger')
+                    })
+                    .finally(this.isLoaded);
+            }, () => { });
     }
 
     handleCreateSubmit = (e) => {
@@ -262,10 +260,10 @@ class SubjectPage extends Component {
                 }
                 this.setState(() => { return { redirect: true } });
             })
-            .then(this.isLoaded)
             .catch(({ response }) => {
                 this.showNotification('Произошла ошибка при создании', 'danger')
-            });
+            })
+            .finally(this.isLoaded);
 
         this.isLoaded();
     }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import UIkit from 'uikit';
 import { isLoaded, isLoading } from '../../actions';
+import EditableSelect from '../editable-select';
 import WithAdminService from '../hoc';
+import { PageTemplate } from '../page-templates';
 
-import { PageTemplate } from '../page-templates'
 
 class UsersPage extends Component {
     title = 'Пользователи'
@@ -20,6 +22,8 @@ class UsersPage extends Component {
         this.AdminService = this.props.AdminService;
         this.isLoading = props.isLoading;
         this.isLoaded = props.isLoaded;
+
+        this.currentUser = props.currentUser;
     }
 
     componentDidMount() {
@@ -32,7 +36,31 @@ class UsersPage extends Component {
             .then(users => {
                 this.setState(() => { return { users } });
             })
-            .then(callback);
+            .finally(this.isLoaded);
+    }
+
+    editUserStatus(id, status) {
+        this.isLoading();
+
+        const { users } = this.state;
+
+        const params = { status };
+
+        this.AdminService.editUserStatus(id, params)
+            .then(editedUser => {
+                const editedUsers = users.map(user => user.id == editedUser.id ? editedUser : user);
+
+                this.setState({ users: editedUsers });
+            })
+            .catch(({ response }) => {
+                console.log(response);
+                this.showNotification('Произошла ошибка при изменении', 'danger')
+            })
+            .finally(this.isLoaded);
+    }
+
+    showNotification = (message, status) => {
+        UIkit.notification({ message, status });
     }
 
     render() {
@@ -42,11 +70,19 @@ class UsersPage extends Component {
 
         if (users) {
             users_list_elements = users.map((user, i) => {
-                let style = {}
+                let style = {};
 
                 if (['super_admin', 'admin'].includes(user.status)) {
                     style = { background: 'rgb(84 179 71 / 28%)' }
                 }
+
+                if (['banned'].includes(user.status)) {
+                    style = { background: 'rgb(224 62 26 / 41%)' }
+                }
+
+                style.height = 70;
+
+                let canEditUser = this.currentUser.statuses_to_edit.find(s => s.value === user.status) ? true : false;
 
                 return (
                     <tr key={i} style={style}>
@@ -56,8 +92,11 @@ class UsersPage extends Component {
                         <td>
                             {user.username ? <a href={'https://t.me/' + user.username}>@{user.username}</a> : <span className='uk-text-meta'>Не указан</span>}
                         </td>
-                        <td>{user.status}</td>
+                        <td style={{ width: 190 }}>
+                            {this.currentUser.id != user.id && canEditUser ? <EditableSelect value={user.status} name={user.status_title} options={this.currentUser.statuses_to_edit} onChange={(status) => this.editUserStatus(user.id, status)} /> : user.status_title}
+                        </td>
                     </tr>
+
                 )
             })
         } else {
@@ -89,13 +128,11 @@ class UsersPage extends Component {
 }
 
 
-
 const mapStateToProps = (state) => {
     return {
         loading: state.loading
     }
 }
-
 
 const mapDispatchToProps = {
     isLoaded,

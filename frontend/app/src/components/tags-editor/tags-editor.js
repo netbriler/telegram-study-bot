@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { WithContext as ReactTags } from 'react-tag-input';
 
 const KeyCodes = {

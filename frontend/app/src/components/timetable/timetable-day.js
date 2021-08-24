@@ -1,11 +1,8 @@
 import React from 'react';
-
-import { Droppable, Draggable } from "react-beautiful-dnd";
-
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import UIkit from 'uikit';
 
 import ChooseModal from '../choose-modal';
-
 
 function TimetableDay({ day, deleteSubject, addSubject, subjects }) {
     const modal = true;

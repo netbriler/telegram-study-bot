@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
+import { Link } from "react-router-dom";
+
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
-
 import { PageTemplate } from '../page-templates'
 
 class SubjectsPage extends Component {
@@ -33,7 +33,7 @@ class SubjectsPage extends Component {
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })
-            .then(callback);
+            .finally(this.isLoaded);
     }
 
     render() {

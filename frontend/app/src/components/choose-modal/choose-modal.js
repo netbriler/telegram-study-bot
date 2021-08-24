@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-
 import SelectSearch, { fuzzySearch } from 'react-select-search';
 
 const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
@@ -36,8 +34,9 @@ const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
                         search
                         filterOptions={fuzzySearch}
                         emptyMessage="Не найдено"
-                        placeholder="Выбери предмет"
+                        placeholder="Выберите предмет"
                         onChange={setSubject}
+                        autoFocus={true}
                     />
                 </ul>
                 <p className="uk-text-right">

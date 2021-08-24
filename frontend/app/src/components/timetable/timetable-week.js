@@ -2,7 +2,6 @@ import React from 'react';
 
 import TimetableDay from './timetable-day';
 
-
 export default function TimetableWeek({ timetable, deleteSubject, addSubject, subjects, onTimetableSave }) {
     return (
         <div className="uk-card uk-card-default uk-card-body">

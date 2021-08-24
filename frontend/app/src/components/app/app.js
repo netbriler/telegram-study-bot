@@ -1,26 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-    Switch,
-    Route,
-    Redirect,
-} from "react-router-dom";
-import Panel from '../panel'
-import { LogPage, SubjectsPage, SubjectPage, UsersPage, TimetablePage } from '../pages'
-import UIkit from 'uikit'
-import { isLoaded, isLoading, setCurrentUser } from '../../actions';
+import { Redirect, Route, Switch } from "react-router-dom";
+import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
+import { LogPage, SubjectPage, SubjectsPage, TimetablePage, UsersPage } from '../pages';
+import Panel from '../panel';
+
 
 class App extends Component {
 
     constructor(props) {
         super(props);
 
+        this.state = {
+            currentUser: null
+        }
+
         this.AdminService = props.AdminService;
         this.isLoading = props.isLoading;
         this.isLoaded = props.isLoaded;
-        this.setCurrentUser = props.setCurrentUser;
-
     }
 
     componentDidMount() {
@@ -30,27 +28,38 @@ class App extends Component {
 
     init(callback) {
         this.AdminService.getCurrentUser()
-            .then(user => {
-                if (user) {
-                    this.setCurrentUser(user)
+            .then(currentUser => {
+                if (currentUser) {
+                    this.setState({ currentUser })
                 } else {
                     throw new Error('Не плучилось загрузить пользователя')
                 }
             })
-            .then(callback);
+            .finally(this.isLoaded);
     }
 
     render() {
+        if (!this.state.currentUser) {
+            return ''
+        }
 
         return (
             <>
-                <Panel />
+                <Panel currentUser={this.state.currentUser} />
                 <Switch>
+                    <Route path="/subjects" component={SubjectsPage}></Route>
                     <Route path="/subjects/new" component={SubjectPage}></Route>
                     <Route path="/subject/:codename" component={SubjectPage}></Route>
-                    <Route path="/users" component={UsersPage}></Route>
-                    <Route path="/subjects" component={SubjectsPage}></Route>
+
                     <Route path="/timetable" component={TimetablePage}></Route>
+
+                    <Route
+                        path='/users'
+                        render={(props) => (
+                            <UsersPage {...props} currentUser={this.state.currentUser} />
+                        )}
+                    />
+
                     <Route path="/log" component={LogPage}></Route>
                     <Redirect from="*" exact to="/subjects"></Redirect>
                 </Switch>
@@ -68,8 +77,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     isLoaded,
-    isLoading,
-    setCurrentUser
+    isLoading
 }
 
 export default WithAdminService()(connect(mapStateToProps, mapDispatchToProps)(App));
