@@ -14,8 +14,11 @@ def add_task(subject_codename: str, text: str, day: int = 0) -> Task or False:
     task = Task(subject_codename=subject_codename, text=text,
                 date=get_subject_timetable(subject_codename)[day]['date'])
 
-    db.session.add(task)
-    db.session.commit()
+    try:
+        db.session.add(task)
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return task
 
@@ -26,7 +29,10 @@ def edit_task(id: int, text: str) -> Task or False:
         return False
 
     task.text = text
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return task
 
@@ -36,8 +42,12 @@ def delete_task(id: int) -> Task or False:
     if not task:
         return False
 
-    db.session.delete(task)
-    db.session.commit()
+
+    try:
+        db.session.delete(task)
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return task
 

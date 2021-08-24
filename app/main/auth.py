@@ -1,6 +1,7 @@
 from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 
+from app.bot.loader import bot
 from app.main import main
 from app.models import User
 from app.services.telegram_auth import verify_authorization
@@ -27,7 +28,9 @@ def login_redirect():
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html', bot_username=current_app.config['TELEGRAM_BOT_USERNAME'])
+    bot_username = bot.get_me().username
+
+    return render_template('login.html', bot_username=bot_username)
 
 
 @main.route('/login/<string:user_id>', methods=['GET', 'POST'])
@@ -37,7 +40,7 @@ def _login_user(user_id):
         login_user(user, remember=True)
 
         return jsonify(current_user.to_json())
-    return 404
+    return redirect(url_for('main.login'))
 
 
 @main.route('/logout')

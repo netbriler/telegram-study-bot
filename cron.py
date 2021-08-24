@@ -41,7 +41,8 @@ def main():
     load_new_avatars(users)
     clean_old_avatars(users)
 
-    backup_database()
+    if app.config['DB_USER'] and app.config['DB_PASSWORD'] and app.config['DB_HOST'] and app.config['DB_NAME']:
+        backup_database()
 
 
 main()

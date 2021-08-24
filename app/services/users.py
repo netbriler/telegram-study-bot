@@ -23,8 +23,12 @@ def get_users() -> list[User]:
 def create_user(id: int, name, username=None) -> [User, None]:
     user = User(id=id, name=name, username=username)
 
-    db.session.add(user)
-    db.session.commit()
+
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return user
 
@@ -37,7 +41,10 @@ def edit_user(id: int, name, username=None) -> [User, None]:
     user.name = name
     user.username = username
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return user
 
@@ -65,4 +72,7 @@ def download_user_avatar(user: User, bot):
 
             user.photo_id = photo_id
 
-            db.session.commit()
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()

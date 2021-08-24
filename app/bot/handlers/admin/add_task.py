@@ -42,10 +42,10 @@ def add_task_handler(message: Message, subject: dict, current_user: User):
         response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно задание для предмета!')
         return bot.register_next_step_handler(response, add_task_handler, subject=subject, current_user=current_user)
 
-    task = add_task(subject['codename'], message.text)
+    task = add_task(subject['codename'], escape(message.text))
 
     text = ('Добавлено:\n'
-            f'{subject["name"]} - {escape(task.text)}')
+            f'{subject["name"]} - {task.text}')
 
     send_message_private(message, text, reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
 
@@ -59,9 +59,9 @@ def add_task_via_decorator_handler(message: Message):
 
     subject = recognize_subject(subject_name)
 
-    task = add_task(subject.codename, task_text)
+    task = add_task(subject.codename, escape(task_text))
 
     text = ('Добавлено:\n'
-            f'{subject.name} - {escape(task.text)}')
+            f'{subject.name} - {task.text}')
 
     bot.send_message(message.chat.id, text, parse_mode='HTML')

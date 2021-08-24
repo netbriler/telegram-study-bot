@@ -13,7 +13,8 @@ def get_subjects_keyboard_markup() -> ReplyKeyboardMarkup:
         markup.add(names[0])
         markup.add(*names[1:5])
         markup.add(names[5])
-        markup.add(*names[6:])
+        markup.add(*names[6:13])
+        markup.add(*names[13:])
     except:
         pass
 
