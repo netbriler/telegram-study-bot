@@ -103,6 +103,7 @@
 .select-search__options {
 	list-style: none;
 	padding-left: 0px;
+	margin: 0;
 }
 .select-search__row {
 	&:not(:first-child) {
@@ -190,4 +191,13 @@
 }
 .select-search.is-disabled {
 	opacity: .5;
+}
+
+
+.select-search--small {
+	width: auto;
+
+	.select-search__input {
+		padding: 0 10px 0 4px;
+	}
 }

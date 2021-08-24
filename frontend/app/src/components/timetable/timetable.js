@@ -1,9 +1,7 @@
 import React from 'react';
-
 import { DragDropContext } from "react-beautiful-dnd";
 
 import TimetableWeek from './timetable-week';
-
 
 export default function Timetable({ onDragEnd, timetable, deleteSubject, subjects, addSubject, onTimetableSave }) {
     return (

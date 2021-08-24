@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import UIkit from 'uikit';
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
-
-import { PageTemplate } from '../page-templates'
+import { PageTemplate } from '../page-templates';
 import { Timetable } from '../timetable';
-
-import UIkit from 'uikit';
 
 
 const reorder = (list, startIndex, endIndex) => {
@@ -62,7 +60,7 @@ class TimetablePage extends Component {
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })
-            .then(callback);
+            .finally(this.isLoaded);
     }
 
     loadTimetable(callback) {
@@ -81,7 +79,7 @@ class TimetablePage extends Component {
                     return { timetable }
                 });
             })
-            .then(callback);
+            .finally(this.isLoaded);
     }
 
     onDragEnd = (result) => {
@@ -154,10 +152,10 @@ class TimetablePage extends Component {
             .then(() => {
                 this.showNotification('Сохранено', 'success')
             })
-            .then(this.isLoaded)
             .catch(({ response }) => {
                 this.showNotification('Произошла ошибка при изменении', 'danger')
-            });
+            })
+            .finally(this.isLoaded);
     }
 
     showNotification = (message, status) => {

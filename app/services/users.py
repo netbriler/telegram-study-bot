@@ -23,7 +23,6 @@ def get_users() -> list[User]:
 def create_user(id: int, name, username=None) -> [User, None]:
     user = User(id=id, name=name, username=username)
 
-
     try:
         db.session.add(user)
         db.session.commit()
@@ -40,6 +39,21 @@ def edit_user(id: int, name, username=None) -> [User, None]:
 
     user.name = name
     user.username = username
+
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return user
+
+
+def edit_user_status(id: int, status: str) -> [User, None]:
+    user = get_user(id)
+    if not user:
+        return None
+
+    user.status = status
 
     try:
         db.session.commit()

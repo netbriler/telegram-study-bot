@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { PageTemplate } from '../page-templates'
 
 export default function LogPage() {

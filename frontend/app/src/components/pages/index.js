@@ -1,9 +1,8 @@
 import LogPage from './log-page'
-import SubjectsPage from './subjects-page'
-import UsersPage from './users-page'
 import SubjectPage from './subject-page'
+import SubjectsPage from './subjects-page'
 import TimetablePage from './timetable-page'
-
+import UsersPage from './users-page'
 
 export {
     TimetablePage,
@@ -12,3 +11,4 @@ export {
     SubjectPage,
     UsersPage
 }
+

@@ -48,7 +48,7 @@ export default class AdminService {
         return await AdminService.patch('timetable/', params);
     }
 
-    static async getAllSubjects(with_none_subject=false) {
+    static async getAllSubjects(with_none_subject = false) {
         return await AdminService.get('subjects' + (with_none_subject ? '?with_none_subject=1' : ''));
     }
 
@@ -74,6 +74,10 @@ export default class AdminService {
 
     static async getCurrentUser() {
         return await AdminService.get('users/current');
+    }
+
+    static async editUserStatus(codename, params) {
+        return await AdminService.patch('users/' + codename, params);
     }
 
     static async getFile(file_id) {

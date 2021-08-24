@@ -50,7 +50,9 @@ class Develop:
     APP_DIR = DIR + '/app'
     LOGGING_DIR = DIR + '/logs'
     LOCATE = env_conf('LOCATE', default='ru_RU', cast=str)
-    SERVER_NAME = env_conf('SERVER_NAME', default='', cast=str)
+
+    if env_conf('SERVER_NAME', default='', cast=str):
+        SERVER_NAME = env_conf('SERVER_NAME', default='', cast=str)
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
     DB_PASSWORD = env_conf('DATABASE_PASS', default='', cast=str)
