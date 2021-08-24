@@ -15,6 +15,9 @@ class User(UserMixin, db.Model):
     photo_id = db.Column(db.String(225))
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
+    def is_banned(self) -> bool:
+        return self.status == 'banned'
+
     def is_admin(self) -> bool:
         return self.status in ['admin', 'super_admin']
 
