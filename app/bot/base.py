@@ -7,7 +7,7 @@ from app.services.users import get_or_create_user, download_user_avatar
 from app.utils.logging import logger
 from .commands import set_super_admin_commands, set_admin_commands, delete_admin_commands
 from .helpers import send_message_private
-from .keyboards.default import get_menu_keyboard_markup
+from .keyboards.default import get_menu_keyboard_markup, get_remove_keyboard_markup
 
 
 def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action: str = 'typing'):
@@ -24,6 +24,8 @@ def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action:
                 name += ' ' + from_user.last_name
 
             current_user = get_or_create_user(from_user.id, name, from_user.username)
+            if current_user.is_banned():
+                return bot.send_message(message.chat.id, 'Доступ ограничен ❌', reply_markup=get_remove_keyboard_markup())
 
             if message.text == '❌ Отменить':
                 markup = get_menu_keyboard_markup(current_user.is_admin())
@@ -75,6 +77,9 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
                 name += ' ' + from_user.last_name
 
             current_user = get_or_create_user(from_user.id, name, from_user.username)
+            if current_user.is_banned():
+                return bot.answer_callback_query(call.id, 'Доступ ограничен ❌')
+
             if is_super_admin and not current_user.is_super_admin():
                 return bot.answer_callback_query(call.id, 'У вас нет прав')
             elif is_admin and not current_user.is_admin():
