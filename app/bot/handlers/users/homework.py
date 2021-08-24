@@ -1,6 +1,5 @@
 import calendar
 from datetime import datetime, timedelta
-from html import escape
 
 from telebot.types import Message, CallbackQuery
 
@@ -54,6 +53,7 @@ def inline_homework_handler(call: CallbackQuery):
     markup = get_week_inline_markup(query, option == 'next')
     try:
         bot.edit_message_text(text, chat_id, message_id, reply_markup=markup, disable_web_page_preview=True)
+        bot.answer_callback_query(call.id, 'Ок')
     except Exception as e:
         if e.error_code == 400:
             bot.answer_callback_query(call.id, 'Ничего не поменялось')
@@ -71,7 +71,7 @@ def _get_text(timetable: list[list[Task]]):
         j = 1
         for task in tasks:
             if task.subject:
-                text += f'{j}) <b>{task.subject.name}</b>\n{escape(task.text)}\n\n'
+                text += f'{j}) <b>{task.subject.name}</b>\n{task.text}\n\n'
                 j += 1
 
         text = text.rstrip() + '\n\n'
@@ -79,6 +79,6 @@ def _get_text(timetable: list[list[Task]]):
     text = text.rstrip()
 
     if not text:
-        return 'Нет ДЗ'
+        return 'Нет домашних заданий'
 
     return text

@@ -48,8 +48,8 @@ export default class AdminService {
         return await AdminService.patch('timetable/', params);
     }
 
-    static async getAllSubjects() {
-        return await AdminService.get('subjects');
+    static async getAllSubjects(with_none_subject=false) {
+        return await AdminService.get('subjects' + (with_none_subject ? '?with_none_subject=1' : ''));
     }
 
     static async getSubject(codename) {

@@ -58,7 +58,7 @@ class TimetablePage extends Component {
     }
 
     loadSubjects(callback) {
-        this.AdminService.getAllSubjects()
+        this.AdminService.getAllSubjects(true)
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })

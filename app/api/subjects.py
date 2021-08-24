@@ -2,7 +2,8 @@ from flask import jsonify, current_app, abort, request
 
 from app.api import api
 from app.exceptions import BadRequest, Conflict
-from app.services.subjects import get_subject, get_all_subjects, create_subject, edit_subject, delete_subject
+from app.services.subjects import get_subject, get_all_subjects, create_subject, edit_subject, delete_subject, \
+    get_none_subject
 from app.services.timetable import delete_subject_from_timetable
 
 
@@ -10,6 +11,9 @@ from app.services.timetable import delete_subject_from_timetable
 def _get_subjects():
     try:
         subjects = get_all_subjects()
+        if request.args.get('with_none_subject'):
+            subjects.append(get_none_subject())
+
         return jsonify(list(map(lambda s: s.to_json(), subjects)))
     except Exception as e:
         current_app.logger.error(e)

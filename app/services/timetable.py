@@ -16,7 +16,10 @@ def edit_timetable(id: int, subjects: str):
     day.is_work_day = True if subjects else False
     day.subjects = subjects if subjects else None
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
 
     return True
 

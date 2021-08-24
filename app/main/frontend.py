@@ -7,7 +7,7 @@ from app.main import main
 @main.route('/logs')
 @login_required
 def logs():
-    with open(current_app.config['LOGGING_DIR'] + '/log.out', 'r') as f:
+    with open(current_app.config['LOGGING_DIR'] + '/log.out', 'r', encoding='utf-8') as f:
         content = f.read()
     return Response(content, mimetype='text/plain')
 

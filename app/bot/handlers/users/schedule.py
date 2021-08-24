@@ -55,6 +55,7 @@ def inline_schedule_handler(call: CallbackQuery):
     try:
         bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup,
                               disable_web_page_preview=True)
+        bot.answer_callback_query(call.id, 'Ок')
     except Exception as e:
         if e.error_code == 400:
             bot.answer_callback_query(call.id, 'Ничего не поменялось')
@@ -79,7 +80,6 @@ def _get_text(timetable: list[list[Subject]]):
         text += '\n'
 
     if not text:
-        return 'Нет расписания'
+        return '⚠ Нет расписания'
 
     return text
-
