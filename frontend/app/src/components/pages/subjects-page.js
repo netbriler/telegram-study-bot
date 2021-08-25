@@ -33,7 +33,7 @@ class SubjectsPage extends Component {
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     render() {

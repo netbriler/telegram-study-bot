@@ -47,7 +47,7 @@ const Panel = ({ currentUser }) => {
                             <li><Link to="/subjects">Предметы</Link></li>
                             <li><Link to="/timetable">Расписание</Link></li>
                             <li><Link to="/users">Пользователи</Link></li>
-                            {/* <li><a href="#">Домашние задания</a></li> */}
+                            <li><Link to="/homework">Домашние задания</Link></li>
                             <li className="uk-nav-divider"></li>
                             {/* <li><a href="#">Переписка</a></li>
                             <li><a href="#">Рассылка</a></li> */}

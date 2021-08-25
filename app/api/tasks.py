@@ -6,7 +6,7 @@ from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject
 from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, \
-    add_task
+    add_task, get_tasks_between_date
 
 
 @api.route('/tasks', methods=['GET'])
@@ -131,6 +131,38 @@ def _get_tasks_by_week(week: int):
 
         return jsonify(
             list(map(lambda day: list(map(lambda s: s.to_json(), day)), tasks)))
+    except BadRequest as e:
+        abort(400, description=str(e))
+    except Exception as e:
+        current_app.logger.error(e)
+        abort(500, description='Server error')
+
+
+@api.route('/tasks/calendar', methods=['GET'])
+def _get_tasks_calendar():
+    try:
+        try:
+            date_start = datetime.strptime(request.args.get('date_start'), '%Y-%m-%d').date()
+        except ValueError:
+            raise BadRequest('the date_start must be in the format %Y-%m-%d')
+
+        try:
+            date_end = datetime.strptime(request.args.get('date_end'), '%Y-%m-%d').date()
+        except ValueError:
+            raise BadRequest('the date_end must be in the format %Y-%m-%d')
+
+        tasks = get_tasks_between_date(date_start, date_end)
+
+        calendar = []
+        for task in tasks:
+            calendar.append({
+                'id': task.id,
+                'title': task.subject.name,
+                'start': task.date.strftime('%Y-%m-%d'),
+                'allDay': True
+            })
+
+        return jsonify(calendar)
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:

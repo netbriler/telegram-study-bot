@@ -1,3 +1,4 @@
+import HomeworkPage from './homework-page'
 import LogPage from './log-page'
 import SubjectPage from './subject-page'
 import SubjectsPage from './subjects-page'
@@ -9,6 +10,7 @@ export {
     LogPage,
     SubjectsPage,
     SubjectPage,
-    UsersPage
+    UsersPage,
+    HomeworkPage
 }
 
