@@ -243,6 +243,25 @@ div.ReactTags__selected a.ReactTags__remove {
     }
 }
 
+@media (min-width: 960px) {
+    :not(.uk-offcanvas-flip).uk-offcanvas-container-animation {
+        margin-left: 350px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .fc .fc-toolbar {
+        flex-direction: column;
+    }
+}
+
+.uk-offcanvas-container {
+    position: inherit;
+    transition: margin 0.3s ease-out;
+    box-sizing: border-box;
+    width: auto;
+}
+
 @media screen and (max-width: 1700px) {
     .timetable {
         &__container {
@@ -268,17 +287,13 @@ div.ReactTags__selected a.ReactTags__remove {
     }
 }
 
-
 @media screen and (max-width: 600px) {
     .timetable {
         &__subjects {
             width: auto;
         }
-
     }
 }
-
-
 
 @media screen and (max-width: 500px) {
     .timetable {
@@ -287,7 +302,6 @@ div.ReactTags__selected a.ReactTags__remove {
         }
     }
 }
-
 
 .fc a {
     color: inherit;

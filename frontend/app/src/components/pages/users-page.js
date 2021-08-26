@@ -53,7 +53,6 @@ class UsersPage extends Component {
                 this.setState({ users: editedUsers });
             })
             .catch(({ response }) => {
-                console.log(response);
                 this.showNotification('Произошла ошибка при изменении', 'danger')
             })
             .finally(this.isLoaded);

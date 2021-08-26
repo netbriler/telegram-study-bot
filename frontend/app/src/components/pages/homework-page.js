@@ -52,6 +52,9 @@ class HomeworkPage extends Component {
                 this.setState(() => { return { selectedTask: task } });
                 this.props.history.push('/homework/' + task.id);
             })
+            .catch(({ response }) => {
+                this.showNotification('Произошла ошибка при загрузке', 'danger')
+            })
             .finally(callback);
     }
 
@@ -77,16 +80,20 @@ class HomeworkPage extends Component {
     }
 
     handleEventChange = (changeInfo) => {
-        console.log(changeInfo);
+        const params = {
+            date: changeInfo.event.startStr
+        };
+
+        this.AdminService.editTask(changeInfo.event.id, params)
+            .catch(({ response }) => {
+                this.refetchCalendar()
+                this.showNotification('Произошла ошибка при изменении', 'danger')
+            })
     }
 
     handleEventClick = (info) => {
         this.isLoading();
         this.loadTask(info.event.id, this.isLoaded);
-    }
-
-    handleTaskChange = (task) => {
-        console.log(task);
     }
 
     handleTaskEditClose = () => {
@@ -108,65 +115,110 @@ class HomeworkPage extends Component {
         }
 
         calendarApi.gotoDate(date);
-    };
+    }
+
+    refetchCalendar = () => {
+        const calendarApi = this.calendarComponentRef.current.getApi();
+
+        calendarApi.gotoDate(calendarApi.getDate());
+    }
+
+    handleTaskEdit = (task, closeModal) => {
+        this.isLoading();
+
+        const params = {
+            text: task.text,
+            date: task.date
+        };
+
+        this.AdminService.editTask(task.id, params)
+            .then(() => {
+                this.refetchCalendar();
+                this.showNotification('Сохранено', 'success')
+            })
+            .then(closeModal)
+            .catch(({ response }) => {
+                this.showNotification('Произошла ошибка при изменении', 'danger')
+            })
+            .finally(this.isLoaded);
+    }
+
+    handleTaskDelete = (task, closeModal) => {
+        UIkit.modal.confirm('Вы точно хотите удалить задание?', { labels: { ok: 'Да', cancel: 'Отмена' }, stack: true })
+            .then(() => {
+                this.isLoading();
+                this.AdminService.deleteTask(task.id)
+                    .then(() => {
+                        this.refetchCalendar()
+                    })
+                    .then(closeModal)
+                    .catch(({ response }) => {
+                        this.showNotification('Произошла ошибка при удалении', 'danger')
+                    })
+                    .finally(this.isLoaded);
+            }, () => { });
+    }
 
     render() {
         const { tasks, selectedTask, weekendsVisible } = this.state;
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
-                <div className="uk-container uk-section-default">
-                    <FullCalendar
-                        plugins={[dayGridPlugin, interactionPlugin]}
-                        headerToolbar={{
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'dayGridMonth,dayGridWeek,dayGridDay'
-                        }}
+                <div className="uk-container">
+                    <div className="uk-card uk-card-default uk-card-body">
 
-                        rerenderDelay={10}
-                        editable={true}
-                        eventDurationEditable={false}
-                        selectable={true}
-                        selectMirror={true}
-                        weekNumbers={true}
-                        weekText={'Неделя '}
+                        <FullCalendar
+                            plugins={[dayGridPlugin, interactionPlugin]}
+                            headerToolbar={{
+                                left: 'prev,next today',
+                                center: 'title',
+                                right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                            }}
 
-                        selectAllow={(e) => e.end.getTime() / 1000 - e.start.getTime() / 1000 <= 86400}
+                            rerenderDelay={10}
+                            editable={true}
+                            eventDurationEditable={false}
+                            selectable={true}
+                            selectMirror={true}
+                            weekNumbers={true}
+                            weekText={'Неделя '}
 
-                        dayMaxEvents={true}
+                            selectAllow={(e) => e.end.getTime() / 1000 - e.start.getTime() / 1000 <= 86400}
 
-                        locale="ru"
-                        firstDay={1}
-                        buttonText={{
-                            today: 'сегодня',
-                            month: 'месяц',
-                            week: 'неделя',
-                            day: 'день',
-                            list: 'список'
-                        }}
+                            dayMaxEvents={true}
 
-                        ref={this.calendarComponentRef}
-                        weekends={weekendsVisible}
-                        events={tasks}
-                        eventDrop={this.drop}
-                        eventReceive={this.eventReceive}
-                        eventChange={this.handleEventChange}
-                        datesSet={this.handleDates}
-                        select={this.handleDateSelect}
-                        eventClick={this.handleEventClick}
+                            locale="ru"
+                            firstDay={1}
+                            buttonText={{
+                                today: 'сегодня',
+                                month: 'месяц',
+                                week: 'неделя',
+                                day: 'день',
+                                list: 'список'
+                            }}
 
-                    />
-                    <label>
-                        <input
-                            type='checkbox'
-                            checked={this.state.weekendsVisible}
-                            onChange={this.toggleWeekends}
-                        ></input>
-                        показывать выходные дни
-                    </label>
+                            ref={this.calendarComponentRef}
+                            weekends={weekendsVisible}
+                            events={tasks}
+                            eventDrop={this.drop}
+                            eventReceive={this.eventReceive}
+                            eventChange={this.handleEventChange}
+                            datesSet={this.handleDates}
+                            select={this.handleDateSelect}
+                            eventClick={this.handleEventClick}
+
+                        />
+                        <label>
+                            <input
+                                type='checkbox'
+                                checked={this.state.weekendsVisible}
+                                onChange={this.toggleWeekends}
+                            ></input>
+                            показывать выходные дни
+                        </label>
+                    </div>
                 </div>
-                {selectedTask != null ? <TasksModal task={selectedTask} onClose={this.handleTaskEditClose} /> : ''}
+                {selectedTask != null ? <TasksModal task={selectedTask} onClose={this.handleTaskEditClose} onEdit={this.handleTaskEdit} onDelete={this.handleTaskDelete} /> : ''}
             </PageTemplate>
         )
     }

@@ -84,6 +84,14 @@ export default class AdminService {
         return await AdminService.get('tasks/' + id);
     }
 
+    static async editTask(id, params) {
+        return await AdminService.patch('tasks/' + id, params);
+    }
+
+    static async deleteTask(id) {
+        return await AdminService.delete('tasks/' + id);
+    }
+
     static async getTasksCalendar(fromDate, endDate) {
         return await AdminService.get(`tasks/calendar?date_start=${fromDate}&date_end=${endDate}`);
     }

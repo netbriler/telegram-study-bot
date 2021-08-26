@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Panel = ({ currentUser }) => {
     return (
         <>
-            <div uk-sticky="true" className="uk-navbar-container tm-navbar-container uk-sticky uk-sticky-fixed" style={{ position: 'fixed', top: '0px', width: '100%' }}>
+            <div className="uk-navbar-container tm-navbar-container uk-sticky uk-sticky-fixed">
                 <div className="uk-container uk-container-expand">
                     <nav uk-navbar="true" className="uk-navbar">
                         <div className="uk-navbar-left">
