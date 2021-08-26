@@ -35,7 +35,7 @@ class App extends Component {
                     throw new Error('Не плучилось загрузить пользователя')
                 }
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     render() {
@@ -60,6 +60,7 @@ class App extends Component {
                         )}
                     />
 
+                    <Route path="/homework/:id" component={HomeworkPage}></Route>
                     <Route path="/homework" component={HomeworkPage}></Route>
 
                     <Route path="/log" component={LogPage}></Route>

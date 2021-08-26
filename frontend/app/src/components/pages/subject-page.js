@@ -74,7 +74,7 @@ class SubjectPage extends Component {
                 subject.files.push({ title: '', file_id: '' });
                 this.setState(() => { return { subject, title: subject.name } });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     _formatCodename(codename) {

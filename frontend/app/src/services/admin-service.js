@@ -80,6 +80,10 @@ export default class AdminService {
         return await AdminService.patch('users/' + codename, params);
     }
 
+    static async getTask(id) {
+        return await AdminService.get('tasks/' + id);
+    }
+
     static async getTasksCalendar(fromDate, endDate) {
         return await AdminService.get(`tasks/calendar?date_start=${fromDate}&date_end=${endDate}`);
     }

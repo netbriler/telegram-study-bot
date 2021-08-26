@@ -36,7 +36,7 @@ class UsersPage extends Component {
             .then(users => {
                 this.setState(() => { return { users } });
             })
-            .finally(this.isLoaded);
+            .finally((callback));
     }
 
     editUserStatus(id, status) {

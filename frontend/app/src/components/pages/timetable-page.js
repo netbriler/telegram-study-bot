@@ -60,7 +60,7 @@ class TimetablePage extends Component {
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     loadTimetable(callback) {
@@ -79,7 +79,7 @@ class TimetablePage extends Component {
                     return { timetable }
                 });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     onDragEnd = (result) => {
