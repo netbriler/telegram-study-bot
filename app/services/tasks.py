@@ -11,8 +11,12 @@ def get_task(id: int) -> Task:
 
 
 def add_task(subject_codename: str, text: str, day: int = 0) -> Task or False:
-    task = Task(subject_codename=subject_codename, text=text,
+    create_task(subject_codename=subject_codename, text=text,
                 date=get_subject_timetable(subject_codename)[day]['date'])
+
+
+def create_task(text: str, _date: date, subject_codename: str) -> Task:
+    task = Task(text=text, date=_date, subject_codename=subject_codename)
 
     try:
         db.session.add(task)
@@ -23,12 +27,18 @@ def add_task(subject_codename: str, text: str, day: int = 0) -> Task or False:
     return task
 
 
-def edit_task(id: int, text: str) -> Task or False:
+def edit_task(id: int, text: str = None, _date: date = None, subject_codename: str = None) -> Task or False:
     task = get_task(id)
     if not task:
         return False
 
-    task.text = text
+    if text:
+        task.text = text
+    if date:
+        task.date = _date
+    if subject_codename:
+        task.subject_codename = subject_codename
+
     try:
         db.session.commit()
     except:

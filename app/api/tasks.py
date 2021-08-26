@@ -6,7 +6,7 @@ from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject
 from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, \
-    add_task, get_tasks_between_date
+    create_task, get_tasks_between_date
 
 
 @api.route('/tasks', methods=['GET'])
@@ -20,29 +20,24 @@ def _get_tasks():
 
 
 @api.route('/tasks', methods=['POST'])
-def _add_task():
+def _create_task():
     try:
-        data = request.form.to_dict()
+        assert request.json
+        assert request.json['text'] and request.json['date'] and request.json['subject_codename']
 
-        if 'text' not in data or len(data['text'].strip()) < 1:
-            raise BadRequest('text is empty')
+        subject_codename = request.json['subject_codename']
+        text = request.json['text']
 
-        if 'subject' not in data or len(data['subject'].strip()) < 1:
-            raise BadRequest('subject is empty')
-
-        subject = get_subject(data['subject'])
+        subject = get_subject(subject_codename)
         if not subject:
             raise BadRequest('subject not found')
 
-        if 'day' in data and not data['day'].isdigit():
-            raise BadRequest('day must be integer')
+        try:
+            date = datetime.strptime(request.json['date'], '%Y-%m-%d').date()
+        except ValueError:
+            raise BadRequest('the date must be in the format %Y-%m-%d')
 
-        if 'day' not in data:
-            data['day'] = 0
-
-        task = add_task(data['subject'], data['text'], data['day'])
-        if not task:
-            raise BadRequest('task not found')
+        task = create_task(text, date, subject_codename)
 
         return jsonify(task.to_json())
     except BadRequest as e:
@@ -70,16 +65,39 @@ def _get_task(id: int):
 @api.route('/tasks/<int:id>', methods=['PATCH'])
 def _update_task(id: int):
     try:
-        if 'text' not in request.form or len(request.form['text'].strip()) < 1:
-            raise BadRequest('text is empty')
+        assert request.json
 
-        task = edit_task(id, request.form['text'])
+        text = None
+        date = None
+        subject_codename = None
+
+        if 'text' in request.json:
+            text = request.json['text']
+
+        if 'date' in request.json:
+            try:
+                date = datetime.strptime(request.json['date'], '%Y-%m-%d').date()
+            except ValueError:
+                raise BadRequest('the date must be in the format %Y-%m-%d')
+
+        if 'subject_codename' in request.json:
+            subject_codename = request.json['subject_codename']
+            
+            subject = get_subject(subject_codename)
+            if not subject:
+                raise BadRequest('subject not found')
+
+        assert text or date or subject_codename
+
+        task = edit_task(id, text, date, subject_codename=subject_codename)
         if not task:
             raise BadRequest('task not found')
 
         return jsonify(task.to_json())
     except BadRequest as e:
         abort(400, description=str(e))
+    except AssertionError as e:
+        abort(400, description='send at least one parameter')
     except Exception as e:
         current_app.logger.error(e)
         abort(500, description='Server error')
@@ -92,10 +110,9 @@ def _delete_task(id: int):
         if not task:
             raise BadRequest('task not found')
 
-        if delete_task(id):
-            return jsonify('')
-        else:
-            abort(501, 'failed to delete task')
+        delete_task(id)
+
+        return jsonify({})
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
