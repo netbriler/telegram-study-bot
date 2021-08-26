@@ -14,7 +14,7 @@ const cyrillicToTranslit = new CyrillicToTranslit();
 
 class SubjectPage extends Component {
     description = 'Страница редактирования предмета'
-    icon = 'ion-edit'
+    icon = 'ion-ios-book'
 
     links = [
         {
@@ -28,7 +28,7 @@ class SubjectPage extends Component {
 
         this.state = {
             subject: null,
-            is_new: false,
+            isNewSubject: false,
 
             errors: {
                 name: false,
@@ -58,7 +58,7 @@ class SubjectPage extends Component {
                         info: '',
                         name: '',
                         teacher: '',
-                    }, title: 'Новый предмет', is_new: true
+                    }, title: 'Новый предмет', isNewSubject: true
                 }
             });
             this.description = 'Страница создания предмета'
@@ -74,7 +74,7 @@ class SubjectPage extends Component {
                 subject.files.push({ title: '', file_id: '' });
                 this.setState(() => { return { subject, title: subject.name } });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     _formatCodename(codename) {
@@ -84,7 +84,7 @@ class SubjectPage extends Component {
     handleCodenameChange = (value) => {
         this.setState((state) => {
             const { subject, errors } = state;
-            if (state.is_new) {
+            if (state.isNewSubject) {
                 subject.codename = this._formatCodename(value);
                 errors.codename = value.trim() == '';
             }
@@ -100,7 +100,7 @@ class SubjectPage extends Component {
             subject.name = value;
             errors.name = value.trim() == '';
 
-            if (state.is_new) {
+            if (state.isNewSubject) {
                 subject.codename = this._formatCodename(value);
                 errors.codename = subject.codename == '';
             }
@@ -231,6 +231,16 @@ class SubjectPage extends Component {
     handleCreateSubmit = (e) => {
         e.preventDefault();
 
+        if (this.state.subject.name == '' || this.state.subject.codename == '') {
+            const errors = {
+                name: this.state.subject.name == '',
+                codename: this.state.subject.codename == '',
+            }
+            this.setState({ errors })
+
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
+
         if (this.state.errors.name || this.state.errors.codename) {
             return this.showNotification('Заполните все обязательные поля!', 'danger')
         }
@@ -273,7 +283,7 @@ class SubjectPage extends Component {
     }
 
     render() {
-        const { is_new, title, subject, errors, redirect } = this.state;
+        const { isNewSubject, title, subject, errors, redirect } = this.state;
 
         if (!subject) {
             return '';
@@ -297,7 +307,7 @@ class SubjectPage extends Component {
                             </div>
                         </div>
 
-                        {is_new &&
+                        {isNewSubject &&
                             <div className="uk-margin">
                                 <label className="uk-form-label" htmlFor="codename">Уникальное кодовое имя*</label>
                                 <div className="uk-form-controls">
@@ -359,7 +369,7 @@ class SubjectPage extends Component {
                         </div>
 
 
-                        {is_new ?
+                        {isNewSubject ?
                             <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleCreateSubmit}>Создать</button> :
                             <>
                                 <button className="uk-button uk-button-primary uk-button-large" onClick={this.handleEditSubmit}>Сохранить</button>

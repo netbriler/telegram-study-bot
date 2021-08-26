@@ -29,6 +29,7 @@ const ChooseModal = ({ modal, target, title, subjects, onChoose }) => {
                 <h2 className="uk-modal-title">{title}</h2>
                 <ul className="uk-list uk-list-divider">
                     <SelectSearch
+                        className="select-search uk-input"
                         value={subjectCodename}
                         options={options}
                         search

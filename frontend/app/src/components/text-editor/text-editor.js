@@ -14,6 +14,13 @@ class TextEditor extends Component {
         this.onChange = props.onChange;
     }
 
+    
+    componentDidUpdate(prevProps) {
+        if (this.props.text !== prevProps.text) {
+            this.setState({ text: this.props.text });
+        }
+    }
+
     handleChange = (value) => {
         this.setState({ text: value });
 

@@ -30,8 +30,19 @@ gulp.task('build-js', () => {
       module: {
         rules: [
           {
-            test: /\.css$/i,
-            use: ["style-loader", "css-loader"],
+            test: /\.scss$/,
+            use: [
+              'style-loader',
+              'css-loader',
+              'sass-loader'
+            ]
+          },
+          {
+            test: /\.css$/,
+            use: [
+              'style-loader',
+              'css-loader'
+            ]
           },
           {
             test: /\.m?js$/,
@@ -40,7 +51,7 @@ gulp.task('build-js', () => {
               loader: 'babel-loader',
               options: {
                 presets: [['@babel/preset-env', {
-                  debug: true,
+                  debug: false,
                   corejs: 3,
                   useBuiltIns: 'usage'
                 }],
@@ -58,6 +69,8 @@ gulp.task('build-js', () => {
 gulp.task('build-sass', () => {
   return gulp.src('./app/scss/style.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(postcss([autoprefixer()]))
+    .pipe(cleanCSS())
     .pipe(gulp.dest(dist))
     .pipe(browserSync.stream());
 });
@@ -102,8 +115,19 @@ gulp.task('prod', () => {
       module: {
         rules: [
           {
-            test: /\.css$/i,
-            use: ["style-loader", "css-loader"],
+            test: /\.scss$/,
+            use: [
+              'style-loader',
+              'css-loader',
+              'sass-loader'
+            ]
+          },
+          {
+            test: /\.css$/,
+            use: [
+              'style-loader',
+              'css-loader'
+            ]
           },
           {
             test: /\.m?js$/,

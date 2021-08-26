@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from "react-router-dom";
+
 import { isLoaded, isLoading } from '../../actions';
 import WithAdminService from '../hoc';
-import { LogPage, SubjectPage, SubjectsPage, TimetablePage, UsersPage } from '../pages';
+import { HomeworkPage, LogPage, SubjectPage, SubjectsPage, TimetablePage, UsersPage } from '../pages';
 import Panel from '../panel';
-
 
 class App extends Component {
 
@@ -35,7 +35,7 @@ class App extends Component {
                     throw new Error('Не плучилось загрузить пользователя')
                 }
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     render() {
@@ -47,9 +47,9 @@ class App extends Component {
             <>
                 <Panel currentUser={this.state.currentUser} />
                 <Switch>
-                    <Route path="/subjects" component={SubjectsPage}></Route>
                     <Route path="/subjects/new" component={SubjectPage}></Route>
                     <Route path="/subject/:codename" component={SubjectPage}></Route>
+                    <Route path="/subjects" component={SubjectsPage}></Route>
 
                     <Route path="/timetable" component={TimetablePage}></Route>
 
@@ -59,6 +59,9 @@ class App extends Component {
                             <UsersPage {...props} currentUser={this.state.currentUser} />
                         )}
                     />
+
+                    <Route path="/homework/:id" component={HomeworkPage}></Route>
+                    <Route path="/homework" component={HomeworkPage}></Route>
 
                     <Route path="/log" component={LogPage}></Route>
                     <Redirect from="*" exact to="/subjects"></Redirect>

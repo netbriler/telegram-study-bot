@@ -42,7 +42,6 @@ def delete_task(id: int) -> Task or False:
     if not task:
         return False
 
-
     try:
         db.session.delete(task)
         db.session.commit()
@@ -64,6 +63,11 @@ def get_active_tasks() -> list[Task]:
 
 def get_tasks_by_date(date_to_query: date) -> list[Task]:
     tasks = Task.query.filter_by(date=date_to_query)
+    return tasks if tasks.count() else []
+
+
+def get_tasks_between_date(date_start: date, date_end: date) -> list[Task]:
+    tasks = Task.query.filter(Task.date.between(date_start, date_end))
     return tasks if tasks.count() else []
 
 

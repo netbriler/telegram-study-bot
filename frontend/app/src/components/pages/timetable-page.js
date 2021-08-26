@@ -34,7 +34,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 class TimetablePage extends Component {
     title = 'Расписание'
     description = 'Страница редактирования расписания'
-    icon = 'ion-edit'
+    icon = 'ion-android-list'
 
     constructor(props) {
         super(props);
@@ -60,7 +60,7 @@ class TimetablePage extends Component {
             .then(subjects => {
                 this.setState(() => { return { subjects } });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     loadTimetable(callback) {
@@ -79,7 +79,7 @@ class TimetablePage extends Component {
                     return { timetable }
                 });
             })
-            .finally(this.isLoaded);
+            .finally(callback);
     }
 
     onDragEnd = (result) => {

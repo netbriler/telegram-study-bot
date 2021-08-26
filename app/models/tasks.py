@@ -18,7 +18,7 @@ class Task(db.Model):
     def to_json(self) -> dict:
         json_story = {
             'id': self.id,
-            'subject_codename': self.subject_codename,
+            'subject': self.subject.to_json(),
             'date': str(self.date),
             'text': self.text,
             'created_at': str(self.created_at),

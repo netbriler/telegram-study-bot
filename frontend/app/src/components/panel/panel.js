@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Panel = ({ currentUser }) => {
     return (
         <>
-            <div uk-sticky="true" className="uk-navbar-container tm-navbar-container uk-sticky uk-sticky-fixed" style={{ position: 'fixed', top: '0px', width: '100%' }}>
+            <div className="uk-navbar-container tm-navbar-container uk-sticky uk-sticky-fixed">
                 <div className="uk-container uk-container-expand">
                     <nav uk-navbar="true" className="uk-navbar">
                         <div className="uk-navbar-left">
@@ -47,7 +47,7 @@ const Panel = ({ currentUser }) => {
                             <li><Link to="/subjects">Предметы</Link></li>
                             <li><Link to="/timetable">Расписание</Link></li>
                             <li><Link to="/users">Пользователи</Link></li>
-                            {/* <li><a href="#">Домашние задания</a></li> */}
+                            <li><Link to="/homework">Домашние задания</Link></li>
                             <li className="uk-nav-divider"></li>
                             {/* <li><a href="#">Переписка</a></li>
                             <li><a href="#">Рассылка</a></li> */}
