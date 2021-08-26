@@ -34,7 +34,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 class TimetablePage extends Component {
     title = 'Расписание'
     description = 'Страница редактирования расписания'
-    icon = 'ion-edit'
+    icon = 'ion-android-list'
 
     constructor(props) {
         super(props);

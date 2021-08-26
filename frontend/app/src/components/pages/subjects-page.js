@@ -9,7 +9,7 @@ import { PageTemplate } from '../page-templates'
 class SubjectsPage extends Component {
     title = 'Предметы'
     description = 'Список всех предметов'
-    icon = 'ion-android-list'
+    icon = 'ion-ios-book'
 
     constructor(props) {
         super(props);

@@ -1,7 +1,6 @@
 .select-search {
-	width: 300px;
 	position: relative;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: "Nunito Sans", sans-serif;
 	box-sizing: border-box;
 	* {
 		box-sizing: inherit;
@@ -32,7 +31,7 @@
 	&:not(.select-search--multiple) {
 		.select-search__input {
 			border-color: rgb(79, 144, 209);
-			
+
 			&:hover {
 				border-color: #1e87f0;
 			}
@@ -53,7 +52,7 @@
 	position: relative;
 	z-index: 1;
 	&::after {
-		content: '';
+		content: "";
 		display: inline-block;
 		position: absolute;
 		top: calc(50% - 9px);
@@ -69,10 +68,10 @@
 	padding: 0 40px 0 16px;
 	background: #fff;
 	border: 1px solid transparent;
-	box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, .15);
+	box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
 	border-radius: 3px;
 	outline: 0;
-	font-family: 'Noto Sans', sans-serif;
+	font-family: "Noto Sans", sans-serif;
 	font-size: 14px;
 	text-align: left;
 	text-overflow: ellipsis;
@@ -98,7 +97,7 @@
 }
 .select-search__select {
 	background: #fff;
-	box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, .15);
+	box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
 }
 .select-search__options {
 	list-style: none;
@@ -118,7 +117,7 @@
 	background: #fff;
 	border: none;
 	outline: 0;
-	font-family: 'Noto Sans', sans-serif;
+	font-family: "Noto Sans", sans-serif;
 	font-size: 14px;
 	text-align: left;
 	cursor: pointer;
@@ -135,7 +134,7 @@
 	background: #fff;
 	border: none;
 	outline: 0;
-	font-family: 'Noto Sans', sans-serif;
+	font-family: "Noto Sans", sans-serif;
 	font-size: 14px;
 	text-align: left;
 	cursor: pointer;
@@ -187,12 +186,11 @@
 	font-size: 10px;
 	text-transform: uppercase;
 	background: #eee;
-	padding: 8px 16px;
+	padding: 0 16px;
 }
 .select-search.is-disabled {
-	opacity: .5;
+	opacity: 0.5;
 }
-
 
 .select-search--small {
 	width: auto;
@@ -200,4 +198,10 @@
 	.select-search__input {
 		padding: 0 10px 0 4px;
 	}
+}
+
+.uk-input .select-search__input {
+	border: none;
+	box-shadow: none;
+	padding: 0;
 }

@@ -13,8 +13,8 @@ import TasksModal from '../tasks-modal';
 
 class HomeworkPage extends Component {
     title = 'Домашнее задания'
-    description = 'Календарь с домашними заданиями'
-    icon = 'ion-android-people'
+    description = 'Здесь можно добавлять, перетаскивать и редактировать домашнее задания'
+    icon = 'ion-android-calendar'
 
     calendarComponentRef = React.createRef()
 
@@ -23,7 +23,9 @@ class HomeworkPage extends Component {
 
         this.state = {
             tasks: [],
+            subjects: [],
             selectedTask: null,
+            isNewTask: false,
             weekendsVisible: false
         }
 
@@ -35,6 +37,8 @@ class HomeworkPage extends Component {
     }
 
     componentDidMount() {
+        this.loadSubjects(this.isLoaded);
+
         if (this.currentTaskId != null) {
             this.isLoading();
             this.loadTask(this.currentTaskId, this.isLoaded);
@@ -58,6 +62,14 @@ class HomeworkPage extends Component {
             .finally(callback);
     }
 
+    loadSubjects(callback) {
+        this.AdminService.getAllSubjects()
+            .then(subjects => {
+                this.setState(() => { return { subjects } });
+            })
+            .finally(callback);
+    }
+
     showNotification = (message, status) => {
         UIkit.notification({ message, status });
     }
@@ -76,7 +88,17 @@ class HomeworkPage extends Component {
     }
 
     handleDateSelect = (selectInfo) => {
-        console.log('selected: ', selectInfo)
+        const newTask = {
+            text: '',
+            date: selectInfo.startStr,
+            subject: { codename: null }
+        }
+
+        this.setState(() => { return { selectedTask: newTask, isNewTask: true } });
+    }
+
+    loadTimetableByDate = (date) => {
+        return this.AdminService.getTimetableByDate(date, true)
     }
 
     handleEventChange = (changeInfo) => {
@@ -97,7 +119,7 @@ class HomeworkPage extends Component {
     }
 
     handleTaskEditClose = () => {
-        this.setState({ selectedTask: null });
+        this.setState({ selectedTask: null, isNewTask: false });
         this.props.history.push('/homework');
     }
 
@@ -123,10 +145,32 @@ class HomeworkPage extends Component {
         calendarApi.gotoDate(calendarApi.getDate());
     }
 
+    handleCreateTask = (task, closeModal) => {
+        this.isLoading();
+
+        const params = {
+            subject_codename: task.subject.codename,
+            text: task.text,
+            date: task.date
+        };
+
+        this.AdminService.createTask(params)
+            .then(() => {
+                this.refetchCalendar();
+                this.showNotification('Создано', 'success')
+            })
+            .then(closeModal)
+            .catch(({ response }) => {
+                this.showNotification('Произошла ошибка при создании', 'danger')
+            })
+            .finally(this.isLoaded);
+    }
+
     handleTaskEdit = (task, closeModal) => {
         this.isLoading();
 
         const params = {
+            subject_codename: task.subject.codename,
             text: task.text,
             date: task.date
         };
@@ -160,7 +204,7 @@ class HomeworkPage extends Component {
     }
 
     render() {
-        const { tasks, selectedTask, weekendsVisible } = this.state;
+        const { tasks, selectedTask, isNewTask, subjects, weekendsVisible } = this.state;
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
@@ -218,7 +262,7 @@ class HomeworkPage extends Component {
                         </label>
                     </div>
                 </div>
-                {selectedTask != null ? <TasksModal task={selectedTask} onClose={this.handleTaskEditClose} onEdit={this.handleTaskEdit} onDelete={this.handleTaskDelete} /> : ''}
+                {selectedTask != null ? <TasksModal task={selectedTask} onClose={this.handleTaskEditClose} onEdit={this.handleTaskEdit} onSave={this.handleCreateTask} onDelete={this.handleTaskDelete} loadTimetableByDate={this.loadTimetableByDate} isNew={isNewTask} subjects={subjects} /> : ''}
             </PageTemplate>
         )
     }
