@@ -18,7 +18,7 @@ class Subject(db.Model):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     tasks = db.relationship('Task', backref='subject', lazy=True, cascade='all,delete')
-    files = db.relationship('File', backref='subject', lazy=True)
+    files = db.relationship('File', backref='subject', lazy=True, cascade='all,delete')
 
     @hybrid_property
     def aliases(self) -> list:

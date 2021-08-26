@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from flask import jsonify, current_app, abort, request
 
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject, get_all_subjects, get_none_subject
-from app.services.timetable import get_subjects_by_week, get_subject_timetable, get_timetable, edit_timetable
+from app.services.timetable import get_subjects_by_date, get_subject_timetable, get_timetable, edit_timetable
 
 
 @api.route('/timetable/', methods=['GET'])
@@ -19,16 +21,18 @@ def _get_timetable():
         abort(500, description='Server error')
 
 
-@api.route('/timetable/week/<int:week>', methods=['GET'])
-def _get_timetable_by_week(week: int):
+@api.route('/timetable/date/<string:date>', methods=['GET'])
+def _get_timetable_by_date(date: str):
     try:
-        if 0 > week or week > 52:
-            raise BadRequest('invalid week number')
+        try:
+            date = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            raise BadRequest('the date_start must be in the format %Y-%m-%d')
 
-        timetable = get_subjects_by_week(week)
+        timetable = get_subjects_by_date(date,
+                                         with_none_subject=False if request.args.get('without_none_subject') else True)
 
-        return jsonify(
-            list(map(lambda day: list(map(lambda s: s.to_json(), day)), timetable)))
+        return jsonify(list(map(lambda s: s.to_json(), timetable)))
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
