@@ -11,7 +11,10 @@ def get_task(id: int) -> Task:
 
 
 def add_task(subject_codename: str, text: str, day: int = 0) -> Task or False:
-    return create_task(text, get_subject_timetable(subject_codename)[day]['date'], subject_codename)
+    days_when_subject = get_subject_timetable(subject_codename)
+    if len(days_when_subject) > 0:
+        return create_task(text, days_when_subject[day]['date'], subject_codename)
+    return False
 
 
 def create_task(text: str, _date: date, subject_codename: str) -> Task:
@@ -33,7 +36,7 @@ def edit_task(id: int, text: str = None, _date: date = None, subject_codename: s
 
     if text:
         task.text = text
-    if date:
+    if _date:
         task.date = _date
     if subject_codename:
         task.subject_codename = subject_codename

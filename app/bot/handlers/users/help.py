@@ -37,8 +37,7 @@ def help_handler(message: Message, current_user: User):
              '/call_all - Позвать всех участников группы\n')
         )
 
-        reply_markup = get_help_inline_markup()
-
     text += '\nСоздатель @briler'
+    markup = get_help_inline_markup(current_user.is_admin())
 
-    send_message_private(message, text, reply_markup=reply_markup)
+    send_message_private(message, text, reply_markup=markup)
