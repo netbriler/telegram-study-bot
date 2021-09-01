@@ -2,6 +2,7 @@ from .current_info import bot
 from .help import bot
 from .homework import bot
 from .info import bot
+from .inline_mode import bot
 from .keyboard import bot
 from .schedule import bot
 from .start import bot

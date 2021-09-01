@@ -13,7 +13,7 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def __repr__(self) -> str:
-        return f'<Task {self.subject_codename}>'
+        return f'<Task [{self.id}] {self.subject_codename}>'
 
     def to_json(self) -> dict:
         json_story = {

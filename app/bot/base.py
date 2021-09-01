@@ -25,7 +25,8 @@ def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action:
 
             current_user = get_or_create_user(from_user.id, name, from_user.username)
             if current_user.is_banned():
-                return bot.send_message(message.chat.id, 'Доступ ограничен ❌', reply_markup=get_remove_keyboard_markup())
+                return bot.send_message(message.chat.id, 'Доступ ограничен ❌',
+                                        reply_markup=get_remove_keyboard_markup())
 
             if message.text == '❌ Отменить':
                 markup = get_menu_keyboard_markup(current_user.is_admin())
@@ -63,10 +64,10 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
     def decorator(func):
         @logger.catch
         def wrapper(call: CallbackQuery, *args, **kwargs):
-            chat_id = call.message.chat.id
-            message_id = call.message.message_id
+            chat_id = call.chat_instance if call.inline_message_id else call.message.chat.id
+            message_id = call.inline_message_id if call.inline_message_id else call.message.message_id
 
-            if call.data == 'cancel':
+            if not call.inline_message_id and call.data == 'cancel':
                 bot.answer_callback_query(call.id, 'Отменено')
                 return bot.delete_message(chat_id, message_id)
 
@@ -96,12 +97,13 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
 
             download_user_avatar(current_user, bot)
 
-            if current_user.is_super_admin():
-                set_super_admin_commands(from_user.id, chat_id)
-            elif current_user.is_admin():
-                set_admin_commands(from_user.id, chat_id)
-            else:
-                delete_admin_commands(from_user.id, chat_id)
+            if not call.inline_message_id:
+                if current_user.is_super_admin():
+                    set_super_admin_commands(from_user.id, chat_id)
+                elif current_user.is_admin():
+                    set_admin_commands(from_user.id, chat_id)
+                else:
+                    delete_admin_commands(from_user.id, chat_id)
 
         return wrapper
 

@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from flask import jsonify, current_app, abort, request
+from flask_login import current_user
 
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject, get_all_subjects, get_none_subject
 from app.services.timetable import get_subjects_by_date, get_subject_timetable, get_timetable, edit_timetable
+from app.utils.logging import logger
 
 
 @api.route('/timetable/', methods=['GET'])
@@ -74,6 +76,8 @@ def _update_timetable():
                         raise BadRequest(f'subject "{subject}" not found')
 
             edit_timetable(day['id'], day['subjects'])
+
+        logger.info(f'{current_user} edited timetable')
 
         return jsonify({'ok': True})
     except BadRequest as e:

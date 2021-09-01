@@ -25,7 +25,7 @@ class User(UserMixin, db.Model):
         return self.status == 'super_admin'
 
     def __repr__(self) -> str:
-        return f'<User {self.username}>'
+        return f'<User [{self.id}] {self.username}>'
 
     def to_json(self) -> dict:
         json_story = {

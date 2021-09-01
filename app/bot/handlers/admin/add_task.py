@@ -43,6 +43,10 @@ def add_task_handler(message: Message, subject: dict, current_user: User):
         return bot.register_next_step_handler(response, add_task_handler, subject=subject, current_user=current_user)
 
     task = add_task(subject['codename'], escape(message.text))
+    if not task:
+        return send_message_private(message,
+                                    f'<b>Не удалось добавить задание!</b>\nПохоже предмета "<i>{subject["name"]}</i>" нет в расписании',
+                                    reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
 
     text = ('Добавлено:\n'
             f'{subject["name"]} - {task.text}')
@@ -52,7 +56,7 @@ def add_task_handler(message: Message, subject: dict, current_user: User):
 
 @bot.message_handler(regexp='^!(.+)-(.|\s)+$')
 @base(is_admin=True)
-def add_task_via_decorator_handler(message: Message):
+def add_task_via_decorator_handler(message: Message, current_user: User):
     query = message.text.replace('!', '').strip()
     subject_name = query.split('-')[0]
     task_text = query.replace(subject_name, '', 1).replace('-', '', 1).strip()
@@ -60,6 +64,10 @@ def add_task_via_decorator_handler(message: Message):
     subject = recognize_subject(subject_name)
 
     task = add_task(subject.codename, escape(task_text))
+    if not task:
+        return send_message_private(message,
+                                    f'<b>Не удалось добавить задание!</b>\nПохоже предмета "<i>{subject.name}</i>" нет в расписании',
+                                    reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
 
     text = ('Добавлено:\n'
             f'{subject.name} - {task.text}')
