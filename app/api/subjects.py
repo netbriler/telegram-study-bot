@@ -1,10 +1,12 @@
-from flask import jsonify, current_app, abort, request
+from flask import jsonify, abort, request
+from flask_login import current_user
 
 from app.api import api
 from app.exceptions import BadRequest, Conflict
 from app.services.subjects import get_subject, get_all_subjects, create_subject, edit_subject, delete_subject, \
     get_none_subject
 from app.services.timetable import delete_subject_from_timetable
+from app.utils.logging import logger
 
 
 @api.route('/subjects', methods=['GET'])
@@ -16,7 +18,7 @@ def _get_subjects():
 
         return jsonify(list(map(lambda s: s.to_json(), subjects)))
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')
 
 
@@ -40,6 +42,8 @@ def _create_subject():
         if not subject:
             raise BadRequest('subject not found')
 
+        logger.info(f'{current_user} created {subject}')
+
         return jsonify(subject.to_full_json())
     except BadRequest as e:
         abort(400, description=str(e))
@@ -48,7 +52,7 @@ def _create_subject():
     except AssertionError as e:
         abort(400, description='send at least one parameter')
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')
 
 
@@ -63,7 +67,7 @@ def _get_subject(codename: str):
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')
 
 
@@ -74,13 +78,15 @@ def _delete_subject(codename: str):
         if not subject:
             raise BadRequest('subject not found')
 
+        logger.info(f'{current_user} deleted {subject}')
+
         delete_subject_from_timetable(codename)
 
         return jsonify({})
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')
 
 
@@ -101,13 +107,15 @@ def _update_subject(codename: str):
         if not subject:
             raise BadRequest('subject not found')
 
+        logger.info(f'{current_user} edited {subject}')
+
         return jsonify(subject.to_full_json())
     except BadRequest as e:
         abort(400, description=str(e))
     except AssertionError as e:
         abort(400, description='send at least one parameter')
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')
 
 
@@ -122,5 +130,5 @@ def _get_subject_tasks(codename: str):
     except BadRequest as e:
         abort(400, description=str(e))
     except Exception as e:
-        current_app.logger.error(e)
+        logger.error(e)
         abort(500, description='Server error')

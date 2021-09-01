@@ -14,9 +14,9 @@ from ...loader import bot, current_app
 @bot.message_handler(commands=['current_info'])
 @base()
 def current_info_handler(message: Message):
-    text = _get_text()
+    text, markup = _get_current_info_data()
 
-    send_message_private(message, text, reply_markup=get_update_inline_markup('current_info'))
+    send_message_private(message, text, reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('current_info'))
@@ -26,12 +26,19 @@ def inline_homework_handler(call: CallbackQuery):
     if option == 'update':
         text = _get_text()
 
-        if call.message.chat.type != 'private':
+        if not call.inline_message_id and call.message.chat.type != 'private':
             text = mark_user(text, call.from_user.id)
 
         markup = get_update_inline_markup('current_info')
         try:
-            bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup)
+            if call.inline_message_id:
+                bot.edit_message_text(text, message_id=call.inline_message_id, inline_message_id=call.inline_message_id,
+                                      reply_markup=markup,
+                                      disable_web_page_preview=True)
+            else:
+                bot.edit_message_text(text, call.message.chat.id, call.message.message_id, reply_markup=markup,
+                                      disable_web_page_preview=True)
+            bot.answer_callback_query(call.id, 'Ок')
         except Exception as e:
             if e.error_code == 400:
                 bot.answer_callback_query(call.id, 'Ничего не поменялось')
@@ -96,3 +103,10 @@ def _get_text():
         return 'Сегодня больше пар не будет, гуляем 🥳'
 
     return text.rstrip()
+
+
+def _get_current_info_data():
+    text = _get_text()
+    markup = get_update_inline_markup('current_info')
+
+    return text, markup

@@ -1,5 +1,6 @@
 from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
 from flask_login import login_user, logout_user, login_required, current_user
+from app.utils.logging import logger
 
 from app.bot.loader import bot
 from app.main import main
@@ -21,6 +22,9 @@ def login_redirect():
         if not user.is_admin():
             abort(403, 'Admin panel is available only for administrators, contact the creator to get the rights')
         login_user(user, remember=True)
+
+        logger.info(f'{user} logged')
+
         return redirect('/')
 
     abort(400)
@@ -38,6 +42,7 @@ def _login_user(user_id):
     if current_app.config['DEBUG']:
         user = User.query.filter_by(id=user_id).first()
         login_user(user, remember=True)
+        logger.info(f'{user} logged')
 
         return jsonify(current_user.to_json())
     return redirect(url_for('main.login'))
