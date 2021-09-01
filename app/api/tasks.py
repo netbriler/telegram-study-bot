@@ -1,12 +1,14 @@
 from datetime import datetime
 
 from flask import jsonify, current_app, abort, request
+from flask_login import current_user
 
 from app.api import api
 from app.exceptions import BadRequest
 from app.services.subjects import get_subject
 from app.services.tasks import get_task, edit_task, get_tasks, get_tasks_by_date, get_tasks_by_week, delete_task, \
     create_task, get_tasks_between_date
+from app.utils.logging import logger
 
 
 @api.route('/tasks', methods=['GET'])
@@ -38,6 +40,8 @@ def _create_task():
             raise BadRequest('the date must be in the format %Y-%m-%d')
 
         task = create_task(text, date, subject_codename)
+
+        logger.info(f'{current_user} created {task}')
 
         return jsonify(task.to_json())
     except BadRequest as e:
@@ -82,7 +86,7 @@ def _update_task(id: int):
 
         if 'subject_codename' in request.json:
             subject_codename = request.json['subject_codename']
-            
+
             subject = get_subject(subject_codename)
             if not subject:
                 raise BadRequest('subject not found')
@@ -92,6 +96,8 @@ def _update_task(id: int):
         task = edit_task(id, text, date, subject_codename=subject_codename)
         if not task:
             raise BadRequest('task not found')
+
+        logger.info(f'{current_user} edited {task}')
 
         return jsonify(task.to_json())
     except BadRequest as e:
@@ -109,6 +115,8 @@ def _delete_task(id: int):
         task = get_task(id)
         if not task:
             raise BadRequest('task not found')
+
+        logger.info(f'{current_user} deleted {task}')
 
         delete_task(id)
 

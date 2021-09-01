@@ -18,4 +18,4 @@ class File(db.Model):
         return json_story
 
     def __repr__(self) -> str:
-        return f'<File {self.id} {self.title}>'
+        return f'<File [{self.id}] {self.title}>'

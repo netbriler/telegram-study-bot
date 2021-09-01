@@ -5,6 +5,7 @@ from app.api import api
 from app.exceptions import BadRequest
 from app.models.users import get_user_status_title
 from app.services.users import get_user, get_users, edit_user_status
+from app.utils.logging import logger
 
 
 @api.route('/users', methods=['GET'])
@@ -51,6 +52,8 @@ def _update_user_status(id: int):
             raise BadRequest('this user has more rights than you')
 
         user = edit_user_status(id, request.json['status'])
+
+        logger.info(f'{current_user} edited {user}')
 
         return jsonify(user.to_json())
     except BadRequest as e:

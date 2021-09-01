@@ -36,7 +36,7 @@ class Subject(db.Model):
             self._aliases = ','.join(aliases)
 
     def __repr__(self) -> str:
-        return f'<Subject {self.name}>'
+        return f'<Subject [{self.codename}] {self.name}>'
 
     def to_json(self) -> dict:
         json_story = {
