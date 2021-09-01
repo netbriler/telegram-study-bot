@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 
-const KeyCodes = {
-    comma: 188,
-    enter: 13,
-};
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class TagsEditor extends Component {
     constructor(props) {
@@ -56,7 +50,6 @@ class TagsEditor extends Component {
                     handleAddition={this.handleAddition}
                     allowDragDrop={false}
                     autofocus={false}
-                    delimiters={delimiters}
                     placeholder={this.placeholder} />
             </>
         )

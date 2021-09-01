@@ -74,12 +74,13 @@ def _get_subject(codename: str):
 @api.route('/subjects/<string:codename>', methods=['DELETE'])
 def _delete_subject(codename: str):
     try:
-        subject = delete_subject(codename)
+        subject = get_subject(codename)
         if not subject:
             raise BadRequest('subject not found')
 
         logger.info(f'{current_user} deleted {subject}')
 
+        delete_subject(codename)
         delete_subject_from_timetable(codename)
 
         return jsonify({})

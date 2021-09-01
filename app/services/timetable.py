@@ -55,12 +55,7 @@ def get_subjects_by_week(week: int, year: int = datetime.now().year) -> list[lis
 
 
 def _is_even_week(current_date: date) -> bool:
-    """Checks the parity week"""
-    verification_date = date(2019, 9, 1)
-
-    monday1 = (verification_date - timedelta(days=verification_date.weekday()))
-    monday2 = (current_date - timedelta(days=current_date.weekday()))
-    return bool(int((monday2 - monday1).days / 7) % 2)
+    return current_date.isocalendar().week % 2 == 0
 
 
 def _get_day_number_by_date(current_date: date) -> int:
