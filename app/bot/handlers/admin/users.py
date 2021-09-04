@@ -3,7 +3,7 @@ from telebot.types import Message
 from app.services.users import get_user, get_users
 from ...base import base
 from ...helpers import send_message_private
-from ...loader import bot
+from ...loader import bot, bot_username
 
 
 @bot.message_handler(commands=['users_list'])
@@ -21,10 +21,10 @@ def users_list_handler(message: Message):
     send_message_private(message, text.rstrip())
 
 
-@bot.message_handler(regexp=f'^/user_\\d+(@{bot.get_me().username})?$')
+@bot.message_handler(regexp=f'^/user_\\d+(@{bot_username})?$')
 @base(is_admin=True)
 def get_user_handler(message: Message):
-    id = int(message.text[6:].replace(f'@{bot.get_me().username}', '').strip())
+    id = int(message.text[6:].replace(f'@{bot_username}', '').strip())
     user = get_user(id)
 
     text = f'<a href="tg://user?id={user.id}">{user.name}</a>'

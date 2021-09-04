@@ -28,7 +28,11 @@ def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action:
                 return bot.send_message(message.chat.id, 'Доступ ограничен ❌',
                                         reply_markup=get_remove_keyboard_markup())
 
-            if message.text == '❌ Отменить':
+            if message.content_type == 'text':
+                logger.debug(f'from_user: {current_user} message_id: {message.message_id} '
+                             f'text: {message.text}')
+
+            if message.text == '❌ Отменить' or message.text == '/cancel':
                 markup = get_menu_keyboard_markup(current_user.is_admin())
                 return send_message_private(message, 'Ок 👍', reply_markup=markup)
 
@@ -41,10 +45,6 @@ def base(is_admin: bool = False, is_super_admin: bool = False, send_chat_action:
                 kwargs['current_user'] = current_user
 
                 _attributes_check(func, args, kwargs)
-
-            if message.content_type == 'text':
-                logger.debug(f'from_user: {message.from_user.id} message_id: {message.message_id} '
-                             f'text: {message.text}')
 
             download_user_avatar(current_user, bot)
 
@@ -81,6 +81,10 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
             if current_user.is_banned():
                 return bot.answer_callback_query(call.id, 'Доступ ограничен ❌')
 
+            if call.data:
+                logger.debug(f'from_user: {current_user} chat_id: {chat_id} '
+                             f'message_id: {message_id} data: {call.data}')
+
             if is_super_admin and not current_user.is_super_admin():
                 return bot.answer_callback_query(call.id, 'У вас нет прав')
             elif is_admin and not current_user.is_admin():
@@ -90,10 +94,6 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
                 kwargs['current_user'] = current_user
 
                 _attributes_check(func, args, kwargs)
-
-            if call.data:
-                logger.debug(f'from_user: {from_user.id} chat_id: {chat_id} '
-                             f'message_id: {message_id} data: {call.data}')
 
             download_user_avatar(current_user, bot)
 

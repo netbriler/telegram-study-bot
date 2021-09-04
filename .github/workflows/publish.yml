@@ -32,6 +32,7 @@ jobs:
           cp ./requirements.txt ./deploy
           cp ./.env.template ./deploy
           cp ./README.md ./deploy
+          cp ./.gitignore ./deploy
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
