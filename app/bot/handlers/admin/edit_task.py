@@ -8,7 +8,7 @@ from ...base import base, callback_query_base
 from ...helpers import send_message_private, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
 from ...keyboards.inline import get_edit_inline_markup
-from ...loader import bot
+from ...loader import bot, bot_username
 
 
 @bot.message_handler(regexp='^✏ Редактировать$')
@@ -28,19 +28,20 @@ def edit_tasks_handler(message: Message):
     bot.send_message(message.chat.id, text, disable_web_page_preview=True)
 
 
-@bot.message_handler(regexp=f'^/edit\\d+(@{bot.get_me().username})?$')
+@bot.message_handler(regexp=f'^/edit\\d+(@{bot_username})?$')
 @base(is_admin=True)
 def get_edit_task_handler(message: Message):
-    id = int(message.text[5:].replace(f'@{bot.get_me().username}', '').strip())
-    task = get_task(id)
+    id = int(message.text[5:].replace(f'@{bot_username}', '').strip())
 
-    if not task:
-        return bot.reply_to(message, f'Задание с id <b>{id}</b> не найдено')
+    send_task_edit_menu(message, id)
 
-    text = f'{task.subject.name} - {task.text}'
 
-    markup = get_edit_inline_markup('task', id)
-    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
+@bot.message_handler(commands=['start'], func=lambda m: m.text.startswith('/start task'))
+@base()
+def deep_link_edit_handler(message: Message, current_user: User):
+    id = int(message.text[11:])
+
+    send_task_edit_menu(message, id, current_user.is_admin())
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('task'))
@@ -58,8 +59,8 @@ def inline_edit_handler(call: CallbackQuery):
         bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
-        text = ('Введите измененное задание:\n'
-                f'{task.subject.name} - <pre>{task.text}</pre>')
+        text = (f'Введите измененное задание для предмета:\n<b>{task.subject.name}</b>\n'
+                f'<pre>{task.text}</pre>')
 
         markup = get_cancel_keyboard_markup()
         response = send_message_inline_private(call, text, reply_markup=markup)
@@ -88,3 +89,15 @@ def edit_task_handler(message: Message, id: int, current_user: User):
 
     markup = get_menu_keyboard_markup(current_user.is_admin())
     send_message_private(message, text, reply_markup=markup)
+
+
+def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
+    task = get_task(id)
+
+    if not task:
+        return bot.reply_to(message, f'Задание с id <b>{id}</b> не найдено')
+
+    text = f'<b>{task.subject.name}</b> - {task.text}'
+
+    markup = get_edit_inline_markup('task', id) if allow_editing else None
+    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)

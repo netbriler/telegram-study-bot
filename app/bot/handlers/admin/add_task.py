@@ -30,7 +30,7 @@ def get_subject_handler(message: Message):
 
     subject = recognize_subject(message.text)
 
-    text = f'Напишите задание для предмета: {subject.name}'
+    text = f'Напишите задание для предмета: <b>{subject.name}</b>'
 
     response = send_message_private(message, text, reply_markup=get_cancel_keyboard_markup())
     bot.register_next_step_handler(response, add_task_handler, subject=subject.to_json())
@@ -70,6 +70,6 @@ def add_task_via_decorator_handler(message: Message, current_user: User):
                                     reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
 
     text = ('Добавлено:\n'
-            f'{subject.name} - {task.text}')
+            f'<b>{subject.name}</b> - {task.text}')
 
     bot.send_message(message.chat.id, text, parse_mode='HTML')
