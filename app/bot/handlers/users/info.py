@@ -1,7 +1,9 @@
+from telebot.types import InlineQueryResultArticle, InlineQuery, InputTextMessageContent, \
+    InlineQueryResultCachedDocument
 from telebot.types import Message, CallbackQuery
 
-from app.services.files import get_file
-from app.services.subjects import get_subject
+from app.services.subjects import get_subject, recognize_subject, Subject
+from app.utils.helper import generate_inline_id
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, mark_user
 from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
@@ -15,6 +17,37 @@ def start_info(message: Message):
     text = 'Узнать информацию по предмету: '
 
     send_message_private(message, text, reply_markup=get_subjects_inline_markup('info'))
+
+
+@bot.inline_handler(lambda q: q.query.strip())
+def inline_info(inline_query: InlineQuery):
+    subject = recognize_subject(inline_query.query)
+
+    text = _get_text(subject)
+
+    results = [InlineQueryResultArticle(
+        id=generate_inline_id(subject.codename),
+        title=subject.name,
+        description=f'Аудитория: {subject.audience}\nУчитель: {subject.teacher}',
+        thumb_url='https://images.emojiterra.com/google/android-11/512px/1f4da.png',
+        input_message_content=InputTextMessageContent(text, parse_mode='HTML', disable_web_page_preview=True),
+        reply_markup=get_subject_files_inline_markup(subject, inline=True)
+    )]
+
+    for file in subject.files:
+        try:
+            bot.get_file(file.file_id)
+        except:
+            continue
+
+        results.append(InlineQueryResultCachedDocument(
+            id=generate_inline_id(file.id),
+            title=file.title,
+            caption=file.title,
+            document_file_id=file.file_id
+        ))
+
+    bot.answer_inline_query(inline_query.id, results=results, cache_time=1)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('info'))
@@ -34,13 +67,7 @@ def inline_info_handler(call: CallbackQuery):
         return bot.edit_message_reply_markup(chat_id, call.message.message_id,
                                              reply_markup=get_subjects_inline_markup('info'))
 
-    text = (f'<b>{subject.name}</b>\n\n'
-            f'Аудитория: <b>{subject.audience}</b>\n'
-            f'Учитель: <b>{subject.teacher}</b>\n\n'
-            f'{subject.info}').rstrip()
-
-    if subject.files:
-        text += '\nСписок документов 👇'
+    text = _get_text(subject)
 
     if call.message.chat.type != 'private':
         text = mark_user(text, call.from_user.id)
@@ -51,23 +78,13 @@ def inline_info_handler(call: CallbackQuery):
     return bot.answer_callback_query(call.id, subject.name)
 
 
-@bot.callback_query_handler(func=lambda call: call.data.startswith('file'))
-@callback_query_base()
-def inline_file_handler(call: CallbackQuery):
-    file_id = int(call.data[5:])
+def _get_text(subject: Subject):
+    text = (f'<b>{subject.name}</b>\n\n'
+            f'Аудитория: <b>{subject.audience}</b>\n'
+            f'Учитель: <b>{subject.teacher}</b>\n\n'
+            f'{subject.info}').rstrip()
 
-    file = get_file(file_id)
-    if not file:
-        return bot.answer_callback_query(call.id, 'Файл не найден')
+    if subject.files:
+        text += '\n\nСписок документов 👇'
 
-    text = file.title
-
-    if call.message.chat.type != 'private':
-        text = mark_user(text, call.from_user.id)
-
-    try:
-        bot.send_document(call.message.chat.id, file.file_id, caption=text)
-        return bot.answer_callback_query(call.id, file.title)
-    except Exception as e:
-        if e.error_code == 400:
-            return bot.answer_callback_query(call.id, 'Похоже файл был удален')
+    return text

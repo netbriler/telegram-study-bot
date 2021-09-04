@@ -7,7 +7,7 @@ from ...keyboards.default import get_menu_keyboard_markup
 from ...loader import bot
 
 
-@bot.message_handler(commands=['start'], func=lambda m: len(m.text) == 6)
+@bot.message_handler(commands=['start'])
 @base()
 def start_handler(message: Message, current_user: User):
     text = (f'Привет {current_user.name}!\n'
