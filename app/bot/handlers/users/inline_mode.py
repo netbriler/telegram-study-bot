@@ -1,17 +1,15 @@
 from telebot.types import InlineQueryResultArticle, InlineQuery, InputTextMessageContent
 
-from telebot.types import InlineQueryResultArticle, InlineQuery, InputTextMessageContent
-
 from app.utils.helper import generate_inline_id
-from .homework import _get_homework_data
-from .today_homework import _get_today_homework_data
-from .schedule import _get_schedule_data
 from .current_info import _get_current_info_data
+from .homework import _get_homework_data
+from .schedule import _get_schedule_data
+from .today_homework import _get_today_homework_data
 from ...loader import bot
 
 
-@bot.inline_handler(lambda q: True)
-def inline_echo(inline_query: InlineQuery):
+@bot.inline_handler(lambda q: q.query.strip() == '')
+def inline_menu(inline_query: InlineQuery):
     schedule_text, schedule_markup = _get_schedule_data()
 
     schedule = InlineQueryResultArticle(
@@ -33,7 +31,7 @@ def inline_echo(inline_query: InlineQuery):
         input_message_content=InputTextMessageContent(homework_text, parse_mode='HTML'),
         reply_markup=homework_markup
     )
-    
+
     today_homework_text, today_homework_markup = _get_today_homework_data()
 
     today_homework = InlineQueryResultArticle(
@@ -44,7 +42,7 @@ def inline_echo(inline_query: InlineQuery):
         input_message_content=InputTextMessageContent(today_homework_text, parse_mode='HTML'),
         reply_markup=today_homework_markup
     )
-    
+
     current_info_text, current_info_markup = _get_current_info_data()
 
     current_info = InlineQueryResultArticle(
