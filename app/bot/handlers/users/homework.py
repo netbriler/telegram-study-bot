@@ -8,7 +8,7 @@ from app.services.tasks import get_tasks_by_week
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, mark_user
 from ...keyboards.inline import get_week_inline_markup
-from ...loader import bot
+from ...loader import bot, bot_username
 
 
 @bot.message_handler(regexp='^📝 Домашнее задание$')
@@ -53,6 +53,8 @@ def inline_homework_handler(call: CallbackQuery):
 
 
 def _get_text(timetable: list[list[Task]]):
+    deep_link = f'tg://resolve?domain={bot_username}&start=task'
+
     text = ''
     for i in range(len(timetable)):
         tasks = timetable[i]
@@ -64,7 +66,7 @@ def _get_text(timetable: list[list[Task]]):
         j = 1
         for task in tasks:
             if task.subject:
-                text += f'{j}) <b>{task.subject.name}</b>\n{task.text.rstrip()}\n\n'
+                text += f'{j}) <b>{task.subject.name}<a href="{deep_link}{task.id}">⠀</a></b>\n{task.text.rstrip()}\n\n'
                 j += 1
 
         text = text.rstrip() + '\n\n'

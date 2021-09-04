@@ -79,8 +79,13 @@ def get_tasks_by_date(date_to_query: date) -> list[Task]:
 
 
 def get_tasks_between_date(date_start: date, date_end: date) -> list[Task]:
-    tasks = Task.query.filter(Task.date.between(date_start, date_end))
-    return tasks if tasks.count() else []
+    tasks = Task.query.filter(Task.date.between(date_start, date_end)).all()
+    return tasks
+
+
+def get_tasks_between_created_date(date_start: datetime, date_end: datetime) -> list[Task]:
+    tasks = Task.query.filter(Task.created_at.between(date_start, date_end)).all()
+    return tasks
 
 
 def get_tasks_by_week(week: int, year: int = datetime.now().year) -> list[list[Task]]:

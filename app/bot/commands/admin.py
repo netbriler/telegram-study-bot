@@ -13,6 +13,7 @@ def get_admin_commands(user_id: int, chat_id: int = None) -> list[BotCommand]:
         BotCommand('/add_file', 'Добавить файл в информацию по предмету'),
         BotCommand('/users_list', 'Получить список пользователей'),
         BotCommand('/get_file_id', 'Получить id файла'),
+        BotCommand('/cancel', 'Отменить текущее действие'),
     ])
 
     if user_id == chat_id:

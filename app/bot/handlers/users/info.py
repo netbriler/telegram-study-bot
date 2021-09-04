@@ -26,8 +26,13 @@ def inline_info_handler(call: CallbackQuery):
         bot.answer_callback_query(call.id, 'Отменено')
         return bot.delete_message(chat_id, call.message.message_id)
 
-    subject_codename = call.data.split('_')[1]
+    subject_codename = call.data[5:]
     subject = get_subject(subject_codename)
+
+    if not subject:
+        bot.answer_callback_query(call.id, 'Предмет не найден')
+        return bot.edit_message_reply_markup(chat_id, call.message.message_id,
+                                             reply_markup=get_subjects_inline_markup('info'))
 
     text = (f'<b>{subject.name}</b>\n\n'
             f'Аудитория: <b>{subject.audience}</b>\n'
@@ -49,7 +54,7 @@ def inline_info_handler(call: CallbackQuery):
 @bot.callback_query_handler(func=lambda call: call.data.startswith('file'))
 @callback_query_base()
 def inline_file_handler(call: CallbackQuery):
-    file_id = int(call.data.split('_')[1])
+    file_id = int(call.data[5:])
 
     file = get_file(file_id)
     if not file:
