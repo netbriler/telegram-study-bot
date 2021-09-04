@@ -4,6 +4,7 @@ from telebot.types import InlineQueryResultArticle, InlineQuery, InputTextMessag
 
 from app.utils.helper import generate_inline_id
 from .homework import _get_homework_data
+from .today_homework import _get_today_homework_data
 from .schedule import _get_schedule_data
 from .current_info import _get_current_info_data
 from ...loader import bot
@@ -33,6 +34,17 @@ def inline_echo(inline_query: InlineQuery):
         reply_markup=homework_markup
     )
     
+    today_homework_text, today_homework_markup = _get_today_homework_data()
+
+    today_homework = InlineQueryResultArticle(
+        id=generate_inline_id('today_homework'),
+        title=f'Домашнее задание заданое сегодня',
+        description='Узнать домашнее задание, которое задали сегодня',
+        thumb_url='https://images.emojiterra.com/google/android-11/512px/1f4dd.png',
+        input_message_content=InputTextMessageContent(today_homework_text, parse_mode='HTML'),
+        reply_markup=today_homework_markup
+    )
+    
     current_info_text, current_info_markup = _get_current_info_data()
 
     current_info = InlineQueryResultArticle(
@@ -44,4 +56,4 @@ def inline_echo(inline_query: InlineQuery):
         reply_markup=current_info_markup
     )
 
-    bot.answer_inline_query(inline_query.id, results=[schedule, homework, current_info], cache_time=1)
+    bot.answer_inline_query(inline_query.id, results=[schedule, homework, today_homework, current_info], cache_time=1)

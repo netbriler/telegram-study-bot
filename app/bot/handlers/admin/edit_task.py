@@ -53,10 +53,14 @@ def inline_edit_handler(call: CallbackQuery):
     query, option = call.data.split('_')
     id = int(query[4:])
 
+    if option == 'cancel':
+        bot.answer_callback_query(call.id, 'Отменено')
+        return bot.delete_message(chat_id, message_id)
+
     task = get_task(id)
     if not task:
         bot.answer_callback_query(call.id, 'Задание уже удалено')
-        bot.delete_message(chat_id, message_id)
+        return bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
         text = (f'Введите измененное задание для предмета:\n<b>{task.subject.name}</b>\n'
@@ -97,7 +101,10 @@ def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
     if not task:
         return bot.reply_to(message, f'Задание с id <b>{id}</b> не найдено')
 
-    text = f'<b>{task.subject.name}</b> - {task.text}'
+    text = (f'<b>{task.subject.name}</b>\n'
+            f'Задано на: <i>{task.date}</i>\n'
+            f'Добавлено: <i>{task.created_at}</i>\n\n'
+            f'Текст задания:\n<pre>{task.text}</pre>')
 
     markup = get_edit_inline_markup('task', id) if allow_editing else None
     bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
