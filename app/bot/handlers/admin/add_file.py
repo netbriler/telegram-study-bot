@@ -37,27 +37,31 @@ def get_subject_handler(message: Message):
 
 
 @base(is_admin=True)
-def get_file_handler(message: Message, subject: dict):
+def get_file_handler(message: Message, subject: dict = None, _task: dict = None):
     if message.content_type != 'document':
         response = bot.reply_to(message, f'Это {message.content_type}, а мне нужен файл!')
-        return bot.register_next_step_handler(response, get_file_handler, subject=subject)
+        return bot.register_next_step_handler(response, get_file_handler, subject=subject, _task=_task)
 
     text = f'Напишите название для файла'
 
     response = bot.reply_to(message, text)
-    bot.register_next_step_handler(response, add_file_handler, subject=subject, file_id=message.document.file_id)
+    bot.register_next_step_handler(response, add_file_handler, subject=subject, _task=_task,
+                                   file_id=message.document.file_id)
 
 
 @base(is_admin=True)
-def add_file_handler(message: Message, subject: dict, file_id: str, current_user: User):
+def add_file_handler(message: Message, subject: dict, _task: dict, file_id: str, current_user: User):
     if message.content_type != 'text':
         response = bot.reply_to(message, f'Это {message.content_type}, а мне нужно название для файла!')
-        return bot.register_next_step_handler(response, add_file_handler, subject=subject, file_id=file_id,
+        return bot.register_next_step_handler(response, add_file_handler, subject=subject, _task=_task, file_id=file_id,
                                               current_user=current_user)
 
-    file = add_file(subject['codename'], escape(message.text), file_id)
+    if subject:
+        file = add_file(escape(message.text), file_id, subject_codename=subject['codename'])
+    elif _task:
+        file = add_file(escape(message.text), file_id, task_id=_task['id'])
+    else:
+        return send_message_private(message, 'Ошибка при добавлении ❌',
+                                    reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
 
-    text = ('Добавлено:\n'
-            f'{subject["name"]} - {file.title}')
-
-    send_message_private(message, text, reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
+    send_message_private(message, 'Файл добавлен ✅', reply_markup=get_menu_keyboard_markup(current_user.is_admin()))

@@ -4,6 +4,7 @@ from telebot.types import Message, CallbackQuery
 
 from app.models import User
 from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
+from .add_file import get_file_handler
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
@@ -71,6 +72,11 @@ def inline_edit_handler(call: CallbackQuery):
         bot.register_next_step_handler(response, edit_task_handler, id=id)
 
         bot.delete_message(chat_id, message_id)
+    if option == 'files':
+        text = 'Отправте файл для задания'
+
+        response = send_message_private(call.message, text, reply_markup=get_cancel_keyboard_markup())
+        bot.register_next_step_handler(response, get_file_handler, _task=task.to_json())
     elif option == 'delete':
         delete_task(id)
         bot.answer_callback_query(call.id, 'Удаленно')
@@ -110,6 +116,6 @@ def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
     markup = get_files_inline_markup(task.files)
 
     if allow_editing:
-        markup = get_edit_inline_markup('task', id, markup=markup)
+        markup = get_edit_inline_markup('task', id, markup=markup, files_button=True)
 
     send_message_private(message, text, reply_markup=markup, disable_web_page_preview=True)
