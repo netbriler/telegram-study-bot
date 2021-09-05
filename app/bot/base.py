@@ -1,6 +1,6 @@
 import inspect
 
-from telebot.types import Message, CallbackQuery
+from telebot.types import Message, CallbackQuery, InlineQuery
 
 from app.bot.loader import bot
 from app.services.users import get_or_create_user, download_user_avatar
@@ -104,6 +104,34 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
                     set_admin_commands(from_user.id, chat_id)
                 else:
                     delete_admin_commands(from_user.id, chat_id)
+
+        return wrapper
+
+    return decorator
+
+
+def inline_base():
+    def decorator(func):
+        @logger.catch
+        def wrapper(inline_query: InlineQuery, *args, **kwargs):
+            from_user = inline_query.from_user
+
+            name = from_user.first_name
+            if from_user.last_name:
+                name += ' ' + from_user.last_name
+
+            current_user = get_or_create_user(from_user.id, name, from_user.username)
+            if current_user.is_banned():
+                return
+
+            logger.debug(f'from_user: {current_user} chat_type: {inline_query.chat_type} data: {inline_query.query}')
+
+            kwargs['inline_query'] = inline_query
+            kwargs['current_user'] = current_user
+
+            _attributes_check(func, args, kwargs)
+
+            download_user_avatar(current_user, bot)
 
         return wrapper
 
