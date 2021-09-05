@@ -5,10 +5,12 @@ from .current_info import _get_current_info_data
 from .homework import _get_homework_data
 from .schedule import _get_schedule_data
 from .today_homework import _get_today_homework_data
+from ...base import inline_base
 from ...loader import bot
 
 
 @bot.inline_handler(lambda q: q.query.strip() == '')
+@inline_base()
 def inline_menu(inline_query: InlineQuery):
     schedule_text, schedule_markup = _get_schedule_data()
 
