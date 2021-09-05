@@ -4,7 +4,7 @@ from telebot.types import Message, CallbackQuery
 
 from app.services.subjects import get_subject, recognize_subject, Subject
 from app.utils.helper import generate_inline_id
-from ...base import base, callback_query_base
+from ...base import base, callback_query_base, inline_base
 from ...helpers import send_message_private, mark_user
 from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
 from ...loader import bot
@@ -20,6 +20,7 @@ def start_info(message: Message):
 
 
 @bot.inline_handler(lambda q: q.query.strip())
+@inline_base()
 def inline_info(inline_query: InlineQuery):
     subject = recognize_subject(inline_query.query)
 
@@ -37,8 +38,9 @@ def inline_info(inline_query: InlineQuery):
     for file in subject.files:
         try:
             bot.get_file(file.file_id)
-        except:
-            continue
+        except Exception as e:
+            if e.result_json['description'] != 'Bad Request: file is too big':
+                continue
 
         results.append(InlineQueryResultCachedDocument(
             id=generate_inline_id(file.id),
