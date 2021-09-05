@@ -6,7 +6,7 @@ from app.services.subjects import get_subject, recognize_subject, Subject
 from app.utils.helper import generate_inline_id
 from ...base import base, callback_query_base, inline_base
 from ...helpers import send_message_private, mark_user
-from ...keyboards.inline import get_subjects_inline_markup, get_subject_files_inline_markup
+from ...keyboards.inline import get_subjects_inline_markup, get_files_inline_markup
 from ...loader import bot
 
 
@@ -32,7 +32,7 @@ def inline_info(inline_query: InlineQuery):
         description=f'Аудитория: {subject.audience}\nУчитель: {subject.teacher}',
         thumb_url='https://images.emojiterra.com/google/android-11/512px/1f4da.png',
         input_message_content=InputTextMessageContent(text, parse_mode='HTML', disable_web_page_preview=True),
-        reply_markup=get_subject_files_inline_markup(subject, inline=True)
+        reply_markup=get_files_inline_markup(subject.files, inline=True)
     )]
 
     for file in subject.files:
@@ -74,7 +74,7 @@ def inline_info_handler(call: CallbackQuery):
     if call.message.chat.type != 'private':
         text = mark_user(text, call.from_user.id)
 
-    markup = get_subject_files_inline_markup(subject)
+    markup = get_files_inline_markup(subject.files)
     bot.send_message(chat_id, text, reply_markup=markup, disable_web_page_preview=True)
 
     return bot.answer_callback_query(call.id, subject.name)

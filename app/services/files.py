@@ -12,8 +12,8 @@ def get_all_files() -> list[File]:
     return files
 
 
-def add_file(subject_codename: str, title: str, file_id: str) -> File or False:
-    file = File(subject_codename=subject_codename, title=title, file_id=file_id)
+def add_file(title: str, file_id: str, subject_codename: str = None, task_id: int = None) -> File or False:
+    file = File(subject_codename=subject_codename, task_id=task_id, title=title, file_id=file_id)
 
     try:
         db.session.add(file)

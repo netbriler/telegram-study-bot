@@ -5,9 +5,11 @@ from telebot.types import Message
 from app.models import User
 from app.services.subjects import recognize_subject
 from app.services.tasks import add_task
+from .add_file import get_file_handler
 from ...base import base
 from ...helpers import send_message_private
-from ...keyboards.default import get_subjects_keyboard_markup, get_cancel_keyboard_markup, get_menu_keyboard_markup
+from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
+from ...keyboards.default import get_subjects_keyboard_markup
 from ...loader import bot
 
 
@@ -51,7 +53,10 @@ def add_task_handler(message: Message, subject: dict, current_user: User):
     text = ('Добавлено:\n'
             f'{subject["name"]} - {task.text}')
 
-    send_message_private(message, text, reply_markup=get_menu_keyboard_markup(current_user.is_admin()))
+    send_message_private(message, text)
+
+    response = send_message_private(message, 'Отправте файл для задания', reply_markup=get_cancel_keyboard_markup())
+    bot.register_next_step_handler(response, get_file_handler, _task=task.to_json())
 
 
 @bot.message_handler(regexp='^!(.+)-(.|\s)+$')

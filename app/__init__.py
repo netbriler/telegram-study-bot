@@ -13,7 +13,7 @@ migrate = Migrate()
 bootstrap = Bootstrap()
 
 
-def create_app(config_key: str = 'local') -> Flask:
+def create_app(config_key: str = 'production') -> Flask:
     app = Flask(__name__, static_url_path='/static')
     app.app_context().push()
 

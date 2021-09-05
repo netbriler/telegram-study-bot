@@ -1,7 +1,8 @@
 from datetime import datetime, date
 
 from app import db
-from app.models import Task
+from app.models import Task, File
+from .files import get_file
 from .timetable import get_subject_timetable
 
 
@@ -17,8 +18,22 @@ def add_task(subject_codename: str, text: str, day: int = 0) -> Task or False:
     return False
 
 
-def create_task(text: str, _date: date, subject_codename: str) -> Task:
+def create_task(text: str, _date: date, subject_codename: str, files: list = None) -> Task:
     task = Task(text=text, date=_date, subject_codename=subject_codename)
+
+    if files or type(files) == list:
+        files_list = list()
+        for file in files:
+            if 'id' in file:
+                file_model = get_file(file['id'])
+                file_model.title = file['title']
+                file_model.file_id = file['file_id']
+            else:
+                file_model = File(title=file['title'], file_id=file['file_id'])
+
+            files_list.append(file_model)
+
+        task.files = files_list
 
     try:
         db.session.add(task)
@@ -29,7 +44,8 @@ def create_task(text: str, _date: date, subject_codename: str) -> Task:
     return task
 
 
-def edit_task(id: int, text: str = None, _date: date = None, subject_codename: str = None) -> Task or False:
+def edit_task(id: int, text: str = None, _date: date = None, subject_codename: str = None,
+              files: list = None) -> Task or False:
     task = get_task(id)
     if not task:
         return False
@@ -40,6 +56,19 @@ def edit_task(id: int, text: str = None, _date: date = None, subject_codename: s
         task.date = _date
     if subject_codename:
         task.subject_codename = subject_codename
+    if files or type(files) == list:
+        files_list = list()
+        for file in files:
+            if 'id' in file:
+                file_model = get_file(file['id'])
+                file_model.title = file['title']
+                file_model.file_id = file['file_id']
+            else:
+                file_model = File(title=file['title'], file_id=file['file_id'])
+
+            files_list.append(file_model)
+
+        task.files = files_list
 
     try:
         db.session.commit()

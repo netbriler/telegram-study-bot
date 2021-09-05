@@ -16,7 +16,7 @@ class ProductionConfig:
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
     DB_PASSWORD = env_conf('DATABASE_PASS', default='', cast=str)
-    DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)
+    DB_HOST = env_conf('DATABASE_HOST', default='app/database.sqlite3', cast=str)
     DB_PORT = env_conf('DATABASE_PORT', default='', cast=str)
     DB_NAME = env_conf('DATABASE_NAME', default='', cast=str)
     if DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
@@ -27,7 +27,7 @@ class ProductionConfig:
         SQLALCHEMY_ENGINE_OPTIONS = {"pool_recycle": SQLALCHEMY_POOL_RECYCLE, "pool_timeout": SQLALCHEMY_POOL_TIMEOUT,
                                      "pool_pre_ping": SQLALCHEMY_POOL_PRE_PING}
     else:
-        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DIR}/{DB_HOST}'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
@@ -56,7 +56,7 @@ class Develop:
 
     DB_USER = env_conf('DATABASE_USER', default='', cast=str)
     DB_PASSWORD = env_conf('DATABASE_PASS', default='', cast=str)
-    DB_HOST = env_conf('DATABASE_HOST', default='database.sqlite3', cast=str)
+    DB_HOST = env_conf('DATABASE_HOST', default='app/database.sqlite3', cast=str)
     DB_PORT = env_conf('DATABASE_PORT', default='', cast=str)
     DB_NAME = env_conf('DATABASE_NAME', default='', cast=str)
     if DB_USER and DB_PASSWORD and DB_HOST and DB_NAME:
@@ -67,7 +67,7 @@ class Develop:
         SQLALCHEMY_ENGINE_OPTIONS = {"pool_recycle": SQLALCHEMY_POOL_RECYCLE, "pool_timeout": SQLALCHEMY_POOL_TIMEOUT,
                                      "pool_pre_ping": SQLALCHEMY_POOL_PRE_PING}
     else:
-        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DIR}/{DB_HOST}'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
@@ -93,7 +93,7 @@ class Testing:
     SERVER_NAME = '127.0.0.1'
 
     DB_HOST = 'testing.sqlite3'
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_HOST}'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DIR}/{DB_HOST}'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
