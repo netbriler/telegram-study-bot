@@ -88,18 +88,19 @@ def edit_task_handler(message: Message, id: int, current_user: User):
 
     task = edit_task(id, escape(message.text))
 
-    text = ('Изменено:\n'
-            f'{task.subject.name} - {task.text}')
+    text = 'Задание изменено ✅'
 
     markup = get_menu_keyboard_markup(current_user.is_admin())
     send_message_private(message, text, reply_markup=markup)
+
+    send_task_edit_menu(message, task.id, current_user.is_admin())
 
 
 def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
     task = get_task(id)
 
     if not task:
-        return bot.reply_to(message, f'Задание с id <b>{id}</b> не найдено')
+        return send_message_private(message, f'Задание с id <b>{id}</b> не найдено', reply_to_message_id=message.id)
 
     text = (f'<b>{task.subject.name}</b>\n'
             f'Задано на: <i>{task.date}</i>\n'
@@ -107,4 +108,4 @@ def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
             f'Текст задания:\n<pre>{task.text}</pre>')
 
     markup = get_edit_inline_markup('task', id) if allow_editing else None
-    bot.send_message(message.chat.id, text, reply_markup=markup, disable_web_page_preview=True)
+    send_message_private(message, text, reply_markup=markup, disable_web_page_preview=True)

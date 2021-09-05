@@ -22,3 +22,32 @@ def add_file(subject_codename: str, title: str, file_id: str) -> File or False:
         db.session.rollback()
 
     return file
+
+
+def edit_file(id: int, title) -> File or False:
+    file = get_file(id)
+    if not file:
+        return False
+
+    file.title = title
+
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return file
+
+
+def delete_file(id: int) -> File or False:
+    file = get_file(id)
+    if not file:
+        return False
+
+    try:
+        db.session.delete(file)
+        db.session.commit()
+    except:
+        db.session.rollback()
+
+    return file
