@@ -15,11 +15,18 @@ export default class TasksModal extends Component {
     constructor(props) {
         super(props);
 
+        const currentTask = props.task;
+        currentTask.files.push({ title: '', file_id: '' });
+
         this.state = {
-            currentTask: props.task,
+            currentTask,
             isNew: props.isNew,
             subjects: props.subjects,
-            timetable: []
+            timetable: [],
+            errors: {
+                text: false,
+                subject_codename: false
+            }
         }
 
         this.isNew = props.isNew;
@@ -30,6 +37,9 @@ export default class TasksModal extends Component {
         this.onDelete = props.onDelete;
 
         this.loadTimetableByDate = props.loadTimetableByDate;
+
+        this.AdminService = this.props.AdminService;
+        this.showNotification = this.props.showNotification;
     }
 
     componentDidMount() {
@@ -60,17 +70,23 @@ export default class TasksModal extends Component {
 
     handleSubjectChange = (value) => {
         this.setState((state) => {
-            const currentTask = state.currentTask;
+            const { currentTask, errors } = state;
+
             currentTask.subject.codename = value;
-            return { currentTask }
+            errors.subject_codename = value.trim() == '';
+
+            return { currentTask, errors }
         });
     }
 
     handleInfoChange = (value) => {
         this.setState((state) => {
-            const currentTask = state.currentTask;
+            const { currentTask, errors } = state;
+
             currentTask.text = value;
-            return { currentTask }
+            errors.text = value.trim() == '';
+
+            return { currentTask, errors }
         });
     }
 
@@ -84,10 +100,50 @@ export default class TasksModal extends Component {
         });
     }
 
+    handleFileTitleChange = (key, value) => {
+        this.setState((state) => {
+            const task = state.currentTask;
+            if (typeof task.files[key] === 'undefined') {
+                task.files[key] = { title: '', file_id: '' }
+            }
+            task.files[key].title = value.trim();
+            task.files = task.files.filter((file) => (file.title !== '' || file.file_id !== ''));
+            task.files.push({ title: '', file_id: '' });
+            return { currentTask: task }
+        });
+    }
+
+    handleFileIDChange = (key, target) => {
+        const value = target.value;
+
+        this.AdminService.getFile(value)
+            .then(() => {
+                target.classList.remove('uk-form-danger')
+            })
+            .catch(() => {
+                target.classList.add('uk-form-danger')
+            });
+
+        this.setState((state) => {
+            const task = state.currentTask;
+            if (typeof task.files[key] === 'undefined') {
+                task.files[key] = { title: '', file_id: '' }
+            }
+            task.files[key].file_id = value.trim();
+            task.files = task.files.filter((file) => (file.title !== '' || file.file_id !== ''));
+            task.files.push({ title: '', file_id: '' });
+            return { currentTask: task }
+        });
+    }
+
     handleEditSubmit = (e) => {
         e.preventDefault();
 
-        const { currentTask } = this.state;
+        const { currentTask, errors } = this.state;
+
+        if (errors.subject_codename || errors.text) {
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
 
         this.onEdit(currentTask, this.closeModal);
     }
@@ -95,7 +151,24 @@ export default class TasksModal extends Component {
     handleCreateSubmit = (e) => {
         e.preventDefault();
 
-        const { currentTask } = this.state;
+        const { currentTask, errors } = this.state;
+
+        if (errors.subject_codename || errors.text) {
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
+
+        console.log(currentTask.subject.codename);
+
+        if (currentTask.text == '' || currentTask.subject.codename == null) {
+            this.setState({
+                errors: {
+                    text: currentTask.text == '',
+                    subject_codename: currentTask.subject.codename == null,
+                }
+            })
+
+            return this.showNotification('Заполните все обязательные поля!', 'danger')
+        }
 
         this.onSave(currentTask, this.closeModal);
     }
@@ -116,7 +189,7 @@ export default class TasksModal extends Component {
     }
 
     render() {
-        const { currentTask, isNew, subjects, timetable } = this.state;
+        const { currentTask, isNew, subjects, timetable, errors } = this.state;
 
         let options = [];
 
@@ -158,10 +231,12 @@ export default class TasksModal extends Component {
 
                         <div className="uk-form-stacked" >
                             <div className="uk-margin">
-                                <label className="uk-form-label" htmlFor="audience">Предмет</label>
+                                <label className="uk-form-label" htmlFor="audience">Предмет*</label>
                                 <div className="uk-form-controls">
                                     <SelectSearch
-                                        className="select-search uk-input"
+                                        className={
+                                            errors.subject_codename ? 'select-search uk-input uk-form-danger' : 'select-search uk-input'
+                                        }
                                         value={currentTask.subject.codename}
                                         options={options}
                                         search
@@ -174,16 +249,36 @@ export default class TasksModal extends Component {
                             </div>
 
                             <div className="uk-margin">
-                                <label className="uk-form-label" htmlFor="audience">Дата</label>
+                                <label className="uk-form-label" htmlFor="audience">Дата*</label>
                                 <div className="uk-form-controls">
                                     <DatePicker className="uk-input" placeholder="Дата" onChange={this.handleDateChange} selected={new Date(currentTask.date)} dateFormat="dd/MM/yyyy" locale="ru" />
                                 </div>
                             </div>
 
                             <div className="uk-margin">
-                                <label className="uk-form-label">Информация</label>
+                                <label className="uk-form-label">Информация*</label>
                                 <div className="uk-form-controls">
                                     <TextEditor onChange={this.handleInfoChange} value={currentTask.text} />
+                                </div>
+                            </div>
+
+                            <div className="uk-margin">
+                                <label className="uk-form-label">Документы</label>
+
+                                <div className="uk-margin">
+                                    {currentTask.files ? currentTask.files.map((file, i) =>
+                                        <div className="uk-grid-small" uk-grid="true" key={i}>
+                                            <div className="uk-width-1-2@s">
+                                                <input className="uk-input" type="text" placeholder="Название документа" value={file.title} onChange={e => this.handleFileTitleChange(i, e.target.value)} />
+                                            </div>
+                                            <div className="uk-width-1-2@s">
+                                                <input className="uk-input" type="text" placeholder="ID документа" value={file.file_id} onChange={e => this.handleFileIDChange(i, e.target)} />
+                                            </div>
+                                        </div>
+                                    ) : ''}
+
+                                    <span className="uk-text-meta">Чтобы получить ID документа, отправьте боту команду /get_file_id</span>
+
                                 </div>
                             </div>
 

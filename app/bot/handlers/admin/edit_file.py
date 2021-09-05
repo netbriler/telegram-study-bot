@@ -84,7 +84,7 @@ def send_file_edit_menu(message: Message, id: int, allow_editing: bool = True):
     if not file:
         return send_message_private(message, f'Файл с id <b>{id}</b> не найден ❌', reply_to_message_id=message.id)
 
-    text = f'<b>{file.title}</b>\n'
+    text = file.title
 
     markup = get_edit_inline_markup('edit_file', id) if allow_editing else None
 

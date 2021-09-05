@@ -40,6 +40,7 @@ def file_add_handler(message: Message):
 def file_handler(message: Message):
     if message.content_type == 'document':
         bot.reply_to(message, f'<pre>{message.document.file_id}</pre>')
+        file_add_handler(message)
     else:
         response = bot.reply_to(message, f'Мне нужен документ, а вы отправили {message.content_type}',
                                 reply_markup=get_cancel_keyboard_markup())
