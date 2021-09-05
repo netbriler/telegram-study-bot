@@ -91,7 +91,8 @@ class HomeworkPage extends Component {
         const newTask = {
             text: '',
             date: selectInfo.startStr,
-            subject: { codename: null }
+            subject: { codename: null },
+            files: []
         }
 
         this.setState(() => { return { selectedTask: newTask, isNewTask: true } });
@@ -151,7 +152,8 @@ class HomeworkPage extends Component {
         const params = {
             subject_codename: task.subject.codename,
             text: task.text,
-            date: task.date
+            date: task.date,
+            files: task.files.filter((file) => (file.title !== '' || file.file_id !== ''))
         };
 
         this.AdminService.createTask(params)
@@ -172,7 +174,8 @@ class HomeworkPage extends Component {
         const params = {
             subject_codename: task.subject.codename,
             text: task.text,
-            date: task.date
+            date: task.date,
+            files: task.files.filter((file) => (file.title !== '' || file.file_id !== ''))
         };
 
         this.AdminService.editTask(task.id, params)
@@ -262,7 +265,7 @@ class HomeworkPage extends Component {
                         </label>
                     </div>
                 </div>
-                {selectedTask != null ? <TasksModal task={selectedTask} onClose={this.handleTaskEditClose} onEdit={this.handleTaskEdit} onSave={this.handleCreateTask} onDelete={this.handleTaskDelete} loadTimetableByDate={this.loadTimetableByDate} isNew={isNewTask} subjects={subjects} /> : ''}
+                {selectedTask != null ? <TasksModal task={selectedTask} AdminService={this.AdminService} showNotification={this.showNotification} onClose={this.handleTaskEditClose} onEdit={this.handleTaskEdit} onSave={this.handleCreateTask} onDelete={this.handleTaskDelete} loadTimetableByDate={this.loadTimetableByDate} isNew={isNewTask} subjects={subjects} /> : ''}
             </PageTemplate>
         )
     }

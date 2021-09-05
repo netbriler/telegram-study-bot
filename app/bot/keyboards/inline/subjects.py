@@ -15,15 +15,3 @@ def get_subjects_inline_markup(query: str) -> InlineKeyboardMarkup:
 
     markup.row(InlineKeyboardButton('❌ Отменить', callback_data=f'{query}_cancel'))
     return markup
-
-
-def get_subject_files_inline_markup(subject: Subject, inline: bool = False) -> InlineKeyboardMarkup:
-    markup = InlineKeyboardMarkup()
-
-    for file in subject.files:
-        if inline:
-            markup.row(InlineKeyboardButton(file.title, switch_inline_query_current_chat=f'file{file.id}'))
-        else:
-            markup.row(InlineKeyboardButton(file.title, callback_data=f'file_{file.id}'))
-
-    return markup

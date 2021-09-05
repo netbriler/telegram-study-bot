@@ -7,7 +7,7 @@ from app.services.tasks import edit_task, get_active_tasks, get_task, delete_tas
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
-from ...keyboards.inline import get_edit_inline_markup
+from ...keyboards.inline import get_edit_inline_markup, get_files_inline_markup
 from ...loader import bot, bot_username
 
 
@@ -107,5 +107,9 @@ def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
             f'Добавлено: <i>{task.created_at}</i>\n\n'
             f'Текст задания:\n<pre>{task.text}</pre>')
 
-    markup = get_edit_inline_markup('task', id) if allow_editing else None
+    markup = get_files_inline_markup(task.files)
+
+    if allow_editing:
+        markup = get_edit_inline_markup('task', id, markup=markup)
+
     send_message_private(message, text, reply_markup=markup, disable_web_page_preview=True)

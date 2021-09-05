@@ -27,8 +27,12 @@ def _create_task():
         assert request.json
         assert request.json['text'] and request.json['date'] and request.json['subject_codename']
 
+        if 'text' not in request.json or 'date' not in request.json or 'subject_codename' not in request.json:
+            raise BadRequest('text, date, subject_codename are required')
+
         subject_codename = request.json['subject_codename']
         text = request.json['text']
+        files = request.json['files'] if 'files' in request.json else None
 
         subject = get_subject(subject_codename)
         if not subject:
@@ -39,7 +43,7 @@ def _create_task():
         except ValueError:
             raise BadRequest('the date must be in the format %Y-%m-%d')
 
-        task = create_task(text, date, subject_codename)
+        task = create_task(text, date, subject_codename, files)
 
         logger.info(f'{current_user} created {task}')
 
@@ -74,6 +78,7 @@ def _update_task(id: int):
         text = None
         date = None
         subject_codename = None
+        files = request.json['files'] if 'files' in request.json else None
 
         if 'text' in request.json:
             text = request.json['text']
@@ -93,7 +98,7 @@ def _update_task(id: int):
 
         assert text or date or subject_codename
 
-        task = edit_task(id, text, date, subject_codename=subject_codename)
+        task = edit_task(id, text, date, subject_codename=subject_codename, files=files)
         if not task:
             raise BadRequest('task not found')
 

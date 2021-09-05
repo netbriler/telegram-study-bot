@@ -32,8 +32,11 @@ def delete_webhook():
 def get_file(file_id: str):
     try:
         return jsonify(bot.get_file(file_id).__dict__)
-    except:
-        return 'Bad Request: invalid file_id ', 400
+    except Exception as e:
+        if e.result_json['description'] != 'Bad Request: file is too big':
+            return 'Bad Request: invalid file_id ', 400
+
+    return jsonify(ok=True)
 
 
 @main.route('/' + current_app.config['TELEGRAM_BOT_TOKEN'], methods=['POST'])

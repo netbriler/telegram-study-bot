@@ -12,6 +12,8 @@ class Task(db.Model):
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
+    files = db.relationship('File', backref='task', lazy=True, cascade='all,delete')
+
     def __repr__(self) -> str:
         return f'<Task [{self.id}] {self.subject_codename}>'
 
@@ -22,5 +24,6 @@ class Task(db.Model):
             'date': str(self.date),
             'text': self.text,
             'created_at': str(self.created_at),
+            'files': list(map(lambda f: f.to_json(), self.files))
         }
         return json_story
