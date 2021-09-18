@@ -2,8 +2,8 @@ from app import db
 from app.models import Photo
 
 
-def get_photo_by_file_id(file_id: str) -> Photo:
-    photo = Photo.query.filter_by(file_id=file_id).first()
+def get_photo(id: int) -> Photo:
+    photo = Photo.query.filter_by(id=id).first()
     return photo
 
 
@@ -31,8 +31,8 @@ def add_photos(photos: list[str], task_id: int) -> Photo or False:
     return True
 
 
-def delete_photo_by_file_id(file_id: str) -> Photo or False:
-    photo = get_photo_by_file_id(file_id)
+def delete_photo(id: str) -> Photo or False:
+    photo = get_photo(id)
     if not photo:
         return False
 

@@ -79,10 +79,13 @@ def inline_task_handler(call: CallbackQuery):
         response = send_message_private(call.message, text, reply_markup=get_cancel_keyboard_markup())
         bot.register_next_step_handler(response, get_file_handler, _task=task.to_json())
     if option == 'photos':
+        deep_link = f'tg://resolve?domain={bot_username}&start=photo'
+
         if len(task.photos) < 1:
             return send_message_private(call.message, 'Нет фотографий')
         elif len(task.photos) < 11:
-            media = [InputMediaPhoto(p.file_id) for p in task.photos]
+            media = [InputMediaPhoto(p.file_id, caption=f'<a href="{deep_link}{p.id}">🙈</a>',
+                                     parse_mode='HTML') for p in task.photos]
 
             bot.answer_callback_query(call.id, 'Загружаю...')
             bot.send_chat_action(chat_id, 'upload_photo')
@@ -94,7 +97,8 @@ def inline_task_handler(call: CallbackQuery):
 
         i = 0
         for _ in range(ceil(len(task.photos) / 10)):
-            media = [InputMediaPhoto(p.file_id) for p in task.photos[i:i+10]]
+            media = [InputMediaPhoto(p.file_id, caption=f'<a href="{deep_link}{p.id}">🙈</a>',
+                                     parse_mode='HTML') for p in task.photos[i:i + 10]]
 
             bot.send_media_group(chat_id, media)
 
@@ -104,7 +108,7 @@ def inline_task_handler(call: CallbackQuery):
         bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
         bot.delete_message(chat_id, message_id)
     else:
-        bot.answer_callback_query(call.id, 'Отменено', show_alert=True)
+        bot.answer_callback_query(call.id, 'Отменено')
         bot.delete_message(chat_id, message_id)
 
 
