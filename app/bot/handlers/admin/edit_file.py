@@ -4,32 +4,83 @@ from telebot.types import Message, CallbackQuery
 
 from app.models import User
 from app.services.files import edit_file, get_file, delete_file
+from app.services.photos import get_photo, delete_photo
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
-from ...keyboards.inline import get_edit_inline_markup
+from ...keyboards.inline import get_edit_inline_markup, get_delete_photo_inline_markup
 from ...loader import bot, bot_username
 
 
 @bot.message_handler(regexp=f'^/file\\d+(@{bot_username})?$')
 @base(is_admin=True)
-def get_edit_file_handler(message: Message):
-    id = int(message.text[5:].replace(f'@{bot_username}', '').strip())
+def get_edit_file_handler(message: Message, current_user: User):
+    id = message.text[5:].replace(f'@{bot_username}', '').strip()
+    if not id.isnumeric():
+        return send_message_private(message, 'Файл не найдено ❌')
 
-    send_file_edit_menu(message, id)
+    send_file_edit_menu(message, int(id), current_user.is_admin())
 
 
 @bot.message_handler(commands=['start'], func=lambda m: m.text.startswith('/start file'))
 @base()
 def deep_link_edit_handler(message: Message, current_user: User):
-    id = int(message.text[11:])
+    id = message.text[11:]
+    if not id.isnumeric():
+        return send_message_private(message, 'Файл не найдено ❌')
 
-    send_file_edit_menu(message, id, current_user.is_admin())
+    send_file_edit_menu(message, int(id), current_user.is_admin())
+
+
+@bot.message_handler(commands=['start'], func=lambda m: m.text.startswith('/start photo'))
+@base()
+def deep_link_edit_handler(message: Message, current_user: User):
+    id = message.text[12:]
+
+    if not id.isnumeric():
+        return send_message_private(message, 'Фото не найдено ❌', reply_to_message_id=message.id)
+
+    id = int(id)
+
+    photo = get_photo(id)
+    if not photo:
+        return send_message_private(message, f'Фото с id <b>{id}</b> не найдено ❌', reply_to_message_id=message.id)
+
+    markup = get_delete_photo_inline_markup('edit_photo', id) if current_user.is_admin() else None
+
+    bot.send_photo(message.chat.id, photo.file_id, reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('edit_photo'))
+@callback_query_base(is_admin=True)
+def inline_edit_photo_handler(call: CallbackQuery):
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+
+    query, option = call.data[10:].split('_')
+    id = int(query)
+
+    if option == 'cancel':
+        bot.answer_callback_query(call.id, 'Отменено')
+        return bot.delete_message(chat_id, message_id)
+
+    photo = get_photo(id)
+
+    if not photo:
+        bot.answer_callback_query(call.id, 'Фото уже удалено', show_alert=True)
+        return bot.delete_message(chat_id, message_id)
+    elif option == 'delete':
+        delete_photo(id)
+        bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
+        bot.delete_message(chat_id, message_id)
+    else:
+        bot.answer_callback_query(call.id, 'Отменено')
+        bot.delete_message(chat_id, message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('edit_file'))
 @callback_query_base(is_admin=True)
-def inline_edit_handler(call: CallbackQuery):
+def inline_edit_file_handler(call: CallbackQuery):
     chat_id = call.message.chat.id
     message_id = call.message.message_id
 
@@ -42,7 +93,7 @@ def inline_edit_handler(call: CallbackQuery):
 
     file = get_file(id)
     if not file:
-        bot.answer_callback_query(call.id, 'Файл уже удален')
+        bot.answer_callback_query(call.id, 'Файл уже удален', show_alert=True)
         return bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
@@ -56,7 +107,7 @@ def inline_edit_handler(call: CallbackQuery):
         bot.delete_message(chat_id, message_id)
     elif option == 'delete':
         delete_file(id)
-        bot.answer_callback_query(call.id, 'Удаленно')
+        bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
         bot.delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')

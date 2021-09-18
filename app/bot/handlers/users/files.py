@@ -67,7 +67,7 @@ def inline_file_handler(call: CallbackQuery, current_user: User):
 
     file = get_file(file_id)
     if not file:
-        return bot.answer_callback_query(call.id, 'Файл не найден')
+        return bot.answer_callback_query(call.id, 'Файл не найден', show_alert=True)
 
     text = f'{file.title}<a href="{deep_link}{file.id}">⠀</a>'
 
@@ -81,4 +81,4 @@ def inline_file_handler(call: CallbackQuery, current_user: User):
         return bot.answer_callback_query(call.id, file.title)
     except Exception as e:
         if e.error_code == 400:
-            return bot.answer_callback_query(call.id, 'Похоже файл был удален')
+            return bot.answer_callback_query(call.id, 'Похоже файл был удален', show_alert=True)
