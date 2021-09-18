@@ -37,12 +37,12 @@ def inline_edit_handler(call: CallbackQuery):
     id = int(query)
 
     if option == 'cancel':
-        bot.answer_callback_query(call.id, 'Отменено')
+        bot.answer_callback_query(call.id, 'Отменено', show_alert=True)
         return bot.delete_message(chat_id, message_id)
 
     file = get_file(id)
     if not file:
-        bot.answer_callback_query(call.id, 'Файл уже удален')
+        bot.answer_callback_query(call.id, 'Файл уже удален', show_alert=True)
         return bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
@@ -56,7 +56,7 @@ def inline_edit_handler(call: CallbackQuery):
         bot.delete_message(chat_id, message_id)
     elif option == 'delete':
         delete_file(id)
-        bot.answer_callback_query(call.id, 'Удаленно')
+        bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
         bot.delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')
@@ -92,4 +92,4 @@ def send_file_edit_menu(message: Message, id: int, allow_editing: bool = True):
         bot.send_document(message.chat.id, file.file_id, caption=text, reply_markup=markup)
     except Exception as e:
         if e.error_code == 400:
-            return send_message_private(message, 'Похоже файл был удален ❌')
+            return send_message_private(message, 'Похоже файл был удален ❌', show_alert=True)

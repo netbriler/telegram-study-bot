@@ -41,7 +41,7 @@ def inline_homework_handler(call: CallbackQuery):
             bot.answer_callback_query(call.id, 'Ок')
         except Exception as e:
             if e.error_code == 400:
-                bot.answer_callback_query(call.id, 'Ничего не поменялось')
+                bot.answer_callback_query(call.id, 'Ничего не поменялось', show_alert=True)
 
 
 def _get_text():

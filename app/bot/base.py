@@ -79,16 +79,16 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
 
             current_user = get_or_create_user(from_user.id, name, from_user.username)
             if current_user.is_banned():
-                return bot.answer_callback_query(call.id, 'Доступ ограничен ❌')
+                return bot.answer_callback_query(call.id, 'Доступ ограничен ❌', show_alert=True)
 
             if call.data:
                 logger.debug(f'from_user: {current_user} chat_id: {chat_id} '
                              f'message_id: {message_id} data: {call.data}')
 
             if is_super_admin and not current_user.is_super_admin():
-                return bot.answer_callback_query(call.id, 'У вас нет прав')
+                return bot.answer_callback_query(call.id, 'У вас нет прав', show_alert=True)
             elif is_admin and not current_user.is_admin():
-                return bot.answer_callback_query(call.id, 'У вас нет прав')
+                return bot.answer_callback_query(call.id, 'У вас нет прав', show_alert=True)
             else:
                 kwargs['call'] = call
                 kwargs['current_user'] = current_user

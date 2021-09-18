@@ -13,6 +13,7 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     files = db.relationship('File', backref='task', lazy=True, cascade='all,delete')
+    photos = db.relationship('Photo', backref='task', lazy=True, cascade='all,delete')
 
     def __repr__(self) -> str:
         return f'<Task [{self.id}] {self.subject_codename}>'
@@ -24,6 +25,7 @@ class Task(db.Model):
             'date': str(self.date),
             'text': self.text,
             'created_at': str(self.created_at),
-            'files': list(map(lambda f: f.to_json(), self.files))
+            'files': list(map(lambda f: f.to_json(), self.files)),
+            'photos': list(map(lambda p: p.to_json(), self.photos))
         }
         return json_story

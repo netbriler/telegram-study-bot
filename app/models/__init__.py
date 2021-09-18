@@ -1,4 +1,5 @@
 from .files import File
+from .photo import Photo
 from .subjects import Subject
 from .tasks import Task
 from .timetable import Timetable, init_timetable
