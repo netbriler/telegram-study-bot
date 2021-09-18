@@ -1,6 +1,7 @@
 from html import escape
+from math import ceil
 
-from telebot.types import Message, CallbackQuery
+from telebot.types import Message, CallbackQuery, InputMediaPhoto
 
 from app.models import User
 from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
@@ -8,7 +9,7 @@ from .add_file import get_file_handler
 from ...base import base, callback_query_base
 from ...helpers import send_message_private, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
-from ...keyboards.inline import get_edit_inline_markup, get_files_inline_markup
+from ...keyboards.inline import get_edit_inline_markup, get_files_inline_markup, get_photos_inline_markup
 from ...loader import bot, bot_username
 
 
@@ -47,7 +48,7 @@ def deep_link_edit_handler(message: Message, current_user: User):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('task'))
 @callback_query_base(is_admin=True)
-def inline_edit_handler(call: CallbackQuery):
+def inline_task_handler(call: CallbackQuery):
     chat_id = call.message.chat.id
     message_id = call.message.message_id
 
@@ -60,7 +61,7 @@ def inline_edit_handler(call: CallbackQuery):
 
     task = get_task(id)
     if not task:
-        bot.answer_callback_query(call.id, 'Задание уже удалено')
+        bot.answer_callback_query(call.id, 'Задание уже удалено', show_alert=True)
         return bot.delete_message(chat_id, message_id)
 
     if option == 'edit':
@@ -77,9 +78,34 @@ def inline_edit_handler(call: CallbackQuery):
 
         response = send_message_private(call.message, text, reply_markup=get_cancel_keyboard_markup())
         bot.register_next_step_handler(response, get_file_handler, _task=task.to_json())
+    if option == 'photos':
+        deep_link = f'tg://resolve?domain={bot_username}&start=photo'
+
+        if len(task.photos) < 1:
+            return send_message_private(call.message, 'Нет фотографий')
+        elif len(task.photos) < 11:
+            media = [InputMediaPhoto(p.file_id, caption=f'<a href="{deep_link}{p.id}">🙈</a>',
+                                     parse_mode='HTML') for p in task.photos]
+
+            bot.answer_callback_query(call.id, 'Загружаю...')
+            bot.send_chat_action(chat_id, 'upload_photo')
+
+            return bot.send_media_group(chat_id, media)
+
+        bot.answer_callback_query(call.id, 'Загружаю...')
+        bot.send_chat_action(chat_id, 'upload_photo')
+
+        i = 0
+        for _ in range(ceil(len(task.photos) / 10)):
+            media = [InputMediaPhoto(p.file_id, caption=f'<a href="{deep_link}{p.id}">🙈</a>',
+                                     parse_mode='HTML') for p in task.photos[i:i + 10]]
+
+            bot.send_media_group(chat_id, media)
+
+            i += 10
     elif option == 'delete':
         delete_task(id)
-        bot.answer_callback_query(call.id, 'Удаленно')
+        bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
         bot.delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')
@@ -111,9 +137,17 @@ def send_task_edit_menu(message: Message, id: int, allow_editing: bool = True):
     text = (f'<b>{task.subject.name}</b>\n'
             f'Задано на: <i>{task.date}</i>\n'
             f'Добавлено: <i>{task.created_at}</i>\n\n'
-            f'Текст задания:\n<pre>{task.text}</pre>')
+            f'Текст задания:\n<pre>{task.text.strip()}</pre>')
 
-    markup = get_files_inline_markup(task.files)
+    markup = None
+
+    if task.files or task.photos:
+        text += '\n\nСписок документов 👇'
+
+    if task.photos:
+        markup = get_photos_inline_markup('task', id, markup=markup)
+
+    markup = get_files_inline_markup(task.files, markup=markup)
 
     if allow_editing:
         markup = get_edit_inline_markup('task', id, markup=markup, files_button=True)
