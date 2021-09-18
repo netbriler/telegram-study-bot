@@ -30,7 +30,7 @@ def _get_text(tasks: list[Task]):
         task = tasks[j]
         if task.subject:
             files_view_link = f'\n<a href="{deep_link}{task.id}">Посмотреть прикрепленные файлы 👀</a>\n' \
-                if task.files else ''
+                if task.files or task.photos else ''
 
             text += f'{j + 1}) <b>{task.subject.name}<a href="{deep_link}{task.id}">⠀</a></b>\n' \
                     f'{task.text.rstrip()}{files_view_link}\n\n'

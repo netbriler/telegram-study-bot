@@ -74,7 +74,13 @@ def inline_info_handler(call: CallbackQuery):
     if call.message.chat.type != 'private':
         text = mark_user(text, call.from_user.id)
 
-    markup = get_files_inline_markup(subject.files)
+    markup = None
+
+    if task.photos:
+        markup = get_photos_inline_markup('task', id, markup=markup)
+
+    markup = get_files_inline_markup(subject.files, markup=markup)
+
     bot.send_message(chat_id, text, reply_markup=markup, disable_web_page_preview=True)
 
     return bot.answer_callback_query(call.id, subject.name)
@@ -86,7 +92,7 @@ def _get_text(subject: Subject):
             f'Учитель: <b>{subject.teacher}</b>\n\n'
             f'{subject.info}').rstrip()
 
-    if subject.files:
+    if subject.files or task.photos:
         text += '\n\nСписок документов 👇'
 
     return text

@@ -67,7 +67,7 @@ def _get_text(timetable: list[list[Task]]):
         for task in tasks:
             if task.subject:
                 files_view_link = f'\n<a href="{deep_link}{task.id}">Посмотреть прикрепленные файлы 👀</a>\n' \
-                    if task.files else ''
+                    if task.files or task.photos else ''
 
                 text += f'{j}) <b>{task.subject.name}<a href="{deep_link}{task.id}">⠀</a></b>\n{task.text.rstrip()}{files_view_link}\n\n'
                 j += 1
