@@ -9,7 +9,7 @@ export default function LogPage() {
                 e.target.style.height = 0;
                 e.target.style.height = e.target.contentWindow.document.body.scrollHeight + 50 + 'px';
 
-                setTimeout(() => window.scrollTo(0,document.body.scrollHeight), 100);
+                e.target.contentWindow.document.querySelector('pre').style.margin = 0;
             }}></iframe>
         </PageTemplate>
     )
