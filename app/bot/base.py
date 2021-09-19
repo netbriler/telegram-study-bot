@@ -6,7 +6,7 @@ from app.bot.loader import bot
 from app.services.users import get_or_create_user, download_user_avatar
 from app.utils.logging import logger
 from .commands import set_super_admin_commands, set_admin_commands, delete_admin_commands
-from .helpers import send_message_private
+from .helpers import send_message_private, save_delete_message
 from .keyboards.default import get_menu_keyboard_markup, get_remove_keyboard_markup
 
 
@@ -69,7 +69,7 @@ def callback_query_base(is_admin: bool = False, is_super_admin: bool = False):
 
             if not call.inline_message_id and call.data == 'cancel':
                 bot.answer_callback_query(call.id, 'Отменено')
-                return bot.delete_message(chat_id, message_id)
+                return save_delete_message(chat_id, message_id)
 
             from_user = call.from_user
 

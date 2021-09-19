@@ -8,7 +8,7 @@ from app.models import User
 from app.services.tasks import edit_task, get_active_tasks, get_task, delete_task
 from .add_file import get_file_handler
 from ...base import base, callback_query_base
-from ...helpers import send_message_private, send_message_inline_private
+from ...helpers import send_message_private, save_delete_message, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
 from ...keyboards.inline import get_edit_inline_markup, get_files_inline_markup, get_photos_inline_markup
 from ...loader import bot, bot_username
@@ -58,7 +58,7 @@ def inline_photos_handler(call: CallbackQuery):
     task = get_task(id)
     if not task:
         bot.answer_callback_query(call.id, 'Задание не найдено', show_alert=True)
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     deep_link = f'tg://resolve?domain={bot_username}&start=photo'
 
@@ -97,12 +97,12 @@ def inline_task_handler(call: CallbackQuery):
 
     if option == 'cancel':
         bot.answer_callback_query(call.id, 'Отменено')
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     task = get_task(id)
     if not task:
         bot.answer_callback_query(call.id, 'Задание уже удалено', show_alert=True)
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     if option == 'edit':
         text = (f'Введите измененное задание для предмета:\n<b>{task.subject.name}</b>\n'
@@ -112,7 +112,7 @@ def inline_task_handler(call: CallbackQuery):
         response = send_message_inline_private(call, text, reply_markup=markup)
         bot.register_next_step_handler(response, edit_task_handler, id=id)
 
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
     if option == 'files':
         text = 'Отправте файл для задания'
 
@@ -121,10 +121,10 @@ def inline_task_handler(call: CallbackQuery):
     elif option == 'delete':
         delete_task(id)
         bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
 
 
 @base(is_admin=True)
