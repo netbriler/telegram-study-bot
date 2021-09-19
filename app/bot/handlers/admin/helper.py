@@ -2,7 +2,7 @@ from telebot.types import Message
 
 from app.models import User
 from ...base import base, get_or_create_user
-from ...helpers import send_message_private, mark_user
+from ...helpers import send_message_private, mark_user, save_delete_message
 from ...keyboards.default import get_cancel_keyboard_markup
 from ...loader import bot
 
@@ -10,7 +10,7 @@ from ...loader import bot
 @bot.message_handler(commands=['get_id'])
 @base(is_admin=True, send_chat_action=None)
 def get_id_handler(message: Message, current_user: User):
-    bot.delete_message(message.chat.id, message.message_id)
+    save_delete_message(message.chat.id, message.message_id)
 
     if not message.reply_to_message:
         return bot.send_message(current_user.id, 'Ответьте на сообщение командой чтобы узнать его id')
@@ -53,7 +53,7 @@ def call_all_members_handler(message: Message):
     chat_id = message.chat.id
     text = 'Внимание, внимание!'
 
-    bot.delete_message(chat_id, message.message_id)
+    save_delete_message(chat_id, message.message_id)
 
     if message.chat.type != 'private':
         chat_members = bot.get_chat_administrators(chat_id)
@@ -70,11 +70,11 @@ def call_all_members_handler(message: Message):
 def delete_handler(message: Message):
     chat_id = message.chat.id
     if not message.reply_to_message or not message.reply_to_message.from_user.is_bot:
-        bot.delete_message(chat_id, message.message_id)
+        save_delete_message(chat_id, message.message_id)
         return bot.send_message(message.from_user.id, 'Ответьте /delete на мое сообщение чтобы удалить')
 
-    bot.delete_message(chat_id, message.message_id)
-    bot.delete_message(chat_id, message.reply_to_message.message_id)
+    save_delete_message(chat_id, message.message_id)
+    save_delete_message(chat_id, message.reply_to_message.message_id)
 
 
 @bot.message_handler(commands=['load_all'])
@@ -83,7 +83,7 @@ def call_all_members_handler(message: Message, current_user: User):
     chat_id = message.chat.id
     text = 'Готово'
 
-    bot.delete_message(chat_id, message.message_id)
+    save_delete_message(chat_id, message.message_id)
 
     if message.chat.type != 'private':
         chat_members = bot.get_chat_administrators(chat_id)

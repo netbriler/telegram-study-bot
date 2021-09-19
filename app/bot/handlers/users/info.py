@@ -5,7 +5,7 @@ from telebot.types import Message, CallbackQuery
 from app.services.subjects import get_subject, recognize_subject, Subject
 from app.utils.helper import generate_inline_id
 from ...base import base, callback_query_base, inline_base
-from ...helpers import send_message_private, mark_user
+from ...helpers import send_message_private, mark_user, save_delete_message
 from ...keyboards.inline import get_subjects_inline_markup, get_files_inline_markup
 from ...loader import bot
 
@@ -59,7 +59,7 @@ def inline_info_handler(call: CallbackQuery):
 
     if call.data == 'info_cancel':
         bot.answer_callback_query(call.id, 'Отменено')
-        return bot.delete_message(chat_id, call.message.message_id)
+        return save_delete_message(chat_id, call.message.message_id)
 
     subject_codename = call.data[5:]
     subject = get_subject(subject_codename)
