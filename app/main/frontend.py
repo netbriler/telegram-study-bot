@@ -8,7 +8,12 @@ from app.main import main
 @login_required
 def logs():
     with open(current_app.config['LOGGING_DIR'] + '/log.out', 'r', encoding='utf-8') as f:
-        content = f.read()
+        content = ''
+
+        lines = f.readlines()
+        for line in reversed(lines):
+            content += line
+
     return Response(content, mimetype='text/plain')
 
 

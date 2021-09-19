@@ -6,7 +6,7 @@ from app.models import User
 from app.services.files import edit_file, get_file, delete_file
 from app.services.photos import get_photo, delete_photo
 from ...base import base, callback_query_base
-from ...helpers import send_message_private, send_message_inline_private
+from ...helpers import send_message_private, save_delete_message, send_message_inline_private
 from ...keyboards.default import get_menu_keyboard_markup, get_cancel_keyboard_markup
 from ...keyboards.inline import get_edit_inline_markup, get_delete_photo_inline_markup
 from ...loader import bot, bot_username
@@ -62,20 +62,20 @@ def inline_edit_photo_handler(call: CallbackQuery):
 
     if option == 'cancel':
         bot.answer_callback_query(call.id, 'Отменено')
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     photo = get_photo(id)
 
     if not photo:
         bot.answer_callback_query(call.id, 'Фото уже удалено', show_alert=True)
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
     elif option == 'delete':
         delete_photo(id)
         bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('edit_file'))
@@ -89,12 +89,12 @@ def inline_edit_file_handler(call: CallbackQuery):
 
     if option == 'cancel':
         bot.answer_callback_query(call.id, 'Отменено')
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     file = get_file(id)
     if not file:
         bot.answer_callback_query(call.id, 'Файл уже удален', show_alert=True)
-        return bot.delete_message(chat_id, message_id)
+        return save_delete_message(chat_id, message_id)
 
     if option == 'edit':
         text = (f'Введите измененное название для файла:\n'
@@ -104,14 +104,14 @@ def inline_edit_file_handler(call: CallbackQuery):
         response = send_message_inline_private(call, text, reply_markup=markup)
         bot.register_next_step_handler(response, edit_file_handler, id=id)
 
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
     elif option == 'delete':
         delete_file(id)
         bot.answer_callback_query(call.id, 'Удаленно', show_alert=True)
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
     else:
         bot.answer_callback_query(call.id, 'Отменено')
-        bot.delete_message(chat_id, message_id)
+        save_delete_message(chat_id, message_id)
 
 
 @base(is_admin=True)
