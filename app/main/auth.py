@@ -1,11 +1,12 @@
 from flask import redirect, abort, request, current_app, jsonify, render_template, url_for
 from flask_login import login_user, logout_user, login_required, current_user
-from app.utils.logging import logger
 
 from app.bot.loader import bot
 from app.main import main
 from app.models import User
 from app.services.telegram_auth import verify_authorization
+from app.services.users import get_user, count_users, create_user, edit_user_status
+from app.utils.logging import logger
 
 
 @main.route('/login_redirect', methods=['GET'])
@@ -16,7 +17,11 @@ def login_redirect():
         abort(400)
 
     if verify_authorization(data, current_app.config['TELEGRAM_BOT_TOKEN']):
-        user = User.query.filter_by(id=data['id']).first()
+        if not count_users():
+            create_user(data['id'], data['first_name'], data['username'])
+            edit_user_status(data['id'], 'super_admin')
+
+        user = get_user(id=data['id'])
         if not user:
             abort(400, 'This account is not present in the database')
         if not user.is_admin():
