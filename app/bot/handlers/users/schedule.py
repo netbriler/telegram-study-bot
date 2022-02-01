@@ -31,15 +31,13 @@ def inline_schedule_handler(call: CallbackQuery):
     else:
         return
 
-    next = option == 'next'
-
     timetable = get_subjects_by_week(date.isocalendar()[1])
 
     text = _get_text(timetable)
     if not call.inline_message_id and call.message.chat.type != 'private':
         text = mark_user(text, call.from_user.id)
 
-    markup = get_week_inline_markup(query, next)
+    markup = get_week_inline_markup(query, option)
 
     try:
         if call.inline_message_id:
@@ -80,16 +78,16 @@ def _get_text(timetable: list[list[Subject]]):
 
 
 def _get_schedule_data():
-    next_week = False
+    shift = 'this'
 
     now = datetime.now()
     if now.weekday() > 4 or (now.weekday() == 4 and now.hour > 13):
-        next_week = True
+        shift = 'next'
         now += timedelta(weeks=1)
 
     timetable = get_subjects_by_week(now.isocalendar()[1])
 
     text = _get_text(timetable)
 
-    markup = get_week_inline_markup('schedule', next_week)
+    markup = get_week_inline_markup('schedule', shift)
     return text, markup

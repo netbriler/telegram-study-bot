@@ -28,6 +28,8 @@ def inline_homework_handler(call: CallbackQuery):
         date = datetime.today()
     elif option == 'next':
         date = datetime.today() + timedelta(weeks=1)
+    elif option == 'previous':
+        date = datetime.today() - timedelta(weeks=1)
     else:
         return
 
@@ -37,7 +39,7 @@ def inline_homework_handler(call: CallbackQuery):
     if not call.inline_message_id and call.message.chat.type != 'private':
         text = mark_user(text, call.from_user.id)
 
-    markup = get_week_inline_markup(query, option == 'next')
+    markup = get_week_inline_markup(query, option, with_previous=True)
     try:
         if call.inline_message_id:
             bot.edit_message_text(text, message_id=call.inline_message_id, inline_message_id=call.inline_message_id,
@@ -83,17 +85,17 @@ def _get_text(timetable: list[list[Task]]):
 
 
 def _get_homework_data():
-    next_week = False
+    shift = 'this'
 
     now = datetime.now()
     if now.weekday() > 4 or (now.weekday() == 4 and now.hour > 13):
-        next_week = True
+        shift = 'next'
         now += timedelta(weeks=1)
 
     timetable = get_tasks_by_week(now.isocalendar()[1])
 
     text = _get_text(timetable)
 
-    markup = get_week_inline_markup('homework', next_week)
+    markup = get_week_inline_markup('homework', shift, with_previous=True)
 
     return text, markup
