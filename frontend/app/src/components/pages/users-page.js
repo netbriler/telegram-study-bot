@@ -105,7 +105,7 @@ class UsersPage extends Component {
 
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
-                <div className="uk-container uk-section-default" style={{ overflow: 'scroll' }}>
+                <div className="uk-container uk-section-default">
                     <table className="uk-table uk-table-middle uk-table-divider">
                         <thead>
                             <tr>

@@ -6,7 +6,9 @@
 
 ### 2. Установить зависимости
 
-`python3.9 -m pip install -r requirements.txt`
+`cd telegram-study-bot` - _заходим в папку с ботом_
+
+`python3.9 -m pip install -r requirements.txt --user`
 
 ### 3. Настроить переменные окружения
 `cp .env.dist .env` - копирует файл `.env.dist` в `.env`

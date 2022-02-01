@@ -90,3 +90,7 @@ def download_user_avatar(user: User, bot):
                 db.session.commit()
             except:
                 db.session.rollback()
+
+
+def count_users() -> int:
+    return User.query.count()
