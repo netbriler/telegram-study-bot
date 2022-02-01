@@ -165,7 +165,7 @@ class TimetablePage extends Component {
 
                 timetable[mirrorDay]['subjects'] = timetable[i]['subjects'].map((subject) => {
                     const newSubject = JSON.parse(JSON.stringify(subject));
-                    newSubject['id'] = mirrorDay.toString() + newSubject['id'].substring(1)
+                    newSubject['id'] = mirrorDay.toString() + newSubject['id'].substring(1) + '_copy_' + Math.floor(Date.now() * Math.random()).toString()
 
                     return newSubject;
                   });
