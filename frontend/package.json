@@ -72,9 +72,9 @@
     "sass": "^1.49.4",
     "sass-loader": "^7.0.3",
     "style-loader": "^2.0.0",
-    "webpack": "^4.41.2",
+    "webpack": "^5.41.2",
     "webpack-cli": "^4.9.2",
     "webpack-obfuscator": "^3.5.0",
-    "webpack-stream": "^5.2.1"
+    "webpack-stream": "^7.0.0"
   }
 }
