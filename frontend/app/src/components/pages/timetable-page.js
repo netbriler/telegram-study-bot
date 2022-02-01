@@ -158,6 +158,23 @@ class TimetablePage extends Component {
             .finally(this.isLoaded);
     }
 
+    onCopyTimetable = () => {
+        this.setState(({ timetable }) => {
+            for (const i of Array(6).keys()) {
+                const mirrorDay = i+7;
+
+                timetable[mirrorDay]['subjects'] = timetable[i]['subjects'].map((subject) => {
+                    const newSubject = JSON.parse(JSON.stringify(subject));
+                    newSubject['id'] = mirrorDay.toString() + newSubject['id'].substring(1)
+
+                    return newSubject;
+                  });
+            }
+
+            return { timetable }
+        });
+    }
+
     showNotification = (message, status) => {
         UIkit.notification({ message, status });
     }
@@ -172,7 +189,7 @@ class TimetablePage extends Component {
         return (
             <PageTemplate title={this.title} description={this.description} icon={this.icon}>
                 <div className="uk-container uk-container-large">
-                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} addSubject={this.addSubject} subjects={subjects} onTimetableSave={this.onTimetableSave} />
+                    <Timetable onDragEnd={this.onDragEnd} timetable={timetable} deleteSubject={this.deleteSubject} addSubject={this.addSubject} subjects={subjects} onTimetableSave={this.onTimetableSave} onCopyTimetable={this.onCopyTimetable} />
                 </div>
             </PageTemplate>
         )

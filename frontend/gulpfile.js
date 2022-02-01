@@ -6,7 +6,7 @@ const gulp = require('gulp');
 const historyFallback = require('connect-history-api-fallback');
 const JavaScriptObfuscator = require('webpack-obfuscator');
 const postcss = require('gulp-postcss');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const webpack = require('webpack-stream');
 
 const dist = '../app/static';

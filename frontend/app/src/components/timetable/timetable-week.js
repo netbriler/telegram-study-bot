@@ -2,7 +2,7 @@ import React from 'react';
 
 import TimetableDay from './timetable-day';
 
-export default function TimetableWeek({ timetable, deleteSubject, addSubject, subjects, onTimetableSave }) {
+export default function TimetableWeek({ timetable, deleteSubject, addSubject, subjects, onTimetableSave, hasCopyAction, onCopyTimetable }) {
     return (
         <div className="uk-card uk-card-default uk-card-body">
             <div className="timetable__week-container">
@@ -15,6 +15,12 @@ export default function TimetableWeek({ timetable, deleteSubject, addSubject, su
                 e.preventDefault();
                 onTimetableSave()
             }} href="">Сохранить</a>
+            {hasCopyAction ?
+            <a className="uk-button uk-button-text uk-align-right" onClick={(e) => {
+                e.preventDefault();
+                onCopyTimetable()
+            }} href="">Скопировать с первой</a>
+            : ''}
         </div>
 
     )
