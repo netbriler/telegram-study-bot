@@ -1,3 +1,10 @@
+# <p align="center">StudyBot
+
+<img src="https://raw.githubusercontent.com/netbriler/telegram-study-bot/master/demo/admin.gif" width="100%" height="100%" />
+<img src="https://raw.githubusercontent.com/netbriler/telegram-study-bot/master/demo/1.jpg" width="100%" height="100%" />
+<img src="https://raw.githubusercontent.com/netbriler/telegram-study-bot/master/demo/2.jpg" width="100%" height="100%" />
+<img src="https://raw.githubusercontent.com/netbriler/telegram-study-bot/master/demo/3.jpg" width="100%" height="100%" />
+
 # Как установить?
 
 ## Клонировать собраную версию бота
