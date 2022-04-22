@@ -18,7 +18,7 @@ def start_handler(message: Message, current_user: User):
         params = {
             'chat_id': message.chat.id,
             'menu_button': '{"type": "web_app",\
-                            "web_app": {"url": '+url_for('main.login_web_app', _external=True)+'},\
+                            "web_app": {"url": "'+url_for('main.login_web_app', _external=True)+'"},\
                             "text": "Admin menu"}'
         }
 
