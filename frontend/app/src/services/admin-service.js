@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default class AdminService {
-    static _apiBase = '/api/v1/';
+    static _apiBase = window.location.origin + '/api/v1/';
 
     static async get(link) {
         return await axios
