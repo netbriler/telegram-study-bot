@@ -41,7 +41,7 @@ export default class AdminService {
     }
 
     static async getTimetable() {
-        return await AdminService.get('timetable');
+        return await AdminService.get('timetable/');
     }
 
     static async getTimetableByDate(date, without_none_subject) {
